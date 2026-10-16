@@ -5,16 +5,25 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page } from "@playwright/test";
 import { execFileSync, spawn } from "node:child_process";
 import { join } from "node:path";
+import { stripVTControlCharacters } from "node:util";
 
 const ROOT = join(import.meta.dirname, "..", "..");
 const WRANGLER = join(ROOT, "node_modules", "wrangler", "bin", "wrangler.js");
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+// A first start on a cold CI runner is slower than on a desktop.
+const START_MS = process.env["CI"] ? 45_000 : 30_000;
+// How much of Wrangler's output a failed start reports.
+const LOG_BYTES = 4096;
+
 /**
  * Runs `wrangler dev` in `dir` (relative to the repo) on 127.0.0.1:port and
  * resolves once it answers. The returned function stops Wrangler and its
  * workerd child, and resolves once the port is closed.
+ *
+ * A start that fails is tried once more; if that fails too, the error
+ * carries the end of what Wrangler printed each time.
  */
 export async function serve(
   dir: string,
@@ -27,17 +36,75 @@ export async function serve(
       () => false,
     );
   if (await answers()) throw new Error(`port ${port} is already in use`);
+  const failures: string[] = [];
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const server = start(dir, port, answers);
+    const deadline = Date.now() + START_MS;
+    let up = false;
+    while (!server.exited() && Date.now() < deadline) {
+      if ((up = await answers())) break;
+      await sleep(250);
+    }
+    if (up) return server.stop;
+    const why = server.exited()
+      ? `exited (${server.exited()})`
+      : `no answer in ${START_MS / 1000} s`;
+    await server.stop();
+    failures.push(
+      `attempt ${attempt}, ${why}:\n${server.log() || "(no output)"}`,
+    );
+  }
+  throw new Error(
+    `wrangler dev did not start in ${dir} on ${port}\n\n${failures.join("\n\n")}`,
+  );
+}
+
+/** One `wrangler dev`, the end of its output, and a way to stop it. */
+function start(dir: string, port: number, answers: () => Promise<boolean>) {
   const child = spawn(
     process.execPath,
-    [WRANGLER, "dev", "--port", String(port), "--ip", "127.0.0.1"],
+    [
+      WRANGLER,
+      "dev",
+      "--port",
+      String(port),
+      "--ip",
+      "127.0.0.1",
+      // Otherwise each Wrangler looks for a free port from 9229 up and
+      // binds it later. Two started at once (two test workers) can pick
+      // the same one; on Linux the second can't bind it and exits, while
+      // Windows lets both listen. Port 0 has the OS pick, atomically.
+      "--inspector-port",
+      "0",
+    ],
     {
       cwd: join(ROOT, dir),
       env: { ...process.env, WRANGLER_SEND_METRICS: "false" },
-      stdio: "ignore",
+      stdio: ["ignore", "pipe", "pipe"],
       // Its own process group, so the whole tree can be stopped (POSIX).
       detached: process.platform !== "win32",
     },
   );
+  let log = "";
+  const keep = (chunk: Buffer | string) => {
+    log = (log + String(chunk)).slice(-LOG_BYTES);
+  };
+  child.stdout?.on("data", keep);
+  child.stderr?.on("data", keep);
+  let exit = "";
+  const gone = new Promise<void>((resolve) => {
+    child.on("error", (e) => {
+      keep(`\n${e.stack ?? e.message}\n`);
+      exit ||= e.message;
+      resolve();
+    });
+    child.on("exit", (code, signal) => {
+      exit ||= signal ? `signal ${signal}` : `code ${code}`;
+      resolve();
+    });
+  });
+  // Its output is complete once the pipes close, which can be after exit.
+  const closed = new Promise<void>((resolve) => child.on("close", resolve));
   const stop = async () => {
     if (child.pid === undefined) return;
     if (process.platform === "win32") {
@@ -55,15 +122,15 @@ export async function serve(
         // Already gone.
       }
     }
+    await Promise.race([gone, sleep(5000)]);
     for (let i = 0; i < 50 && (await answers()); i++) await sleep(100);
+    await Promise.race([closed, sleep(1000)]);
   };
-  for (let i = 0; i < 60; i++) {
-    if (await answers()) return stop;
-    if (child.exitCode !== null) break;
-    await sleep(500);
-  }
-  await stop();
-  throw new Error(`wrangler dev did not start in ${dir} on ${port}`);
+  return {
+    stop,
+    exited: () => exit,
+    log: () => stripVTControlCharacters(log).trim(),
+  };
 }
 
 export interface BasicsOptions {
