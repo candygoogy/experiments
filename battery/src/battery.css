@@ -1,5 +1,41 @@
 /* The battery page's own parts; the drop zone is shared/dropzone.css. */
 
+/* Once a report is read, the drop zone steps back to one line
+   (dropzone.css), its heading goes, and the answer takes the full width
+   under it. A drop anywhere on the page still reads a report. */
+.work.has-result {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-7);
+}
+
+.work.has-result .pane {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.work.has-result .input > .label {
+  display: none;
+}
+
+.work.has-result .drop {
+  justify-self: start;
+  max-width: 100%;
+  margin-top: 0;
+}
+
+/* The answer's column opens on its dark rule, under the PC's maker and
+   model, or, when the report doesn't name them, straight on the verdict
+   (the column's name is then for screen readers only). */
+.yours.unnamed {
+  padding-top: var(--sp-7);
+  border-top: var(--rule) solid var(--ink);
+}
+
+.yours .label.visually-hidden {
+  padding: 0;
+  border: 0;
+}
+
 .problem {
   max-width: var(--measure);
   margin-top: var(--sp-5);
@@ -118,10 +154,24 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* A taller drawing once the answer has the full width. */
+@container (min-width: 50rem) {
+  .yours .plot {
+    --plot-h: 11rem;
+  }
+}
+
 .plot .design {
   stroke: var(--soft);
   stroke-width: 1;
   stroke-dasharray: 4 4;
+}
+
+/* The guide at 80% of the original capacity: a hairline, quieter than
+   the dashed line. */
+.plot .axes .worn {
+  stroke: var(--line);
+  stroke-width: 1;
 }
 
 .plot .full {
@@ -131,9 +181,10 @@
   stroke-linejoin: round;
 }
 
-/* The original capacity, at the left end of the dashed line it names
-   (--at: 0 the top of the drawing, 1 its foot): above the line, or under
-   it where the solid line starts higher. */
+/* The chart's labels, each at the left end of the line it names (--at: 0
+   the top of the drawing, 1 its foot): the original capacity, the 80%
+   guide and the value at the foot. Above the line, or under it where the
+   solid line runs there. */
 .tick {
   position: absolute;
   top: calc(var(--sp-5) + var(--at, 0) * var(--plot-h));
@@ -214,25 +265,25 @@
 
 @media (width >= 38.75rem) {
   .example {
-    --example-min: 32.5rem;
+    --example-min: 35.25rem;
   }
 }
 
 @media (width >= 40rem) {
   .example {
-    --example-min: 31rem;
+    --example-min: 32.25rem;
   }
 }
 
 @media (width >= 45rem) {
   .example {
-    --example-min: 29.5rem;
+    --example-min: 30.75rem;
   }
 }
 
 @media (width >= 51.25rem) {
   .example {
-    --example-min: 28rem;
+    --example-min: 29.25rem;
   }
 }
 
@@ -244,18 +295,24 @@
 
 @media (width >= 70rem) {
   .example {
-    --example-min-wide: 32.5rem;
+    --example-min-wide: 35.25rem;
   }
 }
 
 @media (width >= 71.25rem) {
   .example {
-    --example-min-wide: 31rem;
+    --example-min-wide: 33.75rem;
+  }
+}
+
+@media (width >= 72.5rem) {
+  .example {
+    --example-min-wide: 32.25rem;
   }
 }
 
 @media (width >= 81.25rem) {
   .example {
-    --example-min-wide: 29.5rem;
+    --example-min-wide: 30.75rem;
   }
 }

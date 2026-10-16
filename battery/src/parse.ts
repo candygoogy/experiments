@@ -3,8 +3,9 @@
 // nothing here reads a label: tables are found by their shape and their
 // order, and numbers are read whatever their thousands separator.
 //
-// The whole file is parsed, but only the capacity rows, the cycle count,
-// the capacity history and the life estimates are taken from it. The PC's
+// The whole file is parsed, but only the system's product name (the maker
+// and model, "Example Laptop 14"), the capacity rows, the cycle count, the
+// capacity history and the life estimates are taken from it. The PC's
 // name, its BIOS and OS build, and each battery's name, maker and serial
 // number are never picked out, shown or kept.
 
@@ -35,6 +36,8 @@ export interface Estimate {
 export type ParseResult =
   | {
       ok: true;
+      /** The maker and model as the report writes them, or null. */
+      product: string | null;
       batteries: Battery[];
       history: HistoryPoint[];
       estimates: Estimate[];
@@ -144,6 +147,31 @@ function readBatteries(table: HTMLTableElement): Battery[] {
   return batteries;
 }
 
+// The report opens with a table about the system, in a fixed order: the
+// PC's name, the system product name, the BIOS, the OS build ("26100.1.
+// amd64fre…"), then more. The product name is the second row, and it's
+// taken only when the fourth is an OS build, so a table in any other order
+// gives nothing rather than another row (the first is the PC's name).
+const OS_BUILD = /^\d{4,6}\.\d+\./;
+// What boards without a maker's own name write instead.
+const PLACEHOLDER =
+  /to be filled|system product name|system manufacturer|default string|not applicable|not specified|^(none|n\/?a|-)?$/i;
+const MAX_PRODUCT = 80;
+
+function readProduct(table: HTMLTableElement | undefined): string | null {
+  if (!table) return null;
+  const rows = bodyRows(table).slice(0, 4);
+  if (rows.length < 4 || rows.some((row) => row.cells.length !== 2))
+    return null;
+  const value = (i: number) => text(rows[i]?.cells[1]);
+  if (!OS_BUILD.test(value(3))) return null;
+  const product = value(1);
+  if (PLACEHOLDER.test(product) || product.length > MAX_PRODUCT) return null;
+  // Never the PC's name, even where the two are the same.
+  if (product.toLowerCase() === value(0).toLowerCase()) return null;
+  return product;
+}
+
 /** The report without its styles and scripts. Only its tables are read,
  * and the browser holds the parsed copy to the page's own CSP, logging an
  * error for every inline style it declines there. */
@@ -175,11 +203,16 @@ export function parseReport(source: string): ParseResult {
       : tables.slice(historyAt + 1).find(isEstimates);
   if (!history || !estimates) return { ok: false, reason: "not-a-report" };
 
-  const batteriesTable = tables.slice(0, historyAt).find(isBatteries);
+  const batteriesAt = tables.findIndex(
+    (table, i) => i < historyAt && isBatteries(table),
+  );
+  const batteriesTable = tables[batteriesAt];
   if (!batteriesTable) return { ok: false, reason: "no-battery" };
 
   return {
     ok: true,
+    // The system table is the first, before the batteries.
+    product: batteriesAt > 0 ? readProduct(tables[0]) : null,
     batteries: readBatteries(batteriesTable),
     history: bodyRows(history).flatMap((row) => {
       const full = parseMwh(text(row.cells[1]));

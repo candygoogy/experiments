@@ -116,9 +116,61 @@ describe("parseReport", () => {
   });
 
   test("never carries the PC's name or the serial number", () => {
-    const text = JSON.stringify(parseReport(fixture("en.html")));
+    const result = parseReport(fixture("en.html"));
+    if (!result.ok) throw new Error(result.reason);
+    // The maker and model are the one thing taken from outside the
+    // battery's numbers; the battery's own name and maker never are.
+    const { product, ...rest } = result;
+    expect(product).toBe("Example Laptop 14");
+    const text = JSON.stringify(result);
     expect(text).not.toContain("000000");
     expect(text).not.toContain("TEST-PC");
-    expect(text).not.toContain("Example");
+    expect(JSON.stringify(rest)).not.toContain("Example");
+  });
+});
+
+describe("the product name", () => {
+  const en = fixture("en.html");
+  const product = (source: string) => {
+    const result = parseReport(source);
+    if (!result.ok) throw new Error(result.reason);
+    return result.product;
+  };
+
+  test("read from the system table, in any language", () => {
+    expect(product(en)).toBe("Example Laptop 14");
+    expect(product(fixture("it.html"))).toBe("Example Laptop 14");
+  });
+
+  test.each([
+    "To Be Filled By O.E.M.",
+    "System manufacturer System Product Name",
+    "Default string",
+    "",
+  ])("a board's placeholder %j gives none", (placeholder) => {
+    expect(product(en.replace("Example Laptop 14", placeholder))).toBeNull();
+  });
+
+  test("never the PC's name, whatever the table's order", () => {
+    // The rows in another order (the PC's name second, the OS build no
+    // longer fourth): nothing is taken.
+    const reordered = en
+      .replace("<td>TEST-PC</td>", "<td>Example Laptop 14</td>")
+      .replace(
+        '</td><td>Example Laptop 14</td></tr><tr><td><span class="label">BIOS',
+        '</td><td>TEST-PC</td></tr><tr><td><span class="label">BIOS',
+      )
+      .replace("26100.1.amd64fre.ge_release.000000-0000", "Mobile");
+    expect(reordered.match(/<td>TEST-PC<\/td>/g)).toHaveLength(1);
+    expect(product(reordered)).toBeNull();
+    // The same name in both rows.
+    expect(product(en.replace("Example Laptop 14", "test-pc"))).toBeNull();
+  });
+
+  test("none when the report has no system table", () => {
+    // The first table is the batteries' own.
+    const start = en.indexOf("<table");
+    const end = en.indexOf("</table>", start) + "</table>".length;
+    expect(product(en.slice(0, start) + en.slice(end))).toBeNull();
   });
 });

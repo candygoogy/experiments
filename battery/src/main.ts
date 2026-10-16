@@ -7,14 +7,13 @@ import "@exp/shared/dropzone.css";
 import "@exp/shared/work.css";
 import "./battery.css";
 import { initDropZone } from "@exp/shared/dropzone";
-import { initThemeSwitch } from "@exp/shared/theme-switch";
-import { designLabel, drawHistory } from "./chart";
+import { initHeader } from "@exp/shared/header";
+import { designLabel, drawHistory, floorLabel, wornLabel } from "./chart";
 import { copy, fill } from "./copy";
 import { parseReport, type Battery, type Estimate } from "./parse";
-import { percent, verdictText } from "./verdict";
+import { verdictText } from "./verdict";
 
-const themes = document.querySelector<HTMLElement>("[data-theme-switch]");
-if (themes) initThemeSwitch(themes);
+initHeader();
 
 // Reports are tens or hundreds of kilobytes; anything far bigger isn't one.
 const MAX_BYTES = 20 * 1024 * 1024;
@@ -26,7 +25,10 @@ const input = zone?.querySelector<HTMLInputElement>("input");
 const status = document.querySelector<HTMLElement>("[data-status]");
 const answer = document.querySelector<HTMLElement>("[data-answer]");
 const example = document.querySelector<HTMLElement>("[data-example]");
-// The answer's column, labelled with the file's name once one is in.
+const work = document.querySelector<HTMLElement>(".work");
+const dropLine = zone?.querySelector<HTMLElement>(".drop-main");
+// The answer's column, labelled with the PC's maker and model when the
+// report names them.
 const yours = document.querySelector<HTMLElement>("[data-yours]");
 const yoursLabel = document.querySelector<HTMLElement>("#yours-label");
 
@@ -68,14 +70,12 @@ const make = <K extends keyof HTMLElementTagNameMap>(
 
 function numbers(b: Battery): HTMLDListElement {
   const list = make("dl", "numbers");
-  const pct = percent(b);
   const rows: [string, string | null][] = [
     [
       copy.original,
       b.design === null ? null : b.design ? mwh(b.design) : copy.notRecorded,
     ],
     [copy.now, b.full === null ? null : mwh(b.full)],
-    [copy.health, pct === null ? null : `${pct}%`],
     [copy.cycleCount, b.cycles === null ? null : number.format(b.cycles)],
   ];
   for (const [label, value] of rows) {
@@ -114,13 +114,20 @@ function historyFigure(
   const svg = document.createElementNS(SVG, "svg");
   drawHistory(svg, points);
   plot.append(svg);
-  // The original capacity, beside the dashed line it names (placed by
-  // CSS from --at; a style property set from script is within the CSP).
-  const design = designLabel(points);
-  if (design) {
-    const tick = make("span", design.below ? "tick below num" : "tick num");
-    tick.textContent = mwh(design.value);
-    tick.style.setProperty("--at", String(design.at));
+  // Labels at the left end of the lines they name: the original capacity
+  // by the dashed line, the 80% guide, and the value at the chart's foot,
+  // which isn't 0. Placed by CSS from --at; a style property set from
+  // script is within the CSP.
+  const labels = [
+    [designLabel(points), (v: number) => mwh(v)],
+    [wornLabel(points), () => copy.wornLine],
+    [floorLabel(points), (v: number) => mwh(v)],
+  ] as const;
+  for (const [label, say] of labels) {
+    if (!label) continue;
+    const tick = make("span", label.below ? "tick below num" : "tick num");
+    tick.textContent = say(label.value);
+    tick.style.setProperty("--at", String(label.at));
     plot.append(tick);
   }
   const caption = make("figcaption", "");
@@ -143,18 +150,39 @@ function historyFigure(
 const latestEstimate = (estimates: Estimate[]) =>
   estimates.findLast((e) => e.atFull !== null && e.atDesign !== null);
 
-function show(nodes: Node[], said: string, name: string) {
-  if (yoursLabel) yoursLabel.textContent = name;
-  answer?.replaceChildren(...nodes);
+/** The drop zone's line once a report is read, the words after ", or "
+ * in the link colour as before. */
+function askForAnother() {
+  if (!dropLine || zone?.classList.contains("has-result")) return;
+  const [, lead = "", pick = ""] =
+    /^(.*, or )(.+)$/.exec(copy.dropAnother) ?? [];
+  dropLine.replaceChildren(lead, make("span", "pick", pick));
+}
+
+function show(a: Answer) {
+  // The maker and model as a heading; without them the verdict leads, and
+  // the column's name is for screen readers only.
+  if (yoursLabel) {
+    yoursLabel.textContent = a.product ?? copy.fileLabel;
+    yoursLabel.classList.toggle("visually-hidden", !a.product);
+  }
+  yours?.classList.toggle("unnamed", !a.product);
+  answer?.replaceChildren(...a.nodes);
   if (yours) yours.hidden = false;
-  zone?.classList.toggle("has-result", nodes.length > 0);
-  if (status) status.textContent = said;
+  // The drop zone steps back to one line over the answer, which takes the
+  // full width.
+  askForAnother();
+  zone?.classList.add("has-result");
+  work?.classList.add("has-result");
+  if (status) status.textContent = a.said;
 }
 
 interface Answer {
   nodes: Node[];
   /** What the status line announces. */
   said: string;
+  /** The PC's maker and model, when the report names them. */
+  product?: string | null;
 }
 
 const trouble = (text: string): Answer => ({
@@ -212,7 +240,11 @@ function answerFor(source: string, asExample = false): Answer {
     );
   }
   if (!asExample) nodes.push(make("p", "kept", copy.kept));
-  return { nodes, said: batteries.map(verdictText).join(" ") };
+  return {
+    nodes,
+    said: batteries.map(verdictText).join(" "),
+    product: result.product,
+  };
 }
 
 /** Several files dropped at once: the answer opens by naming the one
@@ -221,12 +253,17 @@ function withOneFile(a: Answer, file: File, skipped: File[]): Answer {
   if (!skipped.length) return a;
   const line = fill(copy.oneAtATime, { name: file.name });
   return {
+    ...a,
     nodes: [make("p", "one-file", line), ...a.nodes],
     said: `${line} ${a.said}`,
   };
 }
 
+// Each drop starts a new read; an older one still reading a big file
+// doesn't replace the newer answer when it finishes.
+let run = 0;
 async function read(file: File, skipped: File[]) {
+  const mine = ++run;
   let source: string | null = null;
   if (file.size <= MAX_BYTES) {
     try {
@@ -235,12 +272,14 @@ async function read(file: File, skipped: File[]) {
       source = null;
     }
   }
-  const { nodes, said } = withOneFile(
-    source === null ? trouble(copy.notAReport) : answerFor(source),
-    file,
-    skipped,
+  if (mine !== run) return; // a newer drop took over
+  show(
+    withOneFile(
+      source === null ? trouble(copy.notAReport) : answerFor(source),
+      file,
+      skipped,
+    ),
   );
-  show(nodes, said, file.name);
 }
 
 /** The example: a made-up report, read and drawn by the same code as a

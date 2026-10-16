@@ -4,9 +4,13 @@ export const copy = {
   intro:
     "Drop in the report Windows makes about your battery, and get a plain answer on its health.",
   example: "Example report",
-  // Over the drop zone; the answer's label is the file's name.
+  // Over the drop zone. The answer's label is the PC's maker and model
+  // when the report names them; otherwise this, for screen readers only.
   fileLabel: "Your report",
   drop: "Drop the report here, or choose the file",
+  // The drop zone once a report is read, one line over the answer. The
+  // words after ", or " are the link-coloured part.
+  dropAnother: "Drop another report, or choose one",
   howTo:
     "Open Command Prompt, run powercfg /batteryreport, then drop the battery-report.html file it saves here.",
   healthy: "Healthy. It still holds {pct}% of its original charge.",
@@ -30,14 +34,16 @@ export const copy = {
   // Where Windows wrote an original capacity of 0.
   notRecorded: "Not recorded",
   now: "Capacity now",
-  health: "Health",
   cycleCount: "Charge cycles",
   chart:
-    "Full charge capacity, week by week. The dashed line is the original capacity.",
+    "Full charge capacity, week by week. Windows re-estimates it over time, so the line can dip and recover. The dashed line is the original capacity.",
+  // Beside the chart's guide at 80% of the original capacity, where the
+  // verdict turns from healthy to worn.
+  wornLine: "Worn below 80%",
   // With more than one battery, the report's history and estimates are
   // for all of them together.
   chartSeveral:
-    "Full charge capacity of {which} together, week by week. The dashed line is their original capacity.",
+    "Full charge capacity of {which} together, week by week. Windows re-estimates it over time, so the line can dip and recover. The dashed line is their original capacity.",
   estimate:
     "At full charge Windows estimated {full} of use; when new, {design}.",
   estimateSeveral:

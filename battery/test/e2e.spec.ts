@@ -54,7 +54,8 @@ test("picking the English report gives the verdict", async ({ page }) => {
   await page.goto(BASE);
   await page.setInputFiles(".drop input", join(FIXTURES, "en.html"));
   await expect(page.locator(".verdict")).toHaveText(WORN_OUT);
-  await expect(page.locator(".history svg path")).toHaveCount(2);
+  // The two lines and the 80% guide.
+  await expect(page.locator(".history svg path")).toHaveCount(3);
   await expect(page.locator(".estimate")).toContainText(
     "3\u00a0h\u00a015\u00a0min",
   );
@@ -155,6 +156,111 @@ test("the chart's label is the original capacity, beside its dashed line", async
   expect(Math.abs(young.top - 4 - young.line)).toBeLessThan(2);
 });
 
+test("the answer is headed by the maker and model, never the file name", async ({
+  page,
+}) => {
+  await page.goto(BASE);
+  await drop(page, "en.html");
+  const label = page.locator("#yours-label");
+  await expect(label).toHaveText("Example Laptop 14");
+  await expect(label).toBeVisible();
+  await expect(page.locator(".pane.yours")).not.toContainText("en.html");
+  // Health is in the verdict and the chart, not again in the numbers.
+  await expect(page.locator(".numbers dt")).toHaveText([
+    "Original capacity",
+    "Capacity now",
+    "Charge cycles",
+  ]);
+  // A board's placeholder: no heading to see, and the verdict leads.
+  const placeholder = readFileSync(join(FIXTURES, "en.html"), "utf8").replace(
+    "Example Laptop 14",
+    "To Be Filled By O.E.M.",
+  );
+  await drop(page, ["battery-report.html", placeholder]);
+  await expect(label).toHaveText(copy.fileLabel);
+  await expect(label).toHaveClass(/visually-hidden/);
+  await expect(page.locator(".pane.yours")).not.toContainText("O.E.M.");
+  await expect(
+    page.getByRole("region", { name: copy.fileLabel }).locator(".verdict"),
+  ).toHaveText(WORN_OUT);
+});
+
+test("the chart's axis starts above 0, and its foot says where", async ({
+  page,
+}) => {
+  await page.goto(BASE);
+  await drop(page, "en.html");
+  // 45,000 new, 25,650 at the lowest: the foot is 20,000, not 0.
+  const ticks = page.locator(".history .tick");
+  await expect(ticks).toHaveText([
+    "45,000\u00a0mWh",
+    copy.wornLine,
+    "20,000\u00a0mWh",
+  ]);
+  // The foot's label sits on the axis line, and the 80% label on its guide.
+  const at = await page.evaluate(() => {
+    const svg = document.querySelector(".history svg") as SVGSVGElement;
+    const box = svg.getBoundingClientRect();
+    const worn = svg.querySelector(".worn")?.getAttribute("d") ?? "";
+    const y = Number(/^M0 ([\d.]+)/.exec(worn)?.[1]);
+    const [, wornTick, foot] = [...document.querySelectorAll(".tick")].map(
+      (t) => t.getBoundingClientRect(),
+    );
+    return {
+      axis: box.bottom,
+      footBottom: foot?.bottom ?? 0,
+      guide: box.top + (y / 200) * box.height,
+      wornBottom: wornTick?.bottom ?? 0,
+    };
+  });
+  expect(Math.abs(at.footBottom + 2 - at.axis)).toBeLessThan(2);
+  expect(Math.abs(at.wornBottom + 2 - at.guide)).toBeLessThan(2);
+});
+
+test("after a report, the zone is one line over a full-width answer", async ({
+  page,
+}) => {
+  await page.goto(BASE);
+  await page.setInputFiles(".drop input", join(FIXTURES, "en.html"));
+  await expect(page.locator(".verdict")).toHaveText(WORN_OUT);
+  const zone = page.locator(".drop");
+  await expect(zone.locator(".drop-main")).toHaveText(copy.dropAnother);
+  await expect(zone.locator(".drop-how")).toBeHidden();
+  await expect(page.locator(".input > .label")).toBeHidden();
+  // Still the file input's label, so still named for a screen reader.
+  await expect(page.getByLabel(copy.dropAnother)).toHaveCount(1);
+  const width = (selector: string) =>
+    page.locator(selector).evaluate((el) => el.getBoundingClientRect().width);
+  expect(await width(".pane.yours")).toBe(await width(".work"));
+  // Another report, dropped on the page outside the zone, takes its place.
+  await drop(page, "two-batteries.html");
+  await expect(page.locator(".verdict")).toHaveCount(2);
+  await expect(page.locator("[data-status]")).toContainText("Healthy.");
+});
+
+test("the zone's focus ring is for the keyboard, not after a mouse pick", async ({
+  page,
+}) => {
+  await page.goto(BASE);
+  const zone = page.locator(".drop");
+  const ring = () => zone.evaluate((el) => getComputedStyle(el).outlineStyle);
+  const [chooser] = await Promise.all([
+    page.waitForEvent("filechooser"),
+    zone.click(),
+  ]);
+  await chooser.setFiles(join(FIXTURES, "en.html"));
+  await expect(page.locator(".verdict")).toHaveText(WORN_OUT);
+  // Focus is on the file input, as the picker leaves it, with no ring.
+  await expect(page.locator(".drop input")).toBeFocused();
+  expect(await ring()).toBe("none");
+  // From the keyboard it rings.
+  await page.locator(".drop input").blur();
+  await page.keyboard.press("Shift+Tab");
+  await page.keyboard.press("Tab");
+  await expect(page.locator(".drop input")).toBeFocused();
+  expect(await ring()).toBe("solid");
+});
+
 test("no original capacity: it says not recorded, never 0 mWh", async ({
   page,
 }) => {
@@ -171,7 +277,7 @@ test("two batteries: the chart and estimate say they're both together", async ({
   await page.goto(BASE);
   await drop(page, "two-batteries.html");
   await expect(page.locator(".history figcaption")).toContainText(
-    "Full charge capacity of both batteries together, week by week. The dashed line is their original capacity.",
+    "Full charge capacity of both batteries together, week by week. Windows re-estimates it over time, so the line can dip and recover. The dashed line is their original capacity.",
   );
   await expect(page.locator(".estimate")).toHaveText(
     /^With both batteries at full charge Windows estimated /,
