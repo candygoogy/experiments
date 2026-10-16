@@ -1,6 +1,7 @@
 // DNS questions over HTTPS, to Cloudflare's public resolver only (the
 // page's CSP allows no other host): JSON answers, six questions at a time,
-// each given 5 seconds and one more try.
+// each given 5 seconds and one more try. A question whose signal aborts
+// stops where it is, without the other try, and gives up its place.
 
 // A only for an SPF exists term, which asks whether a name has an address.
 export type RRType = "MX" | "TXT" | "CNAME" | "A";
@@ -18,7 +19,11 @@ export interface DnsAnswer {
   records: DnsRecord[];
 }
 
-export type Resolve = (name: string, type: RRType) => Promise<DnsAnswer>;
+export type Resolve = (
+  name: string,
+  type: RRType,
+  signal?: AbortSignal,
+) => Promise<DnsAnswer>;
 
 /** The resolver didn't answer, or answered with a failure. */
 export class DnsError extends Error {}
@@ -39,21 +44,39 @@ export function doh(
 ): Resolve {
   let running = 0;
   const queue: (() => void)[] = [];
-  const slot = () =>
-    running < limit
-      ? (running++, Promise.resolve())
-      : new Promise<void>((go) => queue.push(go));
+  const slot = (signal?: AbortSignal) =>
+    new Promise<void>((go, stop) => {
+      if (signal?.aborted) return stop(signal.reason);
+      if (running < limit) return (running++, go());
+      // Still waiting when it's called off: it leaves the line and never
+      // takes a place.
+      const leave = () => {
+        queue.splice(queue.indexOf(next), 1);
+        stop(signal?.reason);
+      };
+      const next = () => {
+        signal?.removeEventListener("abort", leave);
+        go();
+      };
+      signal?.addEventListener("abort", leave, { once: true });
+      queue.push(next);
+    });
   const free = () => {
     const next = queue.shift();
     if (next) next();
     else running--;
   };
 
-  const once = async (name: string, type: RRType): Promise<DnsAnswer> => {
+  const once = async (
+    name: string,
+    type: RRType,
+    signal?: AbortSignal,
+  ): Promise<DnsAnswer> => {
     const url = `${ENDPOINT}?name=${encodeURIComponent(name)}&type=${type}`;
+    const timeout = AbortSignal.timeout(timeoutMs);
     const response = await fetcher(url, {
       headers: { accept: "application/dns-json" },
-      signal: AbortSignal.timeout(timeoutMs),
+      signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
     });
     if (!response.ok) throw new DnsError(`HTTP ${response.status}`);
     const body = (await response.json()) as DohJson;
@@ -71,14 +94,16 @@ export function doh(
     };
   };
 
-  return async (name, type) => {
-    await slot();
+  return async (name, type, signal) => {
+    await slot(signal);
     try {
       let last: unknown;
       for (let i = 0; i < tries; i++) {
         try {
-          return await once(name, type);
+          return await once(name, type, signal);
         } catch (error) {
+          // Called off, not failed: no other try.
+          if (signal?.aborted) throw signal.reason;
           last = error;
         }
       }

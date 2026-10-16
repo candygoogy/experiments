@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { doh, DnsError } from "../src/dns";
 
 const json = (body: unknown) =>
@@ -97,6 +97,76 @@ describe("DNS over HTTPS", () => {
       { timeoutMs: 30 },
     );
     await expect(hang("slow.example", "MX")).rejects.toBeInstanceOf(DnsError);
+  });
+
+  // Answers only when its signal aborts, and then with the abort, as fetch
+  // does.
+  const hanging: typeof fetch = (_input, init) =>
+    new Promise((_resolve, reject) => {
+      const signal = init?.signal;
+      const off = () => reject(signal?.reason as Error);
+      if (signal?.aborted) off();
+      else signal?.addEventListener("abort", off);
+    });
+
+  test("calling questions off frees their places at once", async () => {
+    const resolve = doh(
+      (input, init) =>
+        String(input).includes("old")
+          ? hanging(input, init)
+          : Promise.resolve(json({ Status: 0, AD: false })),
+      { timeoutMs: 60_000 },
+    );
+    const old = new AbortController();
+    const stale = Array.from({ length: 6 }, (_, i) =>
+      resolve(`old${i}.example`, "TXT", old.signal),
+    );
+    const fresh = resolve("new.example", "TXT");
+    old.abort();
+    for (const s of stale) {
+      await expect(s).rejects.toMatchObject({ name: "AbortError" });
+    }
+    // Long before any of the old questions' minute was up.
+    await expect(fresh).resolves.toMatchObject({ status: 0 });
+  });
+
+  test("a question called off in the line is never sent", async () => {
+    const sent: string[] = [];
+    const resolve = doh(
+      (input, init) => {
+        sent.push(String(input));
+        return hanging(input, init);
+      },
+      { limit: 1, timeoutMs: 60_000 },
+    );
+    const first = new AbortController();
+    const waiting = new AbortController();
+    const running = resolve("first.example", "TXT", first.signal);
+    const queued = resolve("queued.example", "TXT", waiting.signal);
+    waiting.abort();
+    await expect(queued).rejects.toMatchObject({ name: "AbortError" });
+    first.abort();
+    await expect(running).rejects.toMatchObject({ name: "AbortError" });
+    expect(sent).toHaveLength(1);
+    expect(sent[0]).toContain("first.example");
+  });
+
+  test("a question called off isn't tried again", async () => {
+    let calls = 0;
+    const resolve = doh(
+      (input, init) => {
+        calls++;
+        return hanging(input, init);
+      },
+      { timeoutMs: 60_000 },
+    );
+    const controller = new AbortController();
+    const asked = resolve("a.example", "TXT", controller.signal);
+    // Called off once it's out, not while it waits for a place.
+    await vi.waitFor(() => expect(calls).toBe(1));
+    controller.abort();
+    await expect(asked).rejects.toMatchObject({ name: "AbortError" });
+    expect(calls).toBe(1);
   });
 
   test("SERVFAIL is an error, not an answer", async () => {

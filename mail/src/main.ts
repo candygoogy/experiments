@@ -5,12 +5,11 @@ import "@exp/shared/shell.css";
 import "@exp/shared/theme-switch.css";
 import "@exp/shared/work.css";
 import "./mail.css";
-import { initThemeSwitch } from "@exp/shared/theme-switch";
+import { initHeader } from "@exp/shared/header";
 import { COPY } from "./copy";
 import { normalizeDomain, reservedName } from "./normalize";
 
-const themes = document.querySelector<HTMLElement>("[data-theme-switch]");
-if (themes) initThemeSwitch(themes);
+initHeader();
 
 const find = <T extends Element>(selector: string): T => {
   const node = document.querySelector<T>(selector);
@@ -49,9 +48,15 @@ const stale = () => {
   label.textContent = COPY.lastChecked(shown);
 };
 
+// A new ask calls off the check before it, so its lookups stop and stop
+// holding places in the resolver's line. The run counter still guards
+// against an answer that was already on its way.
 let run = 0;
+let current: AbortController | null = null;
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+  current?.abort();
+  current = null;
   const domain = normalizeDomain(field.value);
   // Not a domain, or a name that's never in public DNS: said here, and
   // nothing is sent anywhere.
@@ -71,9 +76,11 @@ form.addEventListener("submit", (event) => {
   }
   field.removeAttribute("aria-invalid");
   const mine = ++run;
+  current = new AbortController();
+  const { signal } = current;
   note(COPY.looking(domain));
   void import("./check")
-    .then(({ check }) => check(domain))
+    .then(({ check }) => check(domain, signal))
     .then((result) => {
       if (mine !== run) return;
       if ("problem" in result) {

@@ -103,16 +103,23 @@ const FAMILIES = ["v4", "v6"] as const;
 export async function analyze(
   domain: string,
   resolve: Resolve,
+  signal?: AbortSignal,
 ): Promise<Report | { missing: true }> {
   // Each name is asked once, however often the records pull it in. A
-  // question that fails gives null: unchecked, never "nothing there".
+  // question that fails gives null: unchecked, never "nothing there". So
+  // does one that was called off, so none is left rejecting with nobody
+  // waiting on it; the check itself stops where it next looks at the signal.
   const asked = new Map<string, Promise<DnsAnswer | null>>();
   const ask = (name: string, type: RRType) => {
     const key = `${name.toLowerCase()} ${type}`;
     let answer = asked.get(key);
     if (!answer) {
-      answer = resolve(name, type).catch((error: unknown) => {
-        if (error instanceof DnsError || error instanceof TypeError)
+      answer = resolve(name, type, signal).catch((error: unknown) => {
+        if (
+          error instanceof DnsError ||
+          error instanceof TypeError ||
+          signal?.aborted
+        )
           return null;
         throw error;
       });
@@ -141,6 +148,7 @@ export async function analyze(
   );
 
   const [mxAnswer, txtAnswer] = await own;
+  signal?.throwIfAborted();
   // Neither of the domain's own questions answered: the resolver's down.
   if (!mxAnswer && !txtAnswer) throw new DnsError("no answer");
   if (mxAnswer?.status === 3 && txtAnswer?.status === 3)
@@ -396,6 +404,7 @@ export async function analyze(
 
   const found = await keys;
   const [stsAnswer, tlsAnswer] = await Promise.all([sts, tls]);
+  signal?.throwIfAborted();
   return {
     domain,
     mx,

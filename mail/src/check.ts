@@ -11,11 +11,16 @@ export type Result =
 
 const resolve = doh();
 
-export async function check(domain: string): Promise<Result> {
+// A check called off with its signal rejects with the signal's reason,
+// never a problem to show: whoever aborted it has moved on.
+export async function check(
+  domain: string,
+  signal?: AbortSignal,
+): Promise<Result> {
   // Never asked of Cloudflare, whoever calls this.
   if (reservedName(domain)) return { problem: COPY.reserved };
   try {
-    const report = await analyze(domain, resolve);
+    const report = await analyze(domain, resolve, signal);
     if ("missing" in report) return { problem: COPY.missing(domain) };
     return renderReport(document, report);
   } catch (error) {
