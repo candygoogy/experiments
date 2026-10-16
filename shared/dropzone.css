@@ -1,0 +1,99 @@
+/* The drop zone (with dropzone.ts): the site's frame (1px chip line,
+   corner ticks, square), the whole of it a label for a hidden file input.
+   Without JavaScript there's nothing to read a file with, so it only shows
+   under .js (set before first paint, so it never shifts the page).
+
+   <label class="drop">
+     <input type="file" class="visually-hidden" />
+     <span class="drop-main">… <span class="pick">…</span></span>
+     <span class="drop-how">…</span>   (optional)
+   </label>
+
+   After an answer (.has-result) it steps back to one line. */
+.drop {
+  position: relative;
+  display: none;
+  gap: var(--sp-3);
+  max-width: var(--measure);
+  margin-top: var(--sp-7);
+  padding: var(--sp-7) var(--sp-6);
+  border: var(--rule) solid var(--chip-line);
+  cursor: pointer;
+  transition: border-color var(--dur-ui) var(--ease-out);
+}
+
+/* Corner ticks, as on the 404 panel. */
+.drop::before,
+.drop::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: var(--ink);
+  border-style: solid;
+}
+
+.drop::before {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
+}
+
+.drop::after {
+  right: -1px;
+  bottom: -1px;
+  border-width: 0 2px 2px 0;
+}
+
+.js .drop {
+  display: grid;
+}
+
+.drop:hover,
+.drop.is-over {
+  border-color: var(--ink);
+}
+
+.drop:focus-within {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: var(--focus-offset);
+}
+
+.drop-main {
+  font: var(--fw-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
+  letter-spacing: var(--ls-d-md);
+}
+
+.pick {
+  color: var(--acc);
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% /
+    100% 1px;
+  padding-bottom: 1px;
+}
+
+.drop-how {
+  color: var(--soft);
+  font-size: var(--fs-sm);
+}
+
+/* Commands and file names in the how-to line are typed or looked for as
+   written, so none breaks across lines. */
+.drop-how code {
+  font: inherit;
+  font-weight: var(--fw-medium);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* After an answer, the zone steps back to one line. */
+.drop.has-result {
+  padding-block: var(--sp-5);
+}
+
+.drop.has-result .drop-how {
+  display: none;
+}
+
+.drop.has-result .drop-main {
+  font-size: var(--fs-d-xs);
+}

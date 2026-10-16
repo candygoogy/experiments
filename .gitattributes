@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.woff2 binary
+
+# logscope's logs keep their exact bytes: Event Viewer writes CRLF (and its
+# text export is UTF-16), and the tests must read them as it writes them.
+logscope/test/fixtures/** -text
+logscope/test/fixtures/README.md text
+logscope/src/example.csv -text
+*.evtx binary

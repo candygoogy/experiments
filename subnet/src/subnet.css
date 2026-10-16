@@ -1,0 +1,524 @@
+/* The subnet planner: the plan on the left, its answer on the right
+   (under it on phones). */
+
+/* On wide screens the file stays in view beside a long map. */
+.input {
+  position: sticky;
+  top: var(--sp-5);
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 24rem;
+  margin-top: var(--sp-4);
+  padding: var(--sp-4);
+  border: var(--rule) solid var(--field-line);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  /* Addresses go in here, so it's set in the system's monospace (no web
+     font): the addresses, and the parts indented under a range, line up. */
+  font:
+    var(--fw-regular) var(--fs-sm) / 1.6 ui-monospace,
+    "Cascadia Mono",
+    Consolas,
+    monospace;
+  white-space: pre;
+  tab-size: 2;
+  resize: vertical;
+  transition: border-color var(--dur-ui) var(--ease-out);
+}
+
+textarea::placeholder {
+  color: var(--soft);
+}
+
+textarea:hover {
+  border-color: var(--ink);
+}
+
+.problem {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-meta);
+}
+
+.hint {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-sm);
+  color: var(--soft);
+}
+
+/* The verdict, the map, what's worth a look, then each range. */
+.verdict {
+  margin-top: var(--sp-5);
+  font: var(--fw-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
+  letter-spacing: var(--ls-d-md);
+  text-wrap: balance;
+}
+
+/* THE MAP: a strip per block of address space. Each strip's box has its
+   size before it's drawn (from its lanes), so drawing moves nothing. */
+.map {
+  margin-top: var(--sp-6);
+}
+
+.strip-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--sp-3);
+  margin-top: var(--sp-5);
+  font-size: var(--fs-meta);
+}
+
+.strip-head:first-child {
+  margin-top: 0;
+}
+
+.strip-head .block {
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.strip-head .kind {
+  color: var(--soft);
+}
+
+.strip-head .largest {
+  margin-left: auto;
+  color: var(--soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Each lane 40px; under them a row for names too long for their segment,
+   Docker's bracket where it applies, and the block's ends. */
+.track {
+  --lanes: 1;
+  --docker: 0px;
+  height: calc(var(--lanes) * 40px + 40px + var(--docker));
+  margin-top: var(--sp-2);
+}
+
+.track[data-lanes="2"] {
+  --lanes: 2;
+}
+.track[data-lanes="3"] {
+  --lanes: 3;
+}
+.track[data-lanes="4"] {
+  --lanes: 4;
+}
+.track[data-lanes="5"] {
+  --lanes: 5;
+}
+.track[data-lanes="6"] {
+  --lanes: 6;
+}
+.track[data-docker] {
+  --docker: 28px;
+}
+
+/* On phones a strip runs down the page, as tall as its labels need: one
+   per range and free stretch, up to 14. */
+.track[data-items="2"] {
+  --items: 2;
+}
+.track[data-items="3"] {
+  --items: 3;
+}
+.track[data-items="4"] {
+  --items: 4;
+}
+.track[data-items="5"] {
+  --items: 5;
+}
+.track[data-items="6"] {
+  --items: 6;
+}
+.track[data-items="7"] {
+  --items: 7;
+}
+.track[data-items="8"] {
+  --items: 8;
+}
+.track[data-items="9"] {
+  --items: 9;
+}
+.track[data-items="10"] {
+  --items: 10;
+}
+.track[data-items="11"] {
+  --items: 11;
+}
+.track[data-items="12"] {
+  --items: 12;
+}
+.track[data-items="13"] {
+  --items: 13;
+}
+.track[data-items="14"] {
+  --items: 14;
+}
+
+/* A strip whose small pieces are drawn larger than their share says so,
+   quietly, under it. */
+.strip-scale {
+  margin-top: var(--sp-1);
+  font-size: var(--fs-xs);
+  color: var(--soft);
+}
+
+/* More strips than the map draws: a line says so. */
+.strip-more {
+  margin-top: var(--sp-5);
+  font-size: var(--fs-meta);
+  color: var(--soft);
+}
+
+.track svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.range {
+  fill: var(--bg);
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.range-name {
+  fill: var(--ink);
+  font: var(--fw-medium) 13px var(--ff-text);
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.gap {
+  fill: none;
+  stroke: var(--chip-line);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.gap-label,
+.note,
+.end {
+  fill: var(--soft);
+  font: var(--fw-regular) 12px var(--ff-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Where ranges overlap: the keyboard's hatch, in ink. */
+.clash {
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.hatch-bg {
+  fill: var(--bg);
+}
+
+.hatch-line {
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.bracket {
+  stroke: var(--soft);
+  stroke-width: 1;
+}
+
+/* From a name to its range, when the name can't sit right against it. */
+.leader {
+  stroke: var(--soft);
+  stroke-width: 1;
+}
+
+/* A split being tried: where its parts would begin. */
+.preview {
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+
+.findings ul {
+  margin: var(--sp-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.findings li {
+  max-width: 60ch;
+  padding-block: var(--sp-3);
+  border-top: var(--rule) solid var(--line);
+}
+
+/* Notes that don't change the verdict: under their own small heading,
+   read quieter. */
+.notes-head {
+  margin-top: var(--sp-5);
+  color: var(--soft);
+  font: var(--fw-medium) var(--fs-meta) / 1.3 var(--ff-text);
+  letter-spacing: normal;
+}
+
+.findings ul.notes {
+  margin-top: var(--sp-3);
+}
+
+.findings li.quiet {
+  color: var(--soft);
+}
+
+/* A range: its name and CIDR on the left, what it holds on the right. */
+.ranges {
+  margin: var(--sp-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.range-row,
+.ranges > li {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 5fr);
+  column-gap: var(--sp-6);
+  row-gap: var(--sp-2);
+  padding-block: var(--sp-4);
+  border-top: var(--rule) solid var(--line);
+}
+
+/* A long plan's rows out of view aren't laid out until they're near it,
+   so a 500-line paste stays one short task. */
+.ranges > li {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 10rem;
+}
+
+/* A split's parts step in under their range. */
+.ranges > li.part .head {
+  padding-left: var(--sp-4);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ranges .name {
+  font: var(--fw-medium) var(--fs-body) / var(--lh-tight) var(--ff-text);
+}
+
+.cidr {
+  font-size: var(--fs-meta);
+  color: var(--soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.details {
+  display: grid;
+  gap: 2px;
+  margin-top: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.details ul {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The numbers fold away on phones, behind the tools' one disclosure
+   (shared/disclosure.css: the summary keeps its line's size, its 44px
+   touch target laid over it). */
+.more > summary {
+  margin-top: var(--sp-4);
+  line-height: 24px;
+}
+
+/* Wider screens show them as plain lines, as they always were. */
+@supports selector(::details-content) {
+  @media (width > 40rem) {
+    .more > summary {
+      display: none;
+    }
+
+    .more::details-content {
+      display: block;
+      content-visibility: visible;
+    }
+  }
+}
+
+@media (max-width: 53.75rem) {
+  .input {
+    position: static;
+  }
+
+  textarea {
+    min-height: 12rem;
+  }
+}
+
+/* Phones: the strips run down the page, the names beside them; the rows
+   stack. */
+@media (max-width: 40rem) {
+  .track {
+    --items: 1;
+    height: clamp(7.5rem, calc(var(--items) * 28px + 32px), 26rem);
+  }
+
+  /* Room for Docker's label along its bracket. */
+  .track[data-docker] {
+    min-height: 10rem;
+  }
+
+  /* A compact row: the name, its range and Split on one line; then the
+     plain line; then the numbers, folded. */
+  /* The Split button's and the summary's 44px touch targets are laid over
+     them, so the row keeps its own gaps. */
+  .ranges > li {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--sp-3);
+    row-gap: 0;
+    padding-block: var(--sp-2);
+  }
+
+  .ranges > li > .head,
+  .ranges > li > .body {
+    display: contents;
+  }
+
+  .ranges .name {
+    grid-area: 1 / 1;
+    overflow-wrap: anywhere;
+  }
+
+  .ranges > li.part .name {
+    padding-left: var(--sp-4);
+  }
+
+  .ranges .cidr {
+    grid-area: 1 / 2;
+  }
+
+  .ranges .split {
+    grid-area: 1 / 3;
+    margin-top: 0;
+  }
+
+  .ranges .says,
+  .ranges .details,
+  .ranges .split-panel {
+    grid-column: 1 / -1;
+  }
+
+  .ranges .details {
+    margin-top: 0;
+  }
+}
+
+/* Split: a quiet control under a range's details, opening in place. */
+.split {
+  margin-top: var(--sp-3);
+  position: relative;
+  padding: 0 var(--sp-4);
+  min-height: 2rem;
+  border: var(--rule) solid var(--chip-line);
+  border-radius: var(--r-pill);
+  background: none;
+  color: var(--ink);
+  font: var(--fw-medium) var(--fs-sm) / 1 var(--ff-text);
+  cursor: pointer;
+}
+
+/* The same as the website's theme switch: the pill stays 32px, the touch
+   target is 44px tall. */
+.split::after,
+.split-ways button::after,
+.split-add::after {
+  content: "";
+  position: absolute;
+  inset: calc(-6px - var(--rule)) calc(0px - var(--rule));
+}
+
+.split-panel {
+  margin-top: var(--sp-3);
+  padding-top: var(--sp-3);
+  border-top: var(--rule) dashed var(--chip-line);
+  font-size: var(--fs-sm);
+}
+
+.split-ways {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3) var(--sp-2);
+}
+
+.split-ways button {
+  position: relative;
+  min-width: 2rem;
+  min-height: 2rem;
+  border: var(--rule) solid var(--chip-line);
+  border-radius: var(--r-pill);
+  background: none;
+  color: var(--ink);
+  font: var(--fw-medium) var(--fs-sm) / 1 var(--ff-text);
+}
+
+.split-add::after {
+  inset: -6px 0;
+}
+
+.split-ways button::after {
+  inset: calc(-6px - var(--rule)) calc(-4px - var(--rule));
+}
+
+.split-ways button[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.split-ways input {
+  width: 4.5em;
+  min-height: 2rem;
+  padding: 0 var(--sp-2);
+  border: var(--rule) solid var(--field-line);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+}
+
+.split-list {
+  display: grid;
+  gap: 2px;
+  margin: var(--sp-3) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.split-add {
+  position: relative;
+  margin-top: var(--sp-4);
+  min-height: 2rem;
+  padding: 0 var(--sp-4);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--bg);
+  font: var(--fw-medium) var(--fs-sm) / 1 var(--ff-text);
+}

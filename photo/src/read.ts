@@ -1,0 +1,416 @@
+// Reads a photo's metadata. The page finds each block itself, with the
+// same walk through the file the clean copy uses, so what the summary
+// reads is what the clean copy removes: Exif (as a TIFF block), XMP
+// packets, Photoshop's IPTC, and plain text (a JPEG's comments, a PNG's
+// text chunks, compressed ones included). exifr, loaded only when a photo
+// has any of these, then reads each block on its own, so "Show everything"
+// can say where each value came from. No block has to fit in one JPEG
+// segment (64 KB): a large one is read in full.
+import type { parse } from "exifr";
+import type { PhotoType } from "./detect.ts";
+import { exifTiff, heifMeta, itemBytes } from "./heif.ts";
+import { join, segments, startsWith } from "./strip/jpeg.ts";
+import { chunks as pngChunks } from "./strip/png.ts";
+
+export type Meta = Record<string, unknown>;
+
+/** Where a value came from, in the order "Show everything" lists them. */
+export type Block = "exif" | "gps" | "xmp" | "iptc" | "text";
+export const BLOCKS: Block[] = ["exif", "gps", "xmp", "iptc", "text"];
+
+export interface Read {
+  /** Every value, the first of each name winning, in BLOCKS order. */
+  meta: Meta;
+  groups: [Block, Meta][];
+}
+
+const OPTIONS = {
+  tiff: true,
+  exif: true,
+  gps: true,
+  xmp: true,
+  iptc: true,
+  icc: false,
+  jfif: false,
+  ihdr: false,
+  interop: false,
+  makerNote: false,
+  userComment: true,
+  multiSegment: true,
+  mergeOutput: false,
+  // Values as the file stores them: dates as written, orientation as a
+  // number, coordinates as degrees, minutes and seconds.
+  reviveValues: false,
+  translateValues: false,
+} satisfies Parameters<typeof parse>[1];
+
+/** exifr's readers. In the browser it's a module with named exports; in
+ * Node (the page's build) it can come as CommonJS, everything on its
+ * default. */
+async function exifr() {
+  const m = await import("exifr");
+  return {
+    parse: m.parse ?? m.default.parse,
+    sidecar: m.sidecar ?? m.default.sidecar,
+  };
+}
+
+/** The metadata blocks found in a photo. */
+interface Blocks {
+  /** Whether a block was there but couldn't be taken out to be read. */
+  unreadable?: true;
+  /** Exif, each a TIFF block. */
+  tiff: Uint8Array[];
+  /** XMP packets. */
+  xmp: Uint8Array[];
+  /** Photoshop's image resources, where IPTC lives. */
+  irb: Uint8Array[];
+  /** Plain text: a name and its value. */
+  text: [string, string][];
+}
+
+const empty = (): Blocks => ({ tiff: [], xmp: [], irb: [], text: [] });
+
+/** Bytes as Latin-1 text, a piece at a time: one call with every byte as
+ * an argument overflows the stack past about 120,000 of them. */
+function latin1(b: Uint8Array): string {
+  let out = "";
+  for (let at = 0; at < b.length; at += 8192) {
+    out += String.fromCharCode(...b.subarray(at, at + 8192));
+  }
+  return out;
+}
+const utf8 = (b: Uint8Array) => new TextDecoder().decode(b);
+const EXIF = "Exif\0\0";
+const XMP = "http://ns.adobe.com/xap/1.0/\0";
+const XMP_EXTENSION = "http://ns.adobe.com/xmp/extension/\0";
+const PHOTOSHOP = "Photoshop 3.0\0";
+
+/** A JPEG's blocks, wherever they sit: before the picture, between its
+ * scans, or after them. */
+function jpegBlocks(b: Uint8Array): Blocks {
+  const out = empty();
+  // Extended XMP comes in parts, put back together by id and offset.
+  const extended = new Map<string, [number, Uint8Array][]>();
+  for (const { marker, body, end } of segments(b).list) {
+    if (marker === 0xe1 && startsWith(b, body, EXIF)) {
+      out.tiff.push(b.subarray(body + EXIF.length, end));
+    } else if (marker === 0xe1 && startsWith(b, body, XMP)) {
+      out.xmp.push(b.subarray(body + XMP.length, end));
+    } else if (marker === 0xe1 && startsWith(b, body, XMP_EXTENSION)) {
+      const at = body + XMP_EXTENSION.length;
+      if (at + 40 > end) continue;
+      const id = latin1(b.subarray(at, at + 32));
+      const offset = new DataView(b.buffer, b.byteOffset).getUint32(at + 36);
+      extended.set(id, [
+        ...(extended.get(id) ?? []),
+        [offset, b.subarray(at + 40, end)],
+      ]);
+    } else if (marker === 0xed && startsWith(b, body, PHOTOSHOP)) {
+      out.irb.push(b.subarray(body + PHOTOSHOP.length, end));
+    } else if (marker === 0xfe) {
+      out.text.push(["Comment", utf8(b.subarray(body, end))]);
+    }
+  }
+  for (const parts of extended.values()) {
+    out.xmp.push(join(parts.sort((x, y) => x[0] - y[0]).map(([, p]) => p)));
+  }
+  return out;
+}
+
+/** Inflates zlib data, or null when it's broken or grows past 8 MB. */
+async function inflate(data: Uint8Array): Promise<Uint8Array | null> {
+  const parts: Uint8Array[] = [];
+  let total = 0;
+  try {
+    const reader = new Blob([data as Uint8Array<ArrayBuffer>])
+      .stream()
+      .pipeThrough(new DecompressionStream("deflate"))
+      .getReader();
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.length;
+      if (total > 8 << 20) {
+        await reader.cancel();
+        return null;
+      }
+      parts.push(value);
+    }
+  } catch {
+    return null;
+  }
+  return join(parts);
+}
+
+/** ImageMagick's "Raw profile type …" text: a name, a length, then hex. */
+function rawProfile(text: string): Uint8Array | null {
+  const [, , length, ...hex] = text.split("\n");
+  const digits = hex.join("").replace(/\s+/g, "");
+  const n = Number(length);
+  if (!Number.isInteger(n) || n <= 0 || digits.length < n * 2) return null;
+  const out = new Uint8Array(n);
+  for (let i = 0; i < n; i++) {
+    const byte = Number.parseInt(digits.slice(i * 2, i * 2 + 2), 16);
+    if (Number.isNaN(byte)) return null;
+    out[i] = byte;
+  }
+  return out;
+}
+
+/** IPTC on its own, wrapped as the Photoshop resource it'd be in a JPEG. */
+function iptcResource(iim: Uint8Array): Uint8Array {
+  const head = new Uint8Array(12);
+  head.set([0x38, 0x42, 0x49, 0x4d, 0x04, 0x04]); // "8BIM", IPTC
+  new DataView(head.buffer).setUint32(8, iim.length);
+  return join([head, iim, new Uint8Array(iim.length % 2)]);
+}
+
+/** Compressed text that can't be read: broken, or past the size limit. */
+const UNREADABLE = "unreadable";
+
+/** One text chunk's name and value, compressed or not; null when it isn't
+ * a text chunk at all, UNREADABLE when its text can't be inflated. */
+async function pngText(
+  type: string,
+  data: Uint8Array,
+): Promise<[string, Uint8Array] | null | typeof UNREADABLE> {
+  const zero = data.indexOf(0);
+  if (zero < 0) return null;
+  const name = latin1(data.subarray(0, zero));
+  let rest = data.subarray(zero + 1);
+  if (type === "zTXt") return wrap(name, await inflate(rest.subarray(1)));
+  if (type === "iTXt") {
+    const compressed = rest[0] === 1;
+    rest = rest.subarray(2);
+    // The language and the translated name, each ending in a zero.
+    for (let n = 0; n < 2; n++) {
+      const end = rest.indexOf(0);
+      if (end < 0) return null;
+      rest = rest.subarray(end + 1);
+    }
+    return wrap(name, compressed ? await inflate(rest) : rest);
+  }
+  return [name, rest];
+}
+
+const wrap = (name: string, value: Uint8Array | null) =>
+  value ? ([name, value] as [string, Uint8Array]) : UNREADABLE;
+
+/** A PNG's blocks: its Exif chunk, and what its text chunks hold. */
+async function pngBlocks(b: Uint8Array): Promise<Blocks> {
+  const out = empty();
+  for (const c of pngChunks(b).list) {
+    const data = b.subarray(c.data, c.end - 4);
+    if (c.type === "eXIf" || c.type === "exIf") {
+      out.tiff.push(startsWith(data, 0, EXIF) ? data.subarray(6) : data);
+      continue;
+    }
+    if (c.type !== "tEXt" && c.type !== "zTXt" && c.type !== "iTXt") continue;
+    const found = await pngText(c.type, data);
+    if (found === UNREADABLE) out.unreadable = true;
+    if (!found || found === UNREADABLE) continue;
+    const [name, value] = found;
+    if (name === "XML:com.adobe.xmp") {
+      out.xmp.push(value);
+      continue;
+    }
+    const raw = /^Raw profile type (\w+)$/i.exec(name)?.[1]?.toLowerCase();
+    if (raw) {
+      const profile = rawProfile(latin1(value));
+      if (!profile) continue;
+      if (startsWith(profile, 0, EXIF)) out.tiff.push(profile.subarray(6));
+      else if (startsWith(profile, 0, XMP)) {
+        out.xmp.push(profile.subarray(XMP.length));
+      } else if (raw === "exif") out.tiff.push(profile);
+      else if (raw === "xmp") out.xmp.push(profile);
+      else if (raw === "8bim") out.irb.push(profile);
+      else if (raw === "iptc") {
+        out.irb.push(
+          startsWith(profile, 0, "8BIM") ? profile : iptcResource(profile),
+        );
+      }
+      continue;
+    }
+    out.text.push([name, c.type === "tEXt" ? latin1(value) : utf8(value)]);
+  }
+  return out;
+}
+
+/** A WebP's EXIF and XMP chunks, to the file's real end: past the size it
+ * declares too, and inside animation frames. */
+function webpBlocks(b: Uint8Array): Blocks {
+  const view = new DataView(b.buffer, b.byteOffset, b.byteLength);
+  const out = empty();
+  const walk = (from: number, to: number) => {
+    for (let i = from; i + 8 <= to;) {
+      const type = latin1(b.subarray(i, i + 4));
+      const size = view.getUint32(i + 4, true);
+      let body = b.subarray(i + 8, Math.min(to, i + 8 + size));
+      if (type === "EXIF") {
+        // Some writers keep JPEG's "Exif\0\0" prefix in the chunk.
+        if (startsWith(body, 0, EXIF)) body = body.subarray(6);
+        out.tiff.push(body);
+      } else if (type === "XMP ") out.xmp.push(body);
+      else if (type === "ANMF") walk(i + 8 + 16, i + 8 + body.length);
+      i += 8 + size + (size % 2);
+    }
+  };
+  walk(12, b.length);
+  return out;
+}
+
+/** A HEIC's Exif and its own XMP items. */
+function heicBlocks(b: Uint8Array): Blocks {
+  const { exif, xmp } = heifMeta(b);
+  const out = empty();
+  for (const item of exif) {
+    const tiff = exifTiff(itemBytes(b, item));
+    if (tiff) out.tiff.push(tiff);
+  }
+  for (const item of xmp) {
+    const packet = itemBytes(b, item);
+    // A packet blanked by a clean copy holds only spaces.
+    if (packet.some((c) => c > 0x20)) out.xmp.push(packet);
+  }
+  return out;
+}
+
+const asBytes = (value: unknown) =>
+  value instanceof Uint8Array
+    ? value
+    : Array.isArray(value) && value.every((n) => Number.isInteger(n))
+      ? Uint8Array.from(value as number[])
+      : null;
+
+/** Exif fields that hold text as bytes, as text: Windows' XP fields
+ * (UTF-16), and UserComment, whose first 8 bytes name its encoding. */
+function textFields(meta: Meta) {
+  for (const [key, value] of Object.entries(meta)) {
+    const bytes = asBytes(value);
+    if (!bytes) continue;
+    let text: string | undefined;
+    if (key.startsWith("XP")) text = new TextDecoder("utf-16le").decode(bytes);
+    else if (key === "UserComment") {
+      const rest = bytes.subarray(8);
+      text = startsWith(bytes, 0, "UNICODE")
+        ? new TextDecoder("utf-16le").decode(rest)
+        : startsWith(bytes, 0, "ASCII")
+          ? latin1(rest)
+          : new TextDecoder().decode(rest);
+    }
+    if (text !== undefined) meta[key] = text.replace(/\0+/g, "").trim();
+  }
+}
+
+const isObject = (v: unknown): v is Meta =>
+  typeof v === "object" && v !== null && !Array.isArray(v);
+
+/** Each block read on its own, kept by where it came from, and put
+ * together for the summary: the first value of a name wins. */
+async function readBlocks(blocks: Blocks): Promise<Read | undefined> {
+  const { tiff, xmp, irb, text } = blocks;
+  const groups = new Map<Block, Meta>(BLOCKS.map((g) => [g, {}]));
+  const add = (block: Block, fields: Meta) => {
+    const group = groups.get(block) ?? {};
+    for (const [key, value] of Object.entries(fields)) {
+      if (!(key in group)) group[key] = value;
+    }
+  };
+  let failed = blocks.unreadable === true;
+  const fail = () => {
+    failed = true;
+    return undefined;
+  };
+  if (tiff.length || xmp.length || irb.length) {
+    const { parse, sidecar } = await exifr();
+    const read = async (block: Uint8Array, options: object) => {
+      const out = (await parse(block, options).catch(fail)) as Meta | undefined;
+      if (Array.isArray(out?.["errors"]) && out["errors"].length) {
+        failed = true;
+      }
+      return out ?? {};
+    };
+    for (const block of tiff) {
+      const out = await read(block, OPTIONS);
+      for (const part of ["ifd0", "exif"]) {
+        const fields = out[part];
+        if (isObject(fields)) {
+          textFields(fields);
+          add("exif", fields);
+        }
+      }
+      // exifr hands the comment over on its own, as bytes.
+      if (out["userComment"] !== undefined) {
+        const comment = { UserComment: out["userComment"] };
+        textFields(comment);
+        add("exif", comment);
+      }
+      if (isObject(out["gps"])) add("gps", out["gps"]);
+    }
+    for (const block of irb) {
+      // Read as the JPEG segment it would be in.
+      const head = new TextEncoder().encode(PHOTOSHOP);
+      const length = head.length + block.length + 2;
+      if (length > 0xffff) continue;
+      const jpeg = join([
+        new Uint8Array([0xff, 0xd8, 0xff, 0xed, length >> 8, length & 0xff]),
+        head,
+        block,
+        new Uint8Array([0xff, 0xd9]),
+      ]);
+      const out = await read(jpeg, { ...OPTIONS, tiff: false, xmp: false });
+      if (isObject(out["iptc"])) add("iptc", out["iptc"]);
+    }
+    for (const block of xmp) {
+      // XMP alone comes back grouped by namespace: one group here.
+      const out = (await sidecar(block, OPTIONS, "xmp").catch(fail)) as
+        Meta | undefined;
+      for (const [ns, fields] of Object.entries(out ?? {})) {
+        if (ns !== "xmlns" && isObject(fields)) add("xmp", fields);
+      }
+    }
+  }
+  // Text can repeat a name (a JPEG's comments): each value is kept.
+  const plain = groups.get("text") ?? {};
+  for (const [name, value] of text) {
+    if (!value.trim()) continue;
+    const before = plain[name];
+    plain[name] =
+      before === undefined ? value.trim() : [before, value.trim()].flat();
+  }
+
+  const meta: Meta = {};
+  const found: [Block, Meta][] = [];
+  for (const [block, fields] of groups) {
+    if (!Object.keys(fields).length) continue;
+    found.push([block, fields]);
+    for (const [key, value] of Object.entries(fields)) {
+      if (!(key in meta)) meta[key] = value;
+    }
+  }
+  if (failed && !found.length) {
+    throw new Error("The photo's details can't be read.");
+  }
+  return found.length ? { meta, groups: found } : undefined;
+}
+
+/** The photo's metadata, by block (undefined when it has none). Throws
+ * when the file claims to hold details that can't be read. */
+export async function readPhoto(
+  bytes: Uint8Array,
+  type: PhotoType,
+): Promise<Read | undefined> {
+  if (type === "jpeg") return readBlocks(jpegBlocks(bytes));
+  if (type === "png") return readBlocks(await pngBlocks(bytes));
+  if (type === "webp") return readBlocks(webpBlocks(bytes));
+  return readBlocks(heicBlocks(bytes));
+}
+
+/** The photo's metadata, every block together. */
+export async function readMeta(
+  bytes: Uint8Array,
+  type: PhotoType,
+): Promise<Meta | undefined> {
+  return (await readPhoto(bytes, type))?.meta;
+}

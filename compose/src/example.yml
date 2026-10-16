@@ -1,0 +1,65 @@
+# The example on the page: a made-up homelab. Every name, path and value
+# here is invented for the example.
+services:
+  caddy:
+    image: caddy:2.8
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    networks: [frontend]
+    depends_on: [jellyfin, nextcloud]
+    restart: unless-stopped
+
+  jellyfin:
+    image: jellyfin/jellyfin
+    ports:
+      - "8096:8096"
+    volumes:
+      - ./jellyfin:/config
+      - /srv/media:/media:ro
+    devices:
+      - /dev/dri:/dev/dri
+    networks: [frontend]
+    restart: unless-stopped
+
+  nextcloud:
+    image: nextcloud:29
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - nextcloud:/var/www/html
+    networks: [frontend, backend]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: example-only-not-a-real-password
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks: [backend]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "nextcloud"]
+    restart: unless-stopped
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  caddy-data:
+  nextcloud:
+  db:

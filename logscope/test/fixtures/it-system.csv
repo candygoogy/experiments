@@ -1,0 +1,1245 @@
+Livello,Data e ora,Origine,ID evento,Categoria attività
+Errore,14/10/2026 23:01:44,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 22:53:00,BugCheck,1001,None,"The computer has rebooted from a bugcheck.  The bugcheck was: 0x0000009f (0x0000000000000003, 0xffffc40bd2a3e060, 0xfffff8050e267850, 0xffffc40bd7bc6010). A dump was saved in: C:\WINDOWS\MEMORY.DMP. Report Id: 7c1d3a41-2b5e-4f0a-9c3d-1e2f3a4b5c6d."
+Errore,14/10/2026 22:52:00,EventLog,6008,None,The previous system shutdown at 22:46:00 on ‎2026-10-14 was unexpected.
+Informazioni,14/10/2026 22:51:20,Kernel-General,12,(1),The operating system started at system time ‎2026‎-‎10‎-‎14‎T22:51:00.500000000Z.
+Critico,14/10/2026 22:51:00,Kernel-Power,41,(63),"The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+Avviso,14/10/2026 22:49:00,disk,153,None,The IO operation at logical block address 0xaa0af for Disk 1 (PDO name: \Device\0000004a) was retried.
+Errore,14/10/2026 22:39:51,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 22:37:52,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,14/10/2026 22:37:51,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,14/10/2026 22:18:39,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 22:15:43,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Errore,14/10/2026 21:18:59,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 20:44:15,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,14/10/2026 19:43:30,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,14/10/2026 19:38:07,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,14/10/2026 19:25:56,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,14/10/2026 19:06:23,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,14/10/2026 18:57:02,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 18:52:03,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,14/10/2026 18:29:06,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,14/10/2026 18:19:58,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Errore,14/10/2026 16:44:13,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 16:35:45,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 16:18:40,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,14/10/2026 16:07:22,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 15:45:55,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 15:26:26,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Informazioni,14/10/2026 15:07:03,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,14/10/2026 14:58:22,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,14/10/2026 14:54:32,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 14:00:04,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 12:33:38,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,14/10/2026 12:21:08,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Informazioni,14/10/2026 11:10:20,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Errore,14/10/2026 11:02:18,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 10:53:42,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,14/10/2026 10:48:12,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 10:41:42,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 10:24:56,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Avviso,14/10/2026 09:52:54,DNS Client Events,1014,(1014),Name resolution for the name host4.example.net timed out after none of the configured DNS servers responded.
+Informazioni,14/10/2026 09:48:32,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,14/10/2026 09:32:01,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,14/10/2026 09:14:24,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,14/10/2026 09:05:57,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 09:04:33,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,14/10/2026 08:32:25,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 08:26:29,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Errore,14/10/2026 08:03:26,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,14/10/2026 06:45:12,DNS Client Events,1014,(1014),Name resolution for the name host3.example.net timed out after none of the configured DNS servers responded.
+Errore,14/10/2026 06:37:52,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 05:59:11,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 05:47:24,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 05:29:23,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 04:04:12,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,14/10/2026 03:57:37,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,14/10/2026 03:46:55,DNS Client Events,1014,(1014),Name resolution for the name host6.example.net timed out after none of the configured DNS servers responded.
+Informazioni,14/10/2026 03:32:25,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,14/10/2026 03:21:07,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 02:55:25,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 02:19:18,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 01:31:15,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 01:19:33,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,14/10/2026 01:02:24,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,14/10/2026 00:39:45,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,14/10/2026 00:15:25,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,13/10/2026 23:39:40,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 23:10:36,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 23:10:27,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,13/10/2026 23:06:09,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,13/10/2026 22:38:13,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Errore,13/10/2026 22:37:24,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 21:26:30,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 20:44:41,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 20:22:45,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Informazioni,13/10/2026 20:16:08,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,13/10/2026 19:40:00,Service Control Manager,7031,None,"The Example Sync service terminated unexpectedly.  It has done this 1 time(s).  The following corrective action will be taken in 60000 milliseconds: Restart the service.
+
+Details are in the service's own log."
+Informazioni,13/10/2026 19:16:31,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Avviso,13/10/2026 18:48:55,DNS Client Events,1014,(1014),Name resolution for the name host2.example.net timed out after none of the configured DNS servers responded.
+Errore,13/10/2026 18:48:25,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 18:27:43,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 18:17:37,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,13/10/2026 18:09:55,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 18:03:21,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 17:33:15,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,13/10/2026 17:30:21,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 17:09:10,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,13/10/2026 17:08:37,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,13/10/2026 16:20:00,disk,153,None,The IO operation at logical block address 0x9095ff for Disk 1 (PDO name: \Device\0000004a) was retried.
+Errore,13/10/2026 15:34:33,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 15:26:31,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 15:22:07,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Errore,13/10/2026 14:40:54,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 14:32:54,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,13/10/2026 13:58:22,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 13:58:09,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,13/10/2026 13:47:01,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,13/10/2026 13:35:07,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 12:44:50,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 12:00:11,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,13/10/2026 11:46:32,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,13/10/2026 11:38:34,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 11:38:22,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,13/10/2026 10:04:41,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,13/10/2026 09:54:46,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 09:52:33,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 08:44:04,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 08:40:15,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,13/10/2026 08:27:13,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Informazioni,13/10/2026 07:37:54,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Errore,13/10/2026 07:29:41,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 07:17:07,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 07:10:18,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 06:55:33,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Informazioni,13/10/2026 06:31:33,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,13/10/2026 05:29:00,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 05:20:54,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 04:50:23,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 04:40:39,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 04:06:50,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 03:15:23,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 02:41:04,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,13/10/2026 02:18:49,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Avviso,13/10/2026 02:18:41,DNS Client Events,1014,(1014),Name resolution for the name host1.example.net timed out after none of the configured DNS servers responded.
+Informazioni,13/10/2026 02:04:21,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,13/10/2026 01:39:50,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,13/10/2026 01:16:56,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,13/10/2026 01:09:31,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Avviso,12/10/2026 23:14:57,DNS Client Events,1014,(1014),Name resolution for the name host3.example.net timed out after none of the configured DNS servers responded.
+Informazioni,12/10/2026 22:59:52,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,12/10/2026 22:44:25,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,12/10/2026 22:42:45,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,12/10/2026 22:15:39,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,12/10/2026 22:01:19,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 21:57:02,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 21:54:09,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,12/10/2026 21:50:26,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Informazioni,12/10/2026 21:36:30,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,12/10/2026 21:11:03,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,12/10/2026 20:50:56,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,12/10/2026 19:20:09,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,12/10/2026 19:12:11,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 18:53:58,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 18:32:20,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 18:19:05,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 18:10:55,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Informazioni,12/10/2026 15:28:09,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,12/10/2026 14:48:12,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 14:31:32,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,12/10/2026 14:15:33,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 13:43:22,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 12:40:34,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,12/10/2026 12:16:07,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 12:06:28,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 11:51:01,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 11:16:16,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,12/10/2026 10:43:49,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 09:31:45,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,12/10/2026 09:18:35,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Avviso,12/10/2026 09:00:00,disk,153,None,The IO operation at logical block address 0x4e81f for Disk 1 (PDO name: \Device\0000004a) was retried.
+Errore,12/10/2026 08:35:00,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 07:31:00,EventLog,6008,None,The previous system shutdown at 07:25:00 on ‎2026-10-12 was unexpected.
+Informazioni,12/10/2026 07:30:20,Kernel-General,12,(1),The operating system started at system time ‎2026‎-‎10‎-‎12‎T07:30:00.500000000Z.
+Critico,12/10/2026 07:30:00,Kernel-Power,41,(63),"The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+Errore,12/10/2026 07:07:56,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 07:06:20,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,12/10/2026 07:01:36,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 06:35:34,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,12/10/2026 06:16:34,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 05:46:23,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,12/10/2026 05:40:02,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 05:14:01,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 04:59:24,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Errore,12/10/2026 04:57:48,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 04:57:11,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 04:55:46,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,12/10/2026 03:57:59,DNS Client Events,1014,(1014),Name resolution for the name host7.example.net timed out after none of the configured DNS servers responded.
+Errore,12/10/2026 03:19:20,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 03:15:15,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 03:10:18,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 02:54:57,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,12/10/2026 02:44:35,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,12/10/2026 02:34:57,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,12/10/2026 02:33:48,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 02:18:51,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,12/10/2026 02:18:23,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,12/10/2026 01:45:39,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,12/10/2026 01:41:44,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,12/10/2026 01:41:42,DNS Client Events,1014,(1014),Name resolution for the name host8.example.net timed out after none of the configured DNS servers responded.
+Informazioni,12/10/2026 01:21:01,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,12/10/2026 00:28:28,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,12/10/2026 00:19:47,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 23:44:54,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 23:34:25,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 23:09:53,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 22:42:16,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 22:41:01,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,11/10/2026 22:05:15,DNS Client Events,1014,(1014),Name resolution for the name host0.example.net timed out after none of the configured DNS servers responded.
+Informazioni,11/10/2026 21:52:27,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,11/10/2026 20:14:55,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 19:53:59,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,11/10/2026 19:46:07,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,11/10/2026 19:38:41,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Avviso,11/10/2026 19:12:54,DNS Client Events,1014,(1014),Name resolution for the name host2.example.net timed out after none of the configured DNS servers responded.
+Errore,11/10/2026 19:00:23,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 18:54:46,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,11/10/2026 18:39:41,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Avviso,11/10/2026 18:30:44,DNS Client Events,1014,(1014),Name resolution for the name host5.example.net timed out after none of the configured DNS servers responded.
+Errore,11/10/2026 18:14:31,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,11/10/2026 18:02:04,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Avviso,11/10/2026 17:51:49,DNS Client Events,1014,(1014),Name resolution for the name host1.example.net timed out after none of the configured DNS servers responded.
+Avviso,11/10/2026 17:49:52,DNS Client Events,1014,(1014),Name resolution for the name host2.example.net timed out after none of the configured DNS servers responded.
+Avviso,11/10/2026 17:36:48,DNS Client Events,1014,(1014),Name resolution for the name host7.example.net timed out after none of the configured DNS servers responded.
+Errore,11/10/2026 17:10:17,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,11/10/2026 16:47:31,DNS Client Events,1014,(1014),Name resolution for the name host7.example.net timed out after none of the configured DNS servers responded.
+Informazioni,11/10/2026 16:33:44,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,11/10/2026 16:25:23,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,11/10/2026 16:20:29,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,11/10/2026 16:15:48,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,11/10/2026 16:10:57,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 15:26:44,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 14:47:19,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,11/10/2026 14:31:39,DNS Client Events,1014,(1014),Name resolution for the name host2.example.net timed out after none of the configured DNS servers responded.
+Errore,11/10/2026 14:15:15,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,11/10/2026 14:02:00,disk,153,None,The IO operation at logical block address 0x6caebf for Disk 1 (PDO name: \Device\0000004a) was retried.
+Errore,11/10/2026 13:22:38,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,11/10/2026 13:16:02,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,11/10/2026 13:09:21,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,11/10/2026 12:58:54,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,11/10/2026 12:55:12,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,11/10/2026 12:13:12,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,11/10/2026 12:04:04,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,11/10/2026 11:48:47,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,11/10/2026 11:34:28,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,11/10/2026 10:57:03,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 10:47:15,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 09:26:59,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 08:48:46,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 08:48:32,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,11/10/2026 08:38:03,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,11/10/2026 08:18:06,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,11/10/2026 06:20:38,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Errore,11/10/2026 05:12:39,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,11/10/2026 05:02:47,DNS Client Events,1014,(1014),Name resolution for the name host0.example.net timed out after none of the configured DNS servers responded.
+Informazioni,11/10/2026 04:50:10,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,11/10/2026 04:32:48,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,11/10/2026 04:25:08,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,11/10/2026 04:16:41,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,11/10/2026 03:17:37,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,11/10/2026 03:02:36,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,11/10/2026 02:50:00,DNS Client Events,1014,(1014),Name resolution for the name host8.example.net timed out after none of the configured DNS servers responded.
+Informazioni,11/10/2026 01:20:47,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,11/10/2026 00:38:30,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,10/10/2026 22:56:57,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 22:28:03,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,10/10/2026 22:25:31,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 22:18:14,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,10/10/2026 22:16:45,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Informazioni,10/10/2026 22:05:29,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,10/10/2026 21:54:37,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,10/10/2026 21:38:27,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 21:37:50,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Avviso,10/10/2026 21:15:43,DNS Client Events,1014,(1014),Name resolution for the name host4.example.net timed out after none of the configured DNS servers responded.
+Informazioni,10/10/2026 20:41:57,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,10/10/2026 20:41:07,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,10/10/2026 20:30:48,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,10/10/2026 20:06:05,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 19:51:16,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,10/10/2026 19:45:17,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 19:40:59,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Informazioni,10/10/2026 18:34:02,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Avviso,10/10/2026 18:33:30,DNS Client Events,1014,(1014),Name resolution for the name host7.example.net timed out after none of the configured DNS servers responded.
+Informazioni,10/10/2026 18:24:54,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Informazioni,10/10/2026 18:20:47,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,10/10/2026 18:04:48,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Errore,10/10/2026 17:53:04,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 16:55:15,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,10/10/2026 16:19:39,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 16:19:32,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,10/10/2026 15:29:01,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,10/10/2026 15:06:40,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,10/10/2026 13:44:50,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,10/10/2026 13:02:10,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 12:43:59,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Avviso,10/10/2026 12:40:57,DNS Client Events,1014,(1014),Name resolution for the name host5.example.net timed out after none of the configured DNS servers responded.
+Errore,10/10/2026 11:09:15,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,10/10/2026 11:04:33,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,10/10/2026 10:21:34,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 10:21:08,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,10/10/2026 10:01:25,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,10/10/2026 09:29:14,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,10/10/2026 09:17:47,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,10/10/2026 08:37:30,DNS Client Events,1014,(1014),Name resolution for the name host1.example.net timed out after none of the configured DNS servers responded.
+Errore,10/10/2026 08:31:14,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,10/10/2026 08:12:00,Service Control Manager,7031,None,"The Example Sync service terminated unexpectedly.  It has done this 1 time(s).  The following corrective action will be taken in 60000 milliseconds: Restart the service.
+
+Details are in the service's own log."
+Informazioni,10/10/2026 08:08:30,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,10/10/2026 08:00:05,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,10/10/2026 07:42:24,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 07:34:16,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,10/10/2026 07:30:13,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,10/10/2026 05:55:01,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,10/10/2026 05:40:56,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,10/10/2026 04:54:02,DNS Client Events,1014,(1014),Name resolution for the name host0.example.net timed out after none of the configured DNS servers responded.
+Informazioni,10/10/2026 04:35:13,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,10/10/2026 04:24:03,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,10/10/2026 04:19:47,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 03:52:45,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,10/10/2026 03:50:37,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,10/10/2026 03:35:54,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,10/10/2026 02:42:29,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 02:35:48,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,10/10/2026 02:15:29,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,10/10/2026 01:48:43,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,10/10/2026 00:55:07,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 23:35:41,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 23:05:00,EventLog,6008,None,The previous system shutdown at 22:59:00 on ‎2026-10-09 was unexpected.
+Informazioni,09/10/2026 23:04:20,Kernel-General,12,(1),The operating system started at system time ‎2026‎-‎10‎-‎09‎T23:04:00.500000000Z.
+Critico,09/10/2026 23:04:00,Kernel-Power,41,(63),"The system has rebooted without cleanly shutting down first. This error could be caused if the system stopped responding, crashed, or lost power unexpectedly."
+Errore,09/10/2026 22:51:04,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 22:40:07,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Errore,09/10/2026 22:24:34,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 22:15:55,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 21:42:58,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,09/10/2026 21:22:19,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,09/10/2026 20:45:41,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,09/10/2026 20:39:22,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,09/10/2026 20:31:33,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 20:16:39,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 20:15:14,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,09/10/2026 19:45:56,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,09/10/2026 17:54:28,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,09/10/2026 17:24:40,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,09/10/2026 17:19:13,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 16:55:56,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 16:55:05,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,09/10/2026 16:29:25,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 16:08:51,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 15:52:45,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,09/10/2026 15:52:03,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 15:31:39,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,09/10/2026 15:23:24,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,09/10/2026 15:21:16,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,09/10/2026 15:11:08,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 15:07:47,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,09/10/2026 15:01:31,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Errore,09/10/2026 14:55:42,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 14:43:56,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,09/10/2026 14:30:46,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,09/10/2026 12:46:29,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 12:33:45,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Errore,09/10/2026 12:28:44,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,09/10/2026 11:07:36,DNS Client Events,1014,(1014),Name resolution for the name host0.example.net timed out after none of the configured DNS servers responded.
+Errore,09/10/2026 09:56:23,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 09:27:34,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 09:26:49,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 08:20:03,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 08:17:56,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 07:13:21,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,09/10/2026 06:43:08,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 06:40:44,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 06:17:48,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,09/10/2026 06:14:06,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,09/10/2026 06:02:06,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 06:01:30,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,09/10/2026 04:50:20,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 04:45:25,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 03:55:05,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Errore,09/10/2026 03:54:22,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,09/10/2026 02:59:42,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Errore,09/10/2026 01:20:53,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 01:18:08,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 00:53:02,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,09/10/2026 00:52:47,DNS Client Events,1014,(1014),Name resolution for the name host6.example.net timed out after none of the configured DNS servers responded.
+Informazioni,09/10/2026 00:34:33,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Errore,09/10/2026 00:26:21,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 00:07:12,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,09/10/2026 00:05:26,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,08/10/2026 23:46:40,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Errore,08/10/2026 22:48:48,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,08/10/2026 22:46:03,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,08/10/2026 22:01:37,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 21:42:21,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 20:58:28,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 20:18:53,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 20:11:52,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 20:03:44,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,08/10/2026 19:57:06,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,08/10/2026 19:46:27,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Errore,08/10/2026 19:38:03,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 19:32:23,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 18:41:25,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 18:28:11,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,08/10/2026 18:23:11,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,08/10/2026 18:04:26,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,08/10/2026 17:18:25,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Informazioni,08/10/2026 16:59:35,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,08/10/2026 16:50:54,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,08/10/2026 16:50:53,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,08/10/2026 15:26:40,Service Control Manager,7036,None,The Print Spooler service entered the running state.
+Errore,08/10/2026 15:06:44,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,08/10/2026 15:05:19,DNS Client Events,1014,(1014),Name resolution for the name host3.example.net timed out after none of the configured DNS servers responded.
+Informazioni,08/10/2026 14:44:32,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,08/10/2026 14:35:22,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,08/10/2026 14:02:16,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,08/10/2026 13:58:31,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,08/10/2026 12:55:21,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,08/10/2026 12:34:01,DNS Client Events,1014,(1014),Name resolution for the name host4.example.net timed out after none of the configured DNS servers responded.
+Informazioni,08/10/2026 12:07:08,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Errore,08/10/2026 10:58:13,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 10:49:44,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 10:07:44,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 09:06:47,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,08/10/2026 09:05:55,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Errore,08/10/2026 08:41:07,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,08/10/2026 08:32:10,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,08/10/2026 08:12:37,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,08/10/2026 08:05:18,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,08/10/2026 07:54:11,Service Control Manager,7036,None,The Windows Update service entered the stopped state.
+Informazioni,08/10/2026 06:55:05,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,08/10/2026 06:53:48,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Informazioni,08/10/2026 05:47:36,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Errore,08/10/2026 05:37:35,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 05:33:43,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Avviso,08/10/2026 04:19:56,DNS Client Events,1014,(1014),Name resolution for the name host2.example.net timed out after none of the configured DNS servers responded.
+Informazioni,08/10/2026 04:06:09,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Informazioni,08/10/2026 03:41:53,Service Control Manager,7036,None,The Windows Update service entered the running state.
+Informazioni,08/10/2026 02:30:35,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,08/10/2026 02:14:33,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,08/10/2026 01:54:56,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the running state.
+Informazioni,08/10/2026 01:32:22,Service Control Manager,7036,None,The Background Intelligent Transfer Service service entered the stopped state.
+Errore,08/10/2026 01:20:57,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 01:10:38,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 00:45:50,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Errore,08/10/2026 00:37:21,DistributedCOM,10016,None,"The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user EXAMPLE-PC\user SID (S-1-5-21-1000000000-2000000000-3000000000-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable)."
+Informazioni,08/10/2026 00:32:28,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.
+Avviso,08/10/2026 00:25:20,DNS Client Events,1014,(1014),Name resolution for the name host0.example.net timed out after none of the configured DNS servers responded.
+Informazioni,08/10/2026 00:03:58,Service Control Manager,7036,None,The Print Spooler service entered the stopped state.

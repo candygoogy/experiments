@@ -1,0 +1,261 @@
+/* The battery page's own parts; the drop zone is shared/dropzone.css. */
+
+.problem {
+  max-width: var(--measure);
+  margin-top: var(--sp-5);
+  font-size: var(--fs-lede);
+  line-height: 1.45;
+}
+
+/* The answer, in the right-hand column under the file's name, drawn as
+   the example is (shared/work.css). */
+.answer,
+.example .battery {
+  margin-top: var(--sp-5);
+}
+
+.answer > :first-child {
+  margin-top: 0;
+}
+
+.battery + .battery {
+  margin-top: var(--sp-7);
+}
+
+.battery-name {
+  margin-bottom: var(--sp-4);
+  color: var(--soft);
+  font-size: var(--fs-d-sm);
+  letter-spacing: var(--ls-d-sm);
+}
+
+.verdict {
+  font: var(--fw-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
+  letter-spacing: var(--ls-d-md);
+  text-wrap: balance;
+}
+
+.cycles {
+  margin-top: var(--sp-2);
+  color: var(--soft);
+}
+
+/* The numbers, then the chart; side by side once the column has room. */
+.detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-5);
+  align-items: start;
+  margin-top: var(--sp-5);
+}
+
+@container (min-width: 34rem) {
+  .detail {
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: var(--sp-6);
+  }
+}
+
+.numbers {
+  margin: 0;
+  font-size: var(--fs-sm);
+}
+
+.battery .numbers {
+  max-width: 20rem;
+  margin-top: var(--sp-6);
+}
+
+.detail-wide {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.numbers div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding-block: var(--sp-2);
+  border-top: var(--rule) solid var(--line);
+}
+
+.numbers div:first-child {
+  border-top-color: var(--ink);
+}
+
+.numbers dt {
+  color: var(--soft);
+}
+
+.numbers dd {
+  margin: 0;
+  font-weight: var(--fw-medium);
+}
+
+.history {
+  margin: 0;
+}
+
+.plot {
+  --plot-h: 8rem;
+  position: relative;
+  padding-top: var(--sp-5);
+}
+
+.plot svg {
+  width: 100%;
+  height: var(--plot-h);
+  overflow: visible;
+}
+
+.plot path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.plot .axes line {
+  stroke: var(--line);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.plot .design {
+  stroke: var(--soft);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.plot .full {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The original capacity, at the left end of the dashed line it names
+   (--at: 0 the top of the drawing, 1 its foot): above the line, or under
+   it where the solid line starts higher. */
+.tick {
+  position: absolute;
+  top: calc(var(--sp-5) + var(--at, 0) * var(--plot-h));
+  left: 0;
+  translate: 0 calc(-100% - 2px);
+  color: var(--soft);
+  font-size: var(--fs-xs);
+}
+
+.tick.below {
+  translate: 0 4px;
+}
+
+.history figcaption {
+  margin-top: var(--sp-3);
+  color: var(--soft);
+  font-size: var(--fs-sm);
+}
+
+.ends {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--sp-2);
+  color: var(--soft);
+  font-size: var(--fs-xs);
+}
+
+.estimate {
+  max-width: var(--measure);
+  margin-top: var(--sp-5);
+}
+
+.no-history {
+  color: var(--soft);
+}
+
+/* Several files dropped: which one the answer is for. */
+.one-file {
+  max-width: var(--measure);
+  margin-bottom: var(--sp-5);
+  color: var(--soft);
+  font-size: var(--fs-sm);
+}
+
+.one-file + .problem {
+  margin-top: 0;
+}
+
+.kept {
+  max-width: var(--measure);
+  margin-top: var(--sp-5);
+  color: var(--soft);
+  font-size: var(--fs-sm);
+}
+
+/* The space the example takes before it's drawn (shared/work.css),
+   measured every 20px from 320 to 1800 wide: --example-min in one column,
+   --example-min-wide in the right-hand one. Each step holds the tallest
+   height in its range, so the example never needs more than it was given;
+   it gets shorter as the text wraps less, and again once the numbers and
+   the chart fit side by side (a 34rem column). */
+.example {
+  --example-min: 49rem;
+  --example-min-wide: 44rem;
+}
+
+@media (width >= 23.75rem) {
+  .example {
+    --example-min: 44rem;
+  }
+}
+
+@media (width >= 32.5rem) {
+  .example {
+    --example-min: 42.5rem;
+  }
+}
+
+@media (width >= 38.75rem) {
+  .example {
+    --example-min: 32.5rem;
+  }
+}
+
+@media (width >= 40rem) {
+  .example {
+    --example-min: 31rem;
+  }
+}
+
+@media (width >= 45rem) {
+  .example {
+    --example-min: 29.5rem;
+  }
+}
+
+@media (width >= 51.25rem) {
+  .example {
+    --example-min: 28rem;
+  }
+}
+
+@media (width >= 60rem) {
+  .example {
+    --example-min-wide: 42.5rem;
+  }
+}
+
+@media (width >= 70rem) {
+  .example {
+    --example-min-wide: 32.5rem;
+  }
+}
+
+@media (width >= 71.25rem) {
+  .example {
+    --example-min-wide: 31rem;
+  }
+}
+
+@media (width >= 81.25rem) {
+  .example {
+    --example-min-wide: 29.5rem;
+  }
+}

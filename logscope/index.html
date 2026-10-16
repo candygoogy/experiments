@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- shell:head -->
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <!-- shell:header -->
+    <main id="tool" class="wrap">
+      <h1>{{title}}</h1>
+      <p class="intro">{{intro}}</p>
+      <noscript>
+        <p>This tool needs JavaScript. It runs entirely in your browser.</p>
+      </noscript>
+      <div class="work needs-js">
+        <div class="input">
+          <h2 class="label">{{fileLabel}}</h2>
+          <label class="drop">
+            <input type="file" class="visually-hidden" />
+            <span class="drop-main"
+              >Drop a log here, or
+              <span class="pick">choose the file</span></span
+            >
+            <span class="drop-how"
+              >From Event Viewer: select a log, then
+              <code>Save All Events As…</code> and pick CSV or XML. Server logs
+              (syslog, nginx, Apache) work as they are.</span
+            >
+          </label>
+        </div>
+        <section
+          class="pane example"
+          aria-labelledby="example-label"
+          data-example
+        >
+          <h2 class="label" id="example-label">{{example}}</h2>
+          <!-- example -->
+        </section>
+        <section
+          class="pane yours"
+          aria-labelledby="yours-label"
+          data-yours
+          hidden
+        >
+          <h2 class="label" id="yours-label"></h2>
+          <div class="answer" data-answer></div>
+        </section>
+      </div>
+      <p class="visually-hidden" role="status" data-status></p>
+    </main>
+    <!-- shell:footer -->
+  </body>
+</html>

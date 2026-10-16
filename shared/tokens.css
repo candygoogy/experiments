@@ -1,0 +1,277 @@
+/* Copied from candygoogy.dev src/styles/tokens.css. Change both together. */
+/*
+ * Design tokens for candygoogy.dev.
+ *
+ * Colors: zinc neutrals plus one electric-blue accent, used for links and
+ * focus only. The Fettle band is the one bold, contrasting surface.
+ * Themes: Auto follows the OS (no data-theme), or data-theme="light" |
+ * "dark" set by the theme switch. Every text pair passes WCAG AA (4.5:1)
+ * and every focus ring 3:1, in both themes and on the band.
+ */
+
+:root {
+  /* Type families: --font-display (Cabinet Grotesk) and --font-text
+     (Satoshi) come from Astro's fonts API, with metric-matched fallbacks. */
+  --ff-display: var(--font-display);
+  --ff-text: var(--font-text);
+
+  /* Text sizes (Satoshi). rem, so they follow the reader's font size. */
+  --fs-xs: 0.8125rem; /* 13px: theme switch */
+  --fs-sm: 0.875rem; /* 14px: index meta, footer */
+  --fs-meta: 0.9375rem; /* 15px: nav, years, fact labels */
+  --fs-body: 1.0625rem; /* 17px: body */
+  --fs-lede: 1.25rem; /* 20px: hero line, band lede */
+
+  /* Display sizes (Cabinet Grotesk). Fluid sizes mix rem with vw so they
+     still grow with browser zoom (WCAG 1.4.4). */
+  --fs-d-xs: 1.0625rem; /* skill group titles */
+  --fs-d-sm: 1.25rem; /* story subheads */
+  --fs-d-md: 1.375rem; /* index names, email */
+  --fs-d-lg: 1.625rem; /* website rows */
+  --fs-d-section: clamp(2rem, 1.25rem + 2.4vw, 3rem);
+  --fs-d-hero: clamp(2.6rem, 1.4rem + 4.6vw, 5.4rem);
+  --fs-d-band: clamp(3rem, 1.2rem + 7vw, 7rem);
+
+  --lh-body: 1.6;
+  --lh-tight: 1.1;
+  --lh-display: 0.98;
+  --lh-band: 0.9;
+
+  /* Display headlines tighten as they grow. */
+  --ls-d-sm: -0.01em;
+  --ls-d-md: -0.015em;
+  --ls-section: -0.03em;
+  --ls-hero: -0.035em;
+  --ls-band: -0.04em;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+  --fw-heavy: 800;
+
+  --measure: 58ch;
+  --measure-lede: 46ch;
+
+  /* Spacing: 4px base. */
+  --sp-1: 0.25rem; /* 4 */
+  --sp-2: 0.5rem; /* 8 */
+  --sp-3: 0.75rem; /* 12 */
+  --sp-4: 1rem; /* 16 */
+  --sp-5: 1.5rem; /* 24 */
+  --sp-6: 2rem; /* 32 */
+  --sp-7: 3rem; /* 48 */
+  --sp-8: 4rem; /* 64 */
+  --sp-9: 6rem; /* 96 */
+  --sp-10: 8rem; /* 128 */
+
+  /* Layout. */
+  --page-max: 84rem;
+  --gutter: clamp(1.25rem, 5vw, 4.5rem);
+  --gap-hero: clamp(2.5rem, 7vw, 7.5rem);
+  --space-section: clamp(5rem, 13vh, 9.5rem);
+  --space-hero-top: clamp(4.5rem, 14vh, 10.5rem);
+  --space-hero-bottom: clamp(4rem, 10vh, 7.5rem);
+  --space-band: clamp(4rem, 10vh, 7.5rem);
+
+  /* Shape: square by default; radius only marks the band and screenshots. */
+  --r-focus: 2px;
+  --r-shot: 0.875rem;
+  --r-band: 1.75rem;
+  --r-band-narrow: 1.25rem;
+  --r-pill: 999px;
+
+  --rule: 1px;
+  --focus-width: 2px;
+  --focus-offset: 4px;
+
+  /* Motion: one expo-out curve, everything finishes (150 to 900ms). */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Shared elements moving between pages. */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  /* Hover, press and toggles. */
+  --ease-ui: cubic-bezier(0.23, 1, 0.32, 1);
+  /* Spreading signals (the antenna's waves). */
+  --ease-sine: cubic-bezier(0.39, 0.575, 0.565, 1);
+  /* Things that land (pops, dots, pills): a spring with a small overshoot
+     (about 4.6%) that settles cleanly. 600 to 700ms. */
+  --ease-spring: linear(
+    0,
+    0.0197,
+    0.0711,
+    0.1444,
+    0.2313,
+    0.325,
+    0.4203,
+    0.5132,
+    0.6009,
+    0.6814,
+    0.7535,
+    0.8166,
+    0.8706,
+    0.9158,
+    0.9527,
+    0.9821,
+    1.0047,
+    1.0214,
+    1.033,
+    1.0405,
+    1.0446,
+    1.046,
+    1.0453,
+    1.043,
+    1.0398,
+    1.0358,
+    1.0316,
+    1.0272,
+    1.0229,
+    1.0188,
+    1.0151,
+    1.0117,
+    1.0087,
+    1.0062,
+    1.0041,
+    1.0024,
+    1.001,
+    0.9999,
+    0.9991,
+    0.9985,
+    0.9982,
+    0.998,
+    0.9979,
+    0.9979,
+    0.998,
+    0.9982,
+    0.9983,
+    0.9985,
+    1
+  );
+  --dur-fast: 150ms;
+  --dur-ui: 200ms;
+  --dur-move: 350ms;
+  --dur-tilt: 500ms;
+
+  /* Mention chips' hairline: a step firmer than --line (which nearly
+     vanishes on the light page), mixed from each theme's own ink and page. */
+  --chip-line: color-mix(in oklab, var(--ink) 16%, var(--bg));
+  /* The contact card's dividers: on the light card's surface the chip
+     line is faint (1.37:1), so light takes a notch more ink, 19% on the
+     surface (1.57:1); dark keeps the chip line (set in its blocks). */
+  --card-rule: color-mix(
+    in oklab,
+    var(--ink) 19%,
+    color-mix(in oklab, var(--line) 45%, var(--bg))
+  );
+
+  /* Fettle's "live" status. A status color, not an accent; always paired
+     with the word "Live". */
+  --live: #3ccf8e;
+}
+
+/* Browsers without linear() get a cubic overshoot instead. */
+@supports not (transition-timing-function: linear(0, 1)) {
+  :root {
+    --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+}
+
+/* Light (default, and Auto when the OS is light). */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f4f5;
+  --ink: #18181b;
+  --soft: #52525b;
+  --line: #e4e4e7;
+  --acc: #3651d4;
+  --focus: var(--acc);
+  /* The link marker's accent tint: link text on it stays >= 4.5:1, also
+     over a row's hover tint (4.61:1 at worst, light theme). */
+  --mark-mix: 12%;
+  --selection: #d7ddfb;
+  --sel-blend: multiply;
+  --band-selection: #2c3566;
+  /* Discord status dots: >=3.9:1 on the page in both themes, always
+     paired with a word. */
+  --st-online: #1d8a4a;
+  --st-idle: #a66a00;
+  --st-dnd: #d42f36;
+  --st-offline: #6e727a;
+  /* The 404 diagram's "Not found": a muted red ring, >=3:1 on the page. */
+  --st-missing: #b8454c;
+  --switch-track: #e4e4e7;
+  --switch-on-bg: #18181b;
+  --switch-on-ink: #f4f4f5;
+  --band: #18181b;
+  /* The band's 1px edge: none in light (the slab carries itself), a
+     lighter line in dark, where the panel sits close to the page. */
+  --band-edge: #18181b;
+  --band-ink: #f4f4f5;
+  --band-soft: #a1a1aa;
+  --band-line: #2e2e33;
+  --band-acc: #8ea2ff;
+  --shadow-shot: 0 40px 80px -40px rgb(0 0 0 / 0.8);
+}
+
+/* Dark: Auto with a dark OS, or chosen explicitly. Kept as two identical
+   blocks rather than light-dark(), which older Safari ignores. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --card-rule: var(--chip-line);
+    --bg: #121214;
+    --ink: #f4f4f5;
+    --soft: #a1a1aa;
+    --line: #27272a;
+    --acc: #8ea2ff;
+    --focus: var(--acc);
+    --mark-mix: 18%;
+    --selection: #2c3566;
+    --sel-blend: screen;
+    --band-selection: #2c3566;
+    --st-online: #23a55a;
+    --st-idle: #f0b232;
+    --st-dnd: #f23f43;
+    --st-offline: #80848e;
+    --st-missing: #d9686d;
+    --switch-track: #27272a;
+    --switch-on-bg: #f4f4f5;
+    --switch-on-ink: #121214;
+    --band: #222228;
+    --band-edge: #34343b;
+    --band-ink: #f4f4f5;
+    --band-soft: #a1a1aa;
+    --band-line: #34343b;
+    --band-acc: #8ea2ff;
+    --shadow-shot: 0 40px 80px -40px rgb(0 0 0 / 0.9);
+  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --card-rule: var(--chip-line);
+  --bg: #121214;
+  --ink: #f4f4f5;
+  --soft: #a1a1aa;
+  --line: #27272a;
+  --acc: #8ea2ff;
+  --focus: var(--acc);
+  --mark-mix: 18%;
+  --selection: #2c3566;
+  --sel-blend: screen;
+  --band-selection: #2c3566;
+  --st-online: #23a55a;
+  --st-idle: #f0b232;
+  --st-dnd: #f23f43;
+  --st-offline: #80848e;
+  --st-missing: #d9686d;
+  --switch-track: #27272a;
+  --switch-on-bg: #f4f4f5;
+  --switch-on-ink: #121214;
+  --band: #222228;
+  --band-edge: #34343b;
+  --band-ink: #f4f4f5;
+  --band-soft: #a1a1aa;
+  --band-line: #34343b;
+  --band-acc: #8ea2ff;
+  --shadow-shot: 0 40px 80px -40px rgb(0 0 0 / 0.9);
+}

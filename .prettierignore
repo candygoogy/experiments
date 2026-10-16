@@ -1,0 +1,8 @@
+dist/
+.wrangler/
+shared/fonts/
+.shots/
+test-results/
+playwright-report/
+package-lock.json
+**/test/fixtures/

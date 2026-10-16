@@ -1,0 +1,93 @@
+/* The page every tool shares under its h1 and intro (shell.css): two
+   columns, each opening as a section does on the site (a dark rule,
+   --sp-7, then its label). The input is on the left. On the right is an
+   example answer, drawn by the page's own code, until the visitor's own
+   answer takes its place. On phones there's one column, input first.
+   Without JavaScript there's nothing to work with, so the .needs-js parts
+   don't show.
+
+   <div class="work needs-js">
+     <div class="input">
+       <label|h2 class="label">…</label|h2>
+       (the field, or the drop zone)
+     </div>
+     <section class="pane example" aria-labelledby="example-label">
+       <h2 class="label" id="example-label">Example …</h2>
+       (the example)
+     </section>
+     <section class="pane yours" aria-labelledby="yours-label" hidden>
+       <h2 class="label" id="yours-label">…</h2>
+       (the answer)
+     </section>
+   </div>
+
+   In both panes the verdict comes first, as an h3 under the label, and
+   anything headed below it (checks, networks, findings, each of several
+   photos) is an h4. Several batteries: each one's name is the h3, its
+   verdict the h4. Each tool sets the verdict's type (.verdict, or
+   photo's .lead), so the level never changes how it looks.
+
+   An example drawn after the first paint holds its height with
+   --example-min (one column) and --example-min-wide (two), so its arrival
+   moves nothing below it. Each pane is a size container: what's in it
+   follows the column's width, not the window's. */
+
+html:not(.js) .needs-js {
+  display: none;
+}
+
+.work {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--sp-8);
+  align-items: start;
+  margin-top: var(--sp-7);
+}
+
+/* The visitor's answer takes the example's place. */
+.pane {
+  grid-column: 2;
+  grid-row: 1;
+  container-type: inline-size;
+}
+
+.pane[hidden] {
+  display: none;
+}
+
+.pane.example {
+  min-height: var(--example-min-wide, var(--example-min, 0));
+}
+
+/* Each column opens on a dark rule, then its label. */
+.label {
+  display: block;
+  padding-top: var(--sp-7);
+  border-top: var(--rule) solid var(--ink);
+  color: var(--ink);
+  font: var(--fw-bold) var(--fs-d-sm) / var(--lh-tight) var(--ff-display);
+  letter-spacing: var(--ls-d-sm);
+  overflow-wrap: anywhere;
+}
+
+/* A drop zone under its label, the column's width. */
+.work .drop {
+  max-width: none;
+  margin-top: var(--sp-4);
+}
+
+@media (max-width: 53.75rem) {
+  .work {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-7);
+  }
+
+  .pane {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .pane.example {
+    min-height: var(--example-min, 0);
+  }
+}

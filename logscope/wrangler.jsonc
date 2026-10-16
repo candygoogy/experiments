@@ -1,0 +1,11 @@
+// Static assets only, served on its own subdomain (a Custom Domain).
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "exp-logscope",
+  "compatibility_date": "2026-10-01",
+  "routes": [{ "pattern": "logscope.candygoogy.dev", "custom_domain": true }],
+  // Served only at its own domain: no workers.dev or preview URLs.
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": { "directory": "./dist" },
+}

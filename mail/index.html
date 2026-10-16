@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- shell:head -->
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <!-- shell:header -->
+    <main id="tool" class="wrap">
+      <h1>{{title}}</h1>
+      <p class="intro">{{intro}}</p>
+      <noscript>
+        <p>{{noscript}}</p>
+      </noscript>
+      <div class="work needs-js">
+        <form class="ask" novalidate>
+          <label class="label" for="domain">{{fieldLabel}}</label>
+          <div class="field">
+            <input
+              id="domain"
+              type="text"
+              inputmode="url"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder="{{placeholder}}"
+              aria-describedby="problem network"
+            />
+            <button type="submit">{{check}}</button>
+          </div>
+          <p class="problem" id="problem" hidden></p>
+          <p class="network" id="network">{{network}}</p>
+        </form>
+        <section class="pane example" aria-labelledby="example-label">
+          <h2 class="label" id="example-label">{{example}}</h2>
+          <!-- example -->
+        </section>
+        <section class="pane yours" aria-labelledby="yours-label" hidden>
+          <h2 class="label" id="yours-label"></h2>
+          <div class="out"></div>
+        </section>
+      </div>
+      <p class="live visually-hidden" aria-live="polite"></p>
+    </main>
+    <!-- shell:footer -->
+  </body>
+</html>

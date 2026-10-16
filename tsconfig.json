@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node", "vite/client"]
+  },
+  "include": ["**/*"],
+  "exclude": [
+    "node_modules",
+    "**/dist",
+    "**/.wrangler",
+    "shared/fonts",
+    ".shots",
+    "test-results",
+    "playwright-report"
+  ]
+}

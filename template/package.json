@@ -1,0 +1,13 @@
+{
+  "name": "@exp/template",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "node ../shared/scripts/fonts.mjs && vite build",
+    "preview": "wrangler dev --port 4420 --ip 127.0.0.1"
+  },
+  "dependencies": {
+    "@exp/shared": "*"
+  }
+}

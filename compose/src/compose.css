@@ -1,0 +1,325 @@
+/* The compose map: the file on the left, the map on the right (under it
+   on phones). */
+
+/* On wide screens the file stays in view beside a long map, when the
+   window is tall enough to show all of it (its drop zone and the line
+   about a broken file included); on a shorter one it scrolls with the
+   page. */
+.input {
+  position: sticky;
+  top: var(--sp-5);
+}
+
+@media (max-height: 40rem) {
+  .input {
+    position: static;
+  }
+}
+
+/* The last map that read, while the text doesn't: dimmed, in place. */
+.pane.is-stale .out {
+  opacity: 0.5;
+  transition: opacity var(--dur-ui) var(--ease-out);
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 24rem;
+  margin-top: var(--sp-4);
+  padding: var(--sp-4);
+  /* The field's only edge: the shared field line (3:1 or more). */
+  border: var(--rule) solid var(--field-line);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  /* Code goes in here, so it's set in the system's monospace (no web
+     font): the indentation that YAML depends on lines up. */
+  font:
+    var(--fw-regular) var(--fs-sm) / 1.6 ui-monospace,
+    "Cascadia Mono",
+    Consolas,
+    monospace;
+  white-space: pre;
+  tab-size: 2;
+  resize: vertical;
+  transition: border-color var(--dur-ui) var(--ease-out);
+}
+
+textarea::placeholder {
+  color: var(--soft);
+}
+
+textarea:hover {
+  border-color: var(--ink);
+}
+
+.problem {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-meta);
+}
+
+/* The drop zone sits under the paste area as one line. */
+.input .drop {
+  margin-top: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+}
+
+.input .drop .drop-main {
+  font: var(--fw-medium) var(--fs-meta) / 1.4 var(--ff-text);
+  letter-spacing: 0;
+}
+
+/* The verdict, then the map, then each finding. */
+.verdict {
+  margin-top: var(--sp-5);
+  font: var(--fw-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
+  letter-spacing: var(--ls-d-md);
+  text-wrap: balance;
+}
+
+.note {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-meta);
+  color: var(--soft);
+}
+
+.findings ul {
+  margin: var(--sp-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.findings li {
+  padding-block: var(--sp-3);
+  border-top: var(--rule) solid var(--line);
+  max-width: 60ch;
+}
+
+.findings b {
+  font-weight: var(--fw-medium);
+  overflow-wrap: anywhere;
+}
+
+/* THE MAP. The wires are drawn in the left margin, one lane per wire
+   (--lanes, below), in the homelab map's line-and-dot
+   language; the right edge is the network the open ports reach. */
+.map {
+  --dot: 9px;
+  --lane: 12px;
+  --left: calc(var(--lanes, 0) * var(--lane) + var(--sp-3));
+  --wire: color-mix(in oklab, var(--ink) 30%, var(--bg));
+  position: relative;
+  margin-top: var(--sp-6);
+}
+
+.map ol,
+.map ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The wires' margin, one lane per wire, eight lanes' width at most. */
+.map[data-lanes="1"] {
+  --lanes: 1;
+}
+.map[data-lanes="2"] {
+  --lanes: 2;
+}
+.map[data-lanes="3"] {
+  --lanes: 3;
+}
+.map[data-lanes="4"] {
+  --lanes: 4;
+}
+.map[data-lanes="5"] {
+  --lanes: 5;
+}
+.map[data-lanes="6"] {
+  --lanes: 6;
+}
+.map[data-lanes="7"] {
+  --lanes: 7;
+}
+.map[data-lanes="8"] {
+  --lanes: 8;
+}
+
+/* The network the open ports reach, at the top of the right edge, with a
+   hollow dot (not yours to control, like the Internet on the homelab). */
+.edge {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-right: -4px;
+  margin-bottom: var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--soft);
+}
+
+.edge::after {
+  content: "";
+  width: var(--dot);
+  height: var(--dot);
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+}
+
+/* Each network is a band of rows: a thin rule, its name, its rows. */
+.band {
+  padding: var(--sp-3) 0 var(--sp-4) var(--left);
+  border-top: var(--rule) solid var(--line);
+}
+
+.net {
+  font: var(--fw-regular) var(--fs-xs) / var(--lh-body) var(--ff-text);
+  color: var(--soft);
+}
+
+.svc {
+  padding-block: var(--sp-3);
+}
+
+/* A row: the dot, the name and image, a dotted leader, the ports. The
+   dot, the leader and the ports sit on the name's first line (--mid, its
+   middle), however far the name and image wrap. */
+.line {
+  --mid: calc(var(--fs-body) * var(--lh-body) / 2);
+  display: grid;
+  grid-template-columns: var(--dot) auto minmax(var(--sp-5), 1fr) auto;
+  align-items: start;
+  column-gap: var(--sp-3);
+  padding-right: var(--sp-6);
+}
+
+.dot {
+  position: relative;
+  z-index: 1;
+  width: var(--dot);
+  height: var(--dot);
+  margin-top: calc(var(--mid) - var(--dot) / 2);
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--sp-3);
+  min-width: 0;
+}
+
+/* .name alone would also reach the theme switch's labels. */
+.svc .name {
+  font-weight: var(--fw-medium);
+  /* A name with no break in it wraps rather than run off a phone. */
+  overflow-wrap: anywhere;
+}
+
+.image {
+  font-size: var(--fs-meta);
+  color: var(--soft);
+  overflow-wrap: anywhere;
+}
+
+.tag {
+  padding: 0 7px;
+  border: var(--rule) solid var(--ink);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+}
+
+.lead {
+  margin-top: var(--mid);
+  border-bottom: var(--rule) dotted var(--chip-line);
+}
+
+.ports {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+}
+
+/* An open port in ink; one kept to this computer, dotted and soft. */
+.port {
+  margin-top: calc(var(--mid) - 0.5lh - 2px);
+  padding: 1px 8px;
+  border: var(--rule) solid var(--ink);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.port.local {
+  border-style: dashed;
+  border-color: var(--chip-line);
+  color: var(--soft);
+}
+
+.where {
+  margin-left: var(--sp-1);
+}
+
+/* Under a row: its storage, what it waits for, its other networks. */
+.subs {
+  display: grid;
+  gap: 2px;
+  margin-top: var(--sp-1);
+  padding-left: calc(var(--dot) + var(--sp-3));
+  font-size: var(--fs-sm);
+  overflow-wrap: anywhere;
+}
+
+.kind,
+.after,
+.also {
+  color: var(--soft);
+}
+
+.wires {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.wire,
+.edge-line {
+  fill: none;
+  stroke: var(--wire);
+  stroke-width: 1;
+}
+
+@media (max-width: 53.75rem) {
+  .input {
+    position: static;
+  }
+
+  textarea {
+    min-height: 14rem;
+  }
+}
+
+/* Phones: the ports under the name, no leader and no network edge. */
+@media (max-width: 40rem) {
+  .line {
+    grid-template-columns: var(--dot) minmax(0, 1fr);
+    row-gap: var(--sp-2);
+    padding-right: 0;
+  }
+
+  .lead,
+  .edge {
+    display: none;
+  }
+
+  .ports {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+}

@@ -1,0 +1,176 @@
+/* The shared header and footer (markup in shell.ts), from candygoogy.dev's
+   Header.astro and Footer.astro, and the page's opening: the h1 and the
+   one sentence that explains the tool. */
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* In the column, auto side margins would shrink each block to its
+   content; the page's blocks keep the full .wrap width. */
+body > .wrap {
+  width: 100%;
+}
+
+/* Skip to content, from candygoogy.dev's base.css: off the page until
+   it's focused, then over the header's top left corner. */
+.skip {
+  position: absolute;
+  top: var(--sp-3);
+  left: var(--sp-3);
+  z-index: 10;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--ink);
+  color: var(--bg);
+  transform: translateY(-200%);
+}
+
+.skip:focus-visible {
+  transform: none;
+}
+
+main {
+  flex: 1;
+  padding-block: var(--sp-7) var(--sp-8);
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3) var(--sp-6);
+  padding-block: var(--sp-5);
+}
+
+.brand {
+  position: relative;
+  margin-right: auto;
+  color: var(--ink);
+  background: none;
+  font: var(--fw-heavy) 1.125rem / 1 var(--ff-display);
+  letter-spacing: var(--ls-d-sm);
+}
+
+/* A 44px tall touch target, laid over the line without changing it. */
+.brand::after {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 44px;
+  translate: 0 -50%;
+}
+
+.top ul {
+  display: flex;
+  gap: var(--sp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Nav links rest without an underline; on hover it draws in from the
+   left, the same 1px line every other link uses. */
+.top nav a {
+  position: relative;
+  color: var(--soft);
+  background-size: 0 1px;
+  background-position: 0 100%;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-medium);
+  transition:
+    color var(--dur-ui) var(--ease-out),
+    background-size var(--dur-move) var(--ease-out);
+}
+
+/* A 44px-tall touch target over the link. */
+.top nav a::after {
+  content: "";
+  position: absolute;
+  inset: -12px calc(var(--sp-5) / -2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .top nav a:hover {
+    color: var(--ink);
+    background-size: 100% 1px;
+  }
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+/* Phones: two rows. The wordmark and the theme switch share the first,
+   the link takes the second. */
+@media (max-width: 32.5rem) {
+  .top nav {
+    order: 3;
+    flex-basis: 100%;
+  }
+}
+
+h1 {
+  font-size: var(--fs-d-section);
+  letter-spacing: var(--ls-section);
+}
+
+.intro {
+  max-width: var(--measure-lede);
+  margin-top: var(--sp-4);
+  color: var(--soft);
+  font-size: var(--fs-lede);
+  line-height: 1.45;
+}
+
+noscript p {
+  margin-top: var(--sp-5);
+}
+
+.foot .inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2) var(--sp-6);
+  padding-block: var(--sp-6);
+  border-top: var(--rule) solid var(--line);
+  color: var(--soft);
+  font-size: var(--fs-sm);
+}
+
+.foot .privacy {
+  flex: 1 1 0;
+  min-width: min(100%, 20rem);
+}
+
+/* Each link has a touch target at least 44px each way, laid over the
+   line without changing it. */
+.foot a {
+  position: relative;
+}
+
+.foot a::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, 44px);
+  height: 44px;
+  translate: -50% -50%;
+}
+
+/* Phones: the privacy line on its own row, the link and the license
+   under it, far enough apart that the targets don't touch. */
+@media (max-width: 32.5rem) {
+  .foot .inner {
+    row-gap: var(--sp-5);
+  }
+
+  .foot .privacy {
+    flex-basis: 100%;
+  }
+}

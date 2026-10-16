@@ -1,0 +1,346 @@
+/* The keyboard check: the controls, the drawn board, and what it found.
+   The board takes the full width; the page around it is the family's
+   (shared/work.css): without JavaScript only the heading, the sentence
+   and the note show, and each column of the readout opens on a dark rule,
+   then its label. */
+
+/* Controls: start (or, while testing, how to stop), start over, and the
+   layout. */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-4) var(--sp-5);
+  margin-top: var(--sp-7);
+}
+
+.start,
+.over {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--sp-5);
+  border: var(--rule) solid var(--ink);
+  border-radius: var(--r-pill);
+  font: var(--fw-medium) var(--fs-meta) / 1 var(--ff-text);
+  cursor: pointer;
+  transition: transform 120ms var(--ease-ui);
+}
+
+.start {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.over {
+  border-color: var(--chip-line);
+  background: none;
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .start:active,
+  .over:active {
+    transform: scale(0.97);
+  }
+}
+
+.hint {
+  color: var(--soft);
+  font-size: var(--fs-meta);
+}
+
+/* Start gives way to the hint while testing (and back). */
+.controls [hidden] {
+  display: none;
+}
+
+/* The layout, as a segmented pill like the theme switch. */
+.layout {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  margin-left: auto;
+  padding: 3px;
+  border-radius: var(--r-pill);
+  background: var(--switch-track);
+}
+
+.layout button {
+  position: relative;
+  min-width: 4rem;
+  min-height: 2rem;
+  padding: 0 var(--sp-3);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  color: var(--soft);
+  font: var(--fw-medium) var(--fs-xs) / 1 var(--ff-text);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-ui) var(--ease-out),
+    color var(--dur-ui) var(--ease-out);
+}
+
+/* 44px tall to touch, the pill itself 32px. */
+.layout button::after {
+  content: "";
+  position: absolute;
+  inset: -6px 0;
+}
+
+.layout button[aria-pressed="true"] {
+  background: var(--switch-on-bg);
+  color: var(--switch-on-ink);
+}
+
+/* The test area. While testing it holds focus, so the keys reach the page
+   and not a screen reader's own commands. */
+.test {
+  margin-top: var(--sp-6);
+  border-radius: var(--r-focus);
+}
+
+.test:focus {
+  outline: none;
+}
+
+.test:focus-visible {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* The board keeps its height before it's drawn: nothing moves when it
+   appears. A narrower window draws it without the number pad (main.ts,
+   the same width), 1001 units wide instead of 1244. */
+.board {
+  aspect-ratio: 1244 / 353;
+}
+
+@media (max-width: 68.75rem) {
+  .board {
+    aspect-ratio: 1001 / 353;
+  }
+}
+
+.board svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Each key: its base (the lip) and its cap, hairlines that stay 1px at
+   any size. */
+.base,
+.cap {
+  stroke: var(--chip-line);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.base {
+  fill: var(--bg);
+}
+
+.cap {
+  fill: var(--bg);
+}
+
+.key text {
+  fill: var(--soft);
+  font: var(--fw-medium) 12.5px / 1 var(--ff-text);
+}
+
+/* Released, the cap springs back up; the fill settles to its tone. */
+.cap,
+.key text {
+  transition:
+    transform 280ms var(--ease-spring),
+    fill 200ms var(--ease-out),
+    stroke 200ms var(--ease-out);
+}
+
+/* The legend changes colour in one step as the fill settles, rather than
+   fading alongside it: in dark the cap goes light to grey while its legend
+   goes dark to light, and the two would cross, the legend vanishing for a
+   moment. */
+.key text {
+  transition:
+    transform 280ms var(--ease-spring),
+    fill 200ms steps(1, end);
+}
+
+/* Pressed before: a mid tone between the page and the pressed ink, at
+   least 3:1 from both (so tested, untested and pressed keys tell apart
+   without their legends, which phones hide), its legend the light end at
+   4.5:1 or more. The mix differs per theme to land on the same tone. */
+:root,
+[data-theme="light"] {
+  --key-seen: color-mix(in oklab, var(--ink) 58%, var(--bg));
+  --key-seen-legend: var(--bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --key-seen: color-mix(in oklab, var(--ink) 44%, var(--bg));
+    --key-seen-legend: var(--ink);
+  }
+}
+
+[data-theme="dark"] {
+  --key-seen: color-mix(in oklab, var(--ink) 44%, var(--bg));
+  --key-seen-legend: var(--ink);
+}
+
+.key[data-state="seen"] .cap {
+  fill: var(--key-seen);
+}
+
+.key[data-state="seen"] text {
+  fill: var(--key-seen-legend);
+}
+
+/* Pressed now: the cap drops onto its base and fills with ink, fast. */
+.key[data-state="down"] :is(.cap, text) {
+  transform: translateY(3px);
+  transition-duration: 70ms;
+  transition-timing-function: var(--ease-ui);
+}
+
+.key[data-state="down"] .cap {
+  fill: var(--ink);
+  stroke: var(--ink);
+}
+
+.key[data-state="down"] text {
+  fill: var(--bg);
+}
+
+/* A key with a finding keeps an ink outline. */
+.key[data-finding] .cap {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+/* What the browser only partly sees: hatched until it's pressed, then
+   like any other key. */
+.key[data-limit][data-state="idle"] .cap {
+  fill: url(#hatch);
+}
+
+.key[data-limit][data-state="idle"] text {
+  fill: var(--soft);
+}
+
+.hatch-bg {
+  fill: var(--bg);
+}
+
+.hatch-line {
+  stroke: var(--chip-line);
+  stroke-width: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cap,
+  .key text {
+    transition: none;
+  }
+}
+
+/* What it found. */
+/* The family's two columns (shared/work.css), so "Findings" starts
+   where the other tools' answers do. */
+.readout {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--sp-7) var(--sp-8);
+  margin-top: var(--sp-7);
+}
+
+.readout .label {
+  margin-bottom: var(--sp-4);
+}
+
+.readout p,
+.findings li {
+  max-width: var(--measure);
+  margin-bottom: var(--sp-2);
+}
+
+.findings {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.findings li {
+  padding-left: var(--sp-4);
+  border-left: 2px solid var(--ink);
+}
+
+.soft {
+  color: var(--soft);
+}
+
+/* Shown only while the board is drawn without its number pad. */
+.narrow-note {
+  display: none;
+}
+
+@media (max-width: 68.75rem) {
+  .narrow-note {
+    display: block;
+  }
+}
+
+/* The try-ISO line is hidden until it applies. */
+.readout [hidden] {
+  display: none;
+}
+
+.swatch {
+  display: inline-block;
+  width: 1.4em;
+  height: 1em;
+  margin-right: 0.45em;
+  vertical-align: -0.12em;
+  border: var(--rule) solid var(--chip-line);
+  border-radius: 3px;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 3px,
+    var(--chip-line) 3px 4px
+  );
+}
+
+@media (max-width: 53.75rem) {
+  .readout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Small windows: the legends would be too small to read. */
+@media (max-width: 40rem) {
+  .key text {
+    display: none;
+  }
+}
+
+/* No keyboard to test (a phone): the note, and the board at rest. */
+.phone-note {
+  display: none;
+  max-width: var(--measure-lede);
+  margin-top: var(--sp-5);
+  font-size: var(--fs-lede);
+  line-height: 1.45;
+}
+
+[data-mode="phone"] .phone-note {
+  display: block;
+}
+
+[data-mode="phone"] :is(.controls, .readout) {
+  display: none;
+}

@@ -1,0 +1,279 @@
+/* The photo page's own parts; the drop zone is shared/dropzone.css. */
+
+/* One row per photo, like the site's project rows: what it gives away
+   on the left, the picture and its name on the right. Thin rules between,
+   none after the last. The rows sit in the right-hand column (shared/
+   work.css) and follow its width: side by side once it has room, else one
+   column in the same order, the answer, then the picture it's about. */
+.photos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.photo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-5);
+  padding-block: var(--sp-7);
+  border-top: var(--rule) solid var(--line);
+}
+
+/* Side by side, the verdict keeps the room to read as a sentence; the
+   picture takes a fixed column beside it. */
+@container (min-width: 30rem) {
+  .photo {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 16rem);
+    gap: var(--sp-6);
+  }
+}
+
+.photo:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.who {
+  display: grid;
+  gap: var(--sp-3);
+  align-content: start;
+  justify-items: start;
+}
+
+.thumb {
+  display: block;
+  width: 100%;
+  max-width: 12rem;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--line);
+}
+
+/* An answer's picture: the whole photo, its own shape, as large as its
+   column allows and never taller than the screen can take in with the
+   answer beside it. A HEIC the browser can't draw keeps the picture's
+   place, with the reason in it. */
+.answer .thumb {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 30rem;
+  aspect-ratio: auto;
+  object-fit: fill;
+}
+
+/* A picture the browser can't draw: an empty frame a thumbnail's size,
+   and the reason under it. */
+.no-preview {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.answer .thumb-none {
+  width: 100%;
+  max-width: 12rem;
+  aspect-ratio: 4 / 3;
+}
+
+.heic {
+  max-width: 20rem;
+  color: var(--soft);
+  font-size: var(--fs-sm);
+  text-wrap: pretty;
+}
+
+@media (max-width: 40rem) {
+  .answer .thumb {
+    max-height: 16rem;
+  }
+}
+
+.file {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--sp-3);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  overflow-wrap: anywhere;
+}
+
+.file .num {
+  color: var(--soft);
+  font-weight: var(--fw-regular);
+}
+
+.what {
+  max-width: var(--measure);
+}
+
+/* The first thing it gives away, the most telling, reads first. */
+.lead {
+  font: var(--fw-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
+  letter-spacing: var(--ls-d-md);
+  text-wrap: balance;
+}
+
+.line {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-body);
+}
+
+/* "Show everything": the tools' one disclosure (shared/disclosure.css).
+   Its summary keeps its line's height (the 44px touch target is laid over
+   it), so the gaps around it are the steps they read as. */
+.all {
+  margin-top: var(--sp-6);
+}
+
+/* The label says "Hide" once it's open, without a script. */
+.all:not([open]) .when-open,
+.all[open] .when-closed {
+  display: none;
+}
+
+/* Each block's name over its fields: where the values came from. */
+.all .block {
+  margin-top: var(--sp-5);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+.all .block:first-of-type {
+  margin-top: var(--sp-5);
+}
+
+.all dl {
+  display: grid;
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-sm);
+}
+
+.all dl div {
+  display: grid;
+  grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+  gap: var(--sp-4);
+  padding-block: var(--sp-2);
+  border-top: var(--rule) solid var(--line);
+}
+
+.all dt {
+  color: var(--soft);
+  overflow-wrap: anywhere;
+}
+
+.all dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* The one action: an ink pill, the solid shape the theme switch uses
+   for the chosen option. */
+.get {
+  margin-top: var(--sp-6);
+}
+
+/* Several photos: what they give away together, then the one action,
+   both before the list. Their space is held while the photos are read
+   (the lines arrive at the end), so the list doesn't move under them. */
+.batch {
+  min-height: calc(2 * var(--lh-tight) * var(--fs-d-md) + 2lh);
+}
+
+.get-all {
+  margin-top: var(--sp-5);
+}
+
+/* Held, unseen, until every photo is read. */
+.answer [data-waiting] {
+  visibility: hidden;
+}
+
+.get-all + .kept {
+  margin-top: var(--sp-3);
+  max-width: var(--measure);
+  color: var(--soft);
+  font-size: var(--fs-sm);
+}
+
+.batch ~ .photos {
+  margin-top: var(--sp-7);
+}
+
+/* On phones the action stays in reach while the list scrolls by: it
+   sticks to the top of the screen, and whatever gets focus scrolls clear
+   of it. */
+@media (max-width: 40rem) {
+  .batch {
+    min-height: calc(3 * var(--lh-tight) * var(--fs-d-md) + 3lh);
+  }
+
+  .get-all {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin-inline: calc(-1 * var(--sp-2));
+    padding: var(--sp-3) var(--sp-2);
+    background: var(--bg);
+  }
+
+  :root:has(.get-all) {
+    scroll-padding-top: calc(44px + 2 * var(--sp-3));
+  }
+}
+
+.download {
+  min-height: 44px;
+  padding: 0 var(--sp-5);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--bg);
+  font: var(--fw-medium) var(--fs-body) / 1 var(--ff-text);
+  cursor: pointer;
+}
+
+.get .kept {
+  margin-top: var(--sp-3);
+  max-width: var(--measure);
+  color: var(--soft);
+  font-size: var(--fs-sm);
+}
+
+/* The answer, under the photo's name (shared/work.css). */
+.answer {
+  margin-top: var(--sp-5);
+}
+
+/* Phones: the label and the value share the width evenly. */
+@media (max-width: 40rem) {
+  .all dl div {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+/* The example (shared/work.css), a step smaller than an answer. */
+.example .photos {
+  margin-top: var(--sp-5);
+}
+
+.example .photo {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-5);
+  padding-block: 0;
+}
+
+.example .thumb {
+  max-width: 8rem;
+}
+
+@container (min-width: 30rem) {
+  .example .photo {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 9rem);
+    gap: var(--sp-6);
+  }
+
+  .example .thumb {
+    max-width: 9rem;
+  }
+}

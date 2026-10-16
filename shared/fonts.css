@@ -1,0 +1,51 @@
+/* The official WOFF2 files from shared/scripts/fonts.mjs, served from the
+   experiment's own domain. Each face has a fallback on the local Arial,
+   scaled to the web font's metrics (the values candygoogy.dev's build
+   generates), so swapping in the web font doesn't shift the layout.
+   tokens.css reads the two families through --font-display and
+   --font-text. */
+
+@font-face {
+  font-family: "Cabinet Grotesk";
+  src: url("./fonts/CabinetGrotesk-Variable.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Cabinet Grotesk fallback";
+  src: local("Arial");
+  font-display: swap;
+  font-weight: 100 900;
+  font-style: normal;
+  size-adjust: 102.0635%;
+  ascent-override: 85.241%;
+  descent-override: 27.4339%;
+  line-gap-override: 8.818%;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("./fonts/Satoshi-Variable.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 300 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Satoshi fallback";
+  src: local("Arial");
+  font-display: swap;
+  font-weight: 300 900;
+  font-style: normal;
+  size-adjust: 109.0173%;
+  ascent-override: 92.6458%;
+  descent-override: 22.0149%;
+  line-gap-override: 9.1729%;
+}
+
+:root {
+  --font-display: "Cabinet Grotesk", "Cabinet Grotesk fallback", sans-serif;
+  --font-text: "Satoshi", "Satoshi fallback", sans-serif;
+}

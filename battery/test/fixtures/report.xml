@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BatteryReport xmlns="http://schemas.microsoft.com/battery/2012">
+  <ReportInformation><ReportVersion>1</ReportVersion><LocalScanTime>2026-10-14T12:00:00</LocalScanTime></ReportInformation>
+  <SystemInformation><ComputerName>TEST-PC</ComputerName></SystemInformation>
+  <Batteries><Battery><Id>Example Battery</Id><Manufacturer>Example</Manufacturer><SerialNumber>000000</SerialNumber><DesignCapacity>45000</DesignCapacity><FullChargeCapacity>25650</FullChargeCapacity><CycleCount>611</CycleCount></Battery></Batteries>
+</BatteryReport>

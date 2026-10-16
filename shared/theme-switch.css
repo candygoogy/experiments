@@ -1,0 +1,201 @@
+/* The Auto / Light / Dark switch, from candygoogy.dev's ThemeSwitch.astro.
+   Without JavaScript there's nothing to switch (Auto still follows the
+   OS), so it only shows under the .js class, which the head script sets
+   before first paint: no layout shift when it appears.
+
+   The pill slides between three equal-width buttons. The labels come in
+   two identical rows: the real buttons in soft text, and an aria-hidden
+   copy in the pill's text color, clipped to exactly the pill's rectangle
+   and moving with it, so every label is the right color on every frame.
+   Auto shows what it resolves to: a sun or a moon, and "(light)" or
+   "(dark)" in its name. */
+
+.themes {
+  position: relative;
+  display: none;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 3px;
+  border-radius: var(--r-pill);
+  background: var(--switch-track);
+  /* Where the pill is: 0, 1 or 2 (a third of the inner track each). */
+  --at: 0;
+}
+
+.js .themes {
+  display: inline-grid;
+}
+
+/* At first paint the pill sits on the saved theme (set by the head
+   script before paint); once the script has synced, data-current leads,
+   since a click moves the pill before the theme changes. */
+html[data-theme="light"] .themes:not([data-current]),
+.themes[data-current="light"] {
+  --at: 1;
+}
+
+html[data-theme="dark"] .themes:not([data-current]),
+.themes[data-current="dark"] {
+  --at: 2;
+}
+
+.themes .pill {
+  position: absolute;
+  inset: 3px auto 3px 3px;
+  width: calc((100% - 6px) / 3);
+  border-radius: var(--r-pill);
+  background: var(--switch-on-bg);
+  transform: translateX(calc(var(--at) * 100%));
+  transition: transform 220ms var(--ease-in-out);
+}
+
+/* Nothing slides until the script has synced (it sets data-ready a frame
+   later), so the pill's first placement never animates. */
+.themes:not([data-ready]) :is(.pill, .ink) {
+  transition: none;
+}
+
+/* Restored from the back/forward cache with another theme: the pill and
+   its labels are already in place (the script). */
+html.theme-restore .themes :is(.pill, .ink) {
+  transition: none;
+}
+
+.themes button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0 var(--sp-3);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  color: var(--soft);
+  font: var(--fw-medium) var(--fs-xs) / 1 var(--ff-text);
+  cursor: pointer;
+  transition: color var(--dur-ui) var(--ease-out);
+}
+
+/* The visible pill stays 32px; the touch target is 44px tall. */
+.themes button::after {
+  content: "";
+  position: absolute;
+  inset: -6px 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .themes button:hover {
+    color: var(--ink);
+  }
+}
+
+.themes button:focus-visible {
+  outline-offset: 2px;
+}
+
+/* The pressed-color copy of the labels, clipped to the pill's rectangle
+   and sliding with it, so text never vanishes mid-slide. */
+.themes .ink {
+  position: absolute;
+  inset: 3px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  pointer-events: none;
+  color: var(--switch-on-ink);
+  font: var(--fw-medium) var(--fs-xs) / 1 var(--ff-text);
+  clip-path: inset(
+    0 calc(100% - (var(--at) + 1) * 100% / 3) 0 calc(var(--at) * 100% / 3) round
+      var(--r-pill)
+  );
+  transition: clip-path 220ms var(--ease-in-out);
+}
+
+.themes .ink .face {
+  justify-content: center;
+  padding: 0 var(--sp-3);
+}
+
+/* Drawn as generated content: it's a visual copy only (the buttons are
+   the real labels), and outside the pill it's always clipped away. */
+.themes .ink .face::before {
+  content: attr(data-label);
+}
+
+.themes .face {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Auto's hint: a sun or a moon for what it resolves to. */
+.themes .resolved {
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='8' cy='8' r='3' fill='black' stroke='none'/%3E%3Cpath d='M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+@media (prefers-color-scheme: dark) {
+  .themes .resolved {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M13 9.6A5.5 5.5 0 1 1 6.4 3a4.3 4.3 0 0 0 6.6 6.6Z' fill='none' stroke='black' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+}
+
+/* The icons-only form (the narrowest phones) and its three marks: a
+   half-filled circle for Auto, a sun, a moon. */
+.themes .icon {
+  display: none;
+  width: 14px;
+  height: 14px;
+  background: currentColor;
+  mask: center / contain no-repeat;
+}
+
+.themes .icon-auto {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='5.75' fill='none' stroke='black' stroke-width='1.5'/%3E%3Cpath d='M8 2.25a5.75 5.75 0 0 1 0 11.5Z' fill='black'/%3E%3C/svg%3E");
+}
+
+.themes .icon-light {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='8' cy='8' r='3' fill='black' stroke='none'/%3E%3Cpath d='M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1'/%3E%3C/svg%3E");
+}
+
+.themes .icon-dark {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M13 9.6A5.5 5.5 0 1 1 6.4 3a4.3 4.3 0 0 0 6.6 6.6Z' fill='none' stroke='black' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* At 384px and below the switch shows icons only, so the wordmark, the
+   link and the switch share one row. The names stay as the buttons'
+   accessible names. */
+@media (max-width: 24rem) {
+  .themes button,
+  .themes .ink .face {
+    padding: 0 var(--sp-2);
+    min-width: 2.75rem;
+  }
+
+  .themes .icon {
+    display: block;
+  }
+
+  .themes .resolved,
+  .themes .ink .face::before {
+    display: none;
+  }
+
+  .themes .name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .themes .pill,
+  .themes .ink {
+    transition: none;
+  }
+}

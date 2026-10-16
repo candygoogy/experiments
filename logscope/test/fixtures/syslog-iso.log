@@ -1,0 +1,288 @@
+2026-10-13T00:09:22.650+00:00 web-1 CRON[9139]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T00:16:35.337+00:00 db-1 CRON[2589]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T00:22:47.913+00:00 db-1 CRON[9659]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T00:38:01.777+00:00 db-1 CRON[1300]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T00:50:09.114+00:00 web-1 CRON[9654]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T00:50:24.763+00:00 db-1 systemd[2566]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-13T01:01:37.476+00:00 web-1 CRON[8486]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T01:15:02.815+00:00 db-1 CRON[8947]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T01:27:25.206+00:00 web-1 CRON[6790]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T01:37:12.597+00:00 web-1 CRON[3622]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T01:48:34.123+00:00 web-1 CRON[4970]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T01:58:31.381+00:00 web-1 CRON[4950]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T02:17:39.923+00:00 db-1 sshd[5820]: Failed password for invalid user admin from 203.0.113.60 port 49313 ssh2
+2026-10-13T02:18:34.332+00:00 web-1 CRON[9396]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T02:21:50.717+00:00 web-1 sshd[2227]: Failed password for invalid user admin from 203.0.113.37 port 46668 ssh2
+2026-10-13T02:22:04.280+00:00 db-1 CRON[3288]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T02:40:31.250+00:00 web-1 CRON[7696]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T02:47:41.582+00:00 db-1 systemd[8408]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-13T03:00:14.084+00:00 db-1 CRON[3399]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T03:26:02.870+00:00 web-1 CRON[9159]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T03:38:30.919+00:00 db-1 CRON[2054]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T03:45:41.130+00:00 db-1 kernel[7592]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #50476: comm example-app: reading directory lblock 0
+2026-10-13T03:53:58.233+00:00 db-1 CRON[6908]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T03:55:35.637+00:00 web-1 kernel[2818]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #93151: comm example-app: reading directory lblock 0
+2026-10-13T04:07:07.690+00:00 web-1 CRON[1358]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T04:08:05.087+00:00 db-1 CRON[6607]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T04:08:55.100+00:00 db-1 CRON[6755]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T04:34:23.314+00:00 db-1 CRON[3909]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T04:46:00.657+00:00 web-1 CRON[2154]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T04:58:42.195+00:00 web-1 CRON[4390]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T05:06:45.244+00:00 db-1 sshd[5138]: Failed password for invalid user admin from 203.0.113.179 port 56421 ssh2
+2026-10-13T05:33:10.998+00:00 db-1 CRON[5992]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T05:36:32.865+00:00 web-1 CRON[4793]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T05:37:34.597+00:00 web-1 CRON[8869]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T05:45:01.259+00:00 db-1 CRON[3099]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T05:54:50.062+00:00 web-1 sshd[4912]: Failed password for invalid user admin from 203.0.113.49 port 56653 ssh2
+2026-10-13T06:05:04.976+00:00 db-1 CRON[5655]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T06:19:08.744+00:00 db-1 CRON[1441]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T06:23:29.755+00:00 web-1 sshd[1098]: Failed password for invalid user admin from 203.0.113.123 port 58710 ssh2
+2026-10-13T06:49:29.916+00:00 web-1 kernel[3660]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #25259: comm example-app: reading directory lblock 0
+2026-10-13T06:53:54.583+00:00 web-1 CRON[4977]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T06:58:33.497+00:00 db-1 CRON[5554]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T07:04:43.420+00:00 web-1 kernel[8980]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #55066: comm example-app: reading directory lblock 0
+2026-10-13T07:13:24.656+00:00 db-1 CRON[9322]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T07:17:08.976+00:00 web-1 CRON[7385]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T07:28:59.352+00:00 web-1 CRON[8232]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T07:39:56.355+00:00 db-1 CRON[7819]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T07:54:15.846+00:00 web-1 CRON[5747]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T08:07:58.961+00:00 web-1 sshd[8677]: Failed password for invalid user admin from 203.0.113.21 port 50647 ssh2
+2026-10-13T08:19:52.510+00:00 web-1 sshd[2020]: Failed password for invalid user admin from 203.0.113.49 port 52776 ssh2
+2026-10-13T08:28:47.019+00:00 db-1 CRON[6794]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T08:45:44.984+00:00 web-1 CRON[4727]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T08:54:16.161+00:00 web-1 CRON[4929]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T08:54:38.433+00:00 db-1 CRON[9512]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T09:01:04.380+00:00 web-1 CRON[2815]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T09:07:39.303+00:00 web-1 systemd[1159]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-13T09:13:34.065+00:00 db-1 CRON[9361]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T09:24:05.591+00:00 db-1 CRON[5409]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T09:38:08.861+00:00 web-1 sshd[4664]: Failed password for invalid user admin from 203.0.113.209 port 47810 ssh2
+2026-10-13T09:38:22.357+00:00 db-1 CRON[1006]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T10:00:17.454+00:00 db-1 CRON[9428]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T10:01:15.585+00:00 db-1 CRON[9718]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T10:30:07.296+00:00 db-1 CRON[9029]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T10:34:01.926+00:00 web-1 sshd[3120]: Failed password for invalid user admin from 203.0.113.199 port 53351 ssh2
+2026-10-13T10:50:24.560+00:00 web-1 CRON[9880]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T10:52:04.917+00:00 db-1 CRON[4661]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T11:05:45.166+00:00 web-1 CRON[5597]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T11:11:41.931+00:00 web-1 CRON[7131]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T11:15:54.788+00:00 db-1 CRON[8418]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T11:24:00.446+00:00 web-1 CRON[1866]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T11:39:41.517+00:00 web-1 CRON[1974]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T11:45:26.152+00:00 db-1 CRON[1427]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T12:06:44.098+00:00 db-1 CRON[2745]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T12:32:04.717+00:00 web-1 CRON[5758]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T12:35:50.590+00:00 db-1 CRON[6192]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T12:38:48.856+00:00 web-1 kernel[2092]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #45479: comm example-app: reading directory lblock 0
+2026-10-13T12:54:26.115+00:00 db-1 CRON[5532]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T12:57:07.908+00:00 db-1 CRON[4213]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T13:01:28.785+00:00 web-1 CRON[4536]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T13:04:52.135+00:00 db-1 kernel[4234]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #28867: comm example-app: reading directory lblock 0
+2026-10-13T13:07:41.575+00:00 web-1 CRON[9303]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T13:17:10.041+00:00 web-1 CRON[2290]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T13:22:41.022+00:00 db-1 CRON[7556]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T13:27:12.544+00:00 web-1 CRON[6954]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T14:03:46.753+00:00 db-1 CRON[7131]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T14:30:48.254+00:00 db-1 systemd[8516]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-13T14:30:48.824+00:00 web-1 systemd[8401]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-13T14:33:01.501+00:00 db-1 sshd[6991]: Failed password for invalid user admin from 203.0.113.79 port 56341 ssh2
+2026-10-13T14:34:56.476+00:00 db-1 CRON[7817]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T14:51:37.891+00:00 web-1 CRON[6030]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T15:03:22.632+00:00 db-1 CRON[1229]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T15:14:57.113+00:00 web-1 CRON[9376]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T15:40:58.579+00:00 web-1 CRON[6301]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T15:50:18.920+00:00 web-1 CRON[4338]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T15:54:34.280+00:00 db-1 kernel[7365]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #27793: comm example-app: reading directory lblock 0
+2026-10-13T15:58:53.634+00:00 web-1 CRON[7574]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T16:00:39.634+00:00 web-1 CRON[9346]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T16:08:08.206+00:00 web-1 CRON[2209]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T16:25:48.706+00:00 db-1 CRON[8125]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T16:35:49.400+00:00 db-1 CRON[9981]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T16:41:21.285+00:00 web-1 CRON[9967]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T16:54:40.932+00:00 web-1 CRON[4156]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T17:07:00.716+00:00 web-1 CRON[5048]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T17:23:20.083+00:00 web-1 sshd[6606]: Failed password for invalid user admin from 203.0.113.226 port 59111 ssh2
+2026-10-13T17:24:36.623+00:00 db-1 CRON[6838]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T17:25:51.554+00:00 web-1 sshd[3310]: Failed password for invalid user admin from 203.0.113.59 port 44683 ssh2
+2026-10-13T17:30:17.669+00:00 web-1 sshd[9437]: Failed password for invalid user admin from 203.0.113.182 port 56579 ssh2
+2026-10-13T17:55:00.207+00:00 web-1 CRON[8026]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T18:06:29.002+00:00 db-1 CRON[4261]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T18:08:48.482+00:00 web-1 CRON[3263]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T18:17:49.195+00:00 web-1 CRON[7464]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T18:38:39.067+00:00 db-1 CRON[6261]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T18:47:32.573+00:00 db-1 CRON[9096]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T18:59:45.132+00:00 web-1 sshd[8430]: Failed password for invalid user admin from 203.0.113.200 port 53728 ssh2
+2026-10-13T19:12:56.799+00:00 web-1 CRON[1200]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T19:14:29.401+00:00 web-1 CRON[1909]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T19:22:54.003+00:00 web-1 CRON[9624]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T19:27:29.277+00:00 db-1 CRON[7023]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T19:34:44.757+00:00 db-1 kernel[5252]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #53413: comm example-app: reading directory lblock 0
+2026-10-13T19:54:10.613+00:00 db-1 sshd[8940]: Failed password for invalid user admin from 203.0.113.180 port 58440 ssh2
+2026-10-13T20:10:29.868+00:00 db-1 CRON[3651]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T20:31:40.300+00:00 db-1 CRON[9665]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T20:42:57.744+00:00 web-1 CRON[3608]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T20:55:31.949+00:00 db-1 CRON[2631]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T20:59:55.611+00:00 web-1 CRON[4207]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T20:59:58.319+00:00 web-1 sshd[9747]: Failed password for invalid user admin from 203.0.113.181 port 49157 ssh2
+2026-10-13T21:02:43.693+00:00 db-1 sshd[8040]: Failed password for invalid user admin from 203.0.113.197 port 46750 ssh2
+2026-10-13T21:03:29.328+00:00 web-1 CRON[1742]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T21:06:18.191+00:00 web-1 kernel[5576]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #66051: comm example-app: reading directory lblock 0
+2026-10-13T21:11:38.753+00:00 db-1 CRON[3710]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T21:16:52.181+00:00 web-1 sshd[1028]: Failed password for invalid user admin from 203.0.113.76 port 45043 ssh2
+2026-10-13T21:38:23.848+00:00 db-1 CRON[9600]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T22:03:39.687+00:00 db-1 CRON[4436]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T22:05:37.478+00:00 db-1 systemd[2083]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-13T22:18:31.521+00:00 web-1 CRON[5743]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T22:40:30.143+00:00 db-1 systemd[4924]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-13T22:43:43.996+00:00 web-1 CRON[5993]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T22:49:27.786+00:00 web-1 CRON[3404]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T23:07:19.842+00:00 web-1 CRON[1354]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T23:16:42.398+00:00 web-1 CRON[5190]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T23:18:37.583+00:00 db-1 CRON[4186]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T23:39:19.113+00:00 web-1 CRON[2018]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T23:41:54.810+00:00 db-1 CRON[5165]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-13T23:45:55.617+00:00 db-1 CRON[1859]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T00:01:02.516+00:00 db-1 CRON[6853]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T00:12:34.135+00:00 web-1 CRON[6452]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T00:17:17.749+00:00 web-1 CRON[1391]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T00:18:54.888+00:00 db-1 CRON[6152]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T00:34:59.292+00:00 web-1 CRON[6899]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T00:58:32.600+00:00 db-1 CRON[9449]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T01:05:23.308+00:00 web-1 sshd[3254]: Failed password for invalid user admin from 203.0.113.146 port 40007 ssh2
+2026-10-14T01:12:13.345+00:00 web-1 systemd[9607]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-14T01:27:25.376+00:00 db-1 sshd[2079]: Failed password for invalid user admin from 203.0.113.90 port 46692 ssh2
+2026-10-14T01:33:35.560+00:00 web-1 CRON[2857]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T01:38:13.179+00:00 db-1 CRON[2650]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T01:51:35.060+00:00 web-1 CRON[8334]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T02:03:33.350+00:00 web-1 CRON[4621]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T02:23:44.459+00:00 db-1 CRON[9355]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T02:25:33.524+00:00 db-1 kernel[1560]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #83170: comm example-app: reading directory lblock 0
+2026-10-14T02:27:27.241+00:00 db-1 CRON[4333]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T02:31:08.365+00:00 db-1 CRON[5806]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T02:56:53.846+00:00 db-1 CRON[9669]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T03:03:58.071+00:00 db-1 CRON[6119]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T03:20:41.047+00:00 db-1 CRON[5108]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T03:23:32.083+00:00 db-1 CRON[9445]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T03:25:44.393+00:00 web-1 CRON[7872]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T03:30:38.731+00:00 db-1 CRON[7732]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T03:47:57.673+00:00 db-1 CRON[3768]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T04:00:57.754+00:00 db-1 sshd[4848]: Failed password for invalid user admin from 203.0.113.134 port 41516 ssh2
+2026-10-14T04:06:05.588+00:00 db-1 CRON[4502]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T04:09:48.048+00:00 web-1 sshd[9084]: Failed password for invalid user admin from 203.0.113.93 port 47674 ssh2
+2026-10-14T04:15:18.673+00:00 db-1 CRON[2760]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T04:18:37.905+00:00 db-1 sshd[9342]: Failed password for invalid user admin from 203.0.113.58 port 40722 ssh2
+2026-10-14T04:44:45.143+00:00 db-1 CRON[7943]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T05:07:30.585+00:00 db-1 sshd[8568]: Failed password for invalid user admin from 203.0.113.120 port 51323 ssh2
+2026-10-14T05:08:49.047+00:00 web-1 sshd[7590]: Failed password for invalid user admin from 203.0.113.35 port 57157 ssh2
+2026-10-14T05:22:55.386+00:00 web-1 CRON[6451]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T05:28:20.720+00:00 web-1 CRON[9147]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T05:32:18.144+00:00 web-1 CRON[1249]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T05:35:31.775+00:00 db-1 CRON[5806]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T06:20:42.569+00:00 web-1 CRON[9004]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T06:23:01.108+00:00 web-1 CRON[9994]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T06:38:45.423+00:00 web-1 sshd[6665]: Failed password for invalid user admin from 203.0.113.189 port 46724 ssh2
+2026-10-14T06:40:27.277+00:00 web-1 CRON[2427]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T06:57:02.676+00:00 db-1 CRON[7671]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T06:57:08.151+00:00 web-1 kernel[8035]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #60824: comm example-app: reading directory lblock 0
+2026-10-14T07:02:20.075+00:00 db-1 CRON[8421]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T07:03:06.418+00:00 db-1 CRON[5615]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T07:20:07.784+00:00 db-1 CRON[7726]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T07:25:20.816+00:00 web-1 CRON[5638]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T07:46:57.865+00:00 db-1 CRON[2012]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T07:57:27.329+00:00 db-1 CRON[1481]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T08:05:07.298+00:00 db-1 CRON[7197]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T08:10:29.333+00:00 web-1 systemd[7826]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-14T08:21:02.705+00:00 web-1 CRON[2881]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T08:27:50.232+00:00 db-1 kernel[2122]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #2475: comm example-app: reading directory lblock 0
+2026-10-14T08:28:43.126+00:00 web-1 kernel[4601]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #89861: comm example-app: reading directory lblock 0
+2026-10-14T08:42:30.450+00:00 web-1 CRON[6194]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T09:04:15.940+00:00 db-1 CRON[7622]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T09:09:37.075+00:00 db-1 CRON[6442]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T09:16:57.258+00:00 web-1 CRON[1817]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T09:24:24.159+00:00 db-1 CRON[9563]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T09:38:06.460+00:00 web-1 CRON[7550]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T09:39:56.211+00:00 db-1 systemd[2146]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-14T10:06:23.800+00:00 db-1 sshd[5363]: Failed password for invalid user admin from 203.0.113.71 port 47125 ssh2
+2026-10-14T10:23:30.949+00:00 db-1 CRON[1261]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T10:26:25.212+00:00 web-1 kernel[3882]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #78763: comm example-app: reading directory lblock 0
+2026-10-14T10:36:53.590+00:00 web-1 CRON[1903]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T10:50:36.428+00:00 db-1 CRON[7427]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T10:55:35.720+00:00 db-1 systemd[6931]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-14T11:17:56.958+00:00 db-1 CRON[1039]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T11:20:17.336+00:00 web-1 CRON[4504]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T11:32:49.858+00:00 web-1 CRON[1369]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T11:42:00.466+00:00 web-1 kernel[7039]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #42958: comm example-app: reading directory lblock 0
+2026-10-14T11:42:16.780+00:00 web-1 CRON[9501]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T11:56:04.216+00:00 web-1 kernel[3081]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #76861: comm example-app: reading directory lblock 0
+2026-10-14T12:02:27.253+00:00 db-1 CRON[6126]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T12:05:43.866+00:00 db-1 kernel[6170]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #81900: comm example-app: reading directory lblock 0
+2026-10-14T12:07:03.990+00:00 db-1 sshd[3356]: Failed password for invalid user admin from 203.0.113.12 port 52380 ssh2
+2026-10-14T12:08:39.173+00:00 db-1 CRON[3545]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T12:13:23.988+00:00 web-1 CRON[7350]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T12:14:05.072+00:00 web-1 CRON[3817]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T13:01:32.342+00:00 db-1 CRON[7326]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T13:21:22.787+00:00 web-1 sshd[3059]: Failed password for invalid user admin from 203.0.113.83 port 57511 ssh2
+2026-10-14T13:33:10.491+00:00 db-1 CRON[5679]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T13:36:40.337+00:00 web-1 CRON[3394]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T13:42:43.889+00:00 web-1 CRON[9988]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T13:57:39.316+00:00 db-1 sshd[2748]: Failed password for invalid user admin from 203.0.113.124 port 51247 ssh2
+2026-10-14T14:04:41.588+00:00 db-1 CRON[2096]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T14:06:34.898+00:00 web-1 CRON[4212]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T14:08:42.025+00:00 db-1 CRON[5648]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T14:25:45.580+00:00 web-1 systemd[7642]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-14T14:40:59.261+00:00 db-1 sshd[8574]: Failed password for invalid user admin from 203.0.113.51 port 40230 ssh2
+2026-10-14T14:55:54.365+00:00 web-1 CRON[5876]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T15:11:07.619+00:00 db-1 CRON[2969]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T15:15:34.652+00:00 db-1 sshd[2006]: Failed password for invalid user admin from 203.0.113.133 port 57441 ssh2
+2026-10-14T15:34:58.760+00:00 db-1 CRON[7467]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T15:35:14.813+00:00 web-1 kernel[5726]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #60162: comm example-app: reading directory lblock 0
+2026-10-14T15:38:15.948+00:00 db-1 CRON[3502]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T15:57:01.667+00:00 db-1 CRON[7307]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T16:06:01.610+00:00 db-1 systemd[5045]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-14T16:10:54.744+00:00 db-1 CRON[6445]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T16:23:11.462+00:00 web-1 CRON[4177]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T16:47:20.652+00:00 db-1 CRON[8026]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T16:48:46.080+00:00 web-1 CRON[1430]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T16:55:41.653+00:00 web-1 CRON[4745]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T17:02:42.009+00:00 web-1 CRON[1304]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T17:05:40.339+00:00 db-1 CRON[9975]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T17:15:27.500+00:00 db-1 CRON[5629]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T17:29:12.223+00:00 web-1 sshd[2244]: Failed password for invalid user admin from 203.0.113.8 port 56718 ssh2
+2026-10-14T17:47:18.129+00:00 web-1 sshd[7220]: Failed password for invalid user admin from 203.0.113.51 port 54779 ssh2
+2026-10-14T17:55:02.515+00:00 db-1 CRON[3720]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T18:03:52.671+00:00 db-1 CRON[6446]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T18:05:33.300+00:00 web-1 sshd[9851]: Failed password for invalid user admin from 203.0.113.143 port 50353 ssh2
+2026-10-14T18:17:20.431+00:00 web-1 systemd[6951]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-14T18:31:26.488+00:00 web-1 CRON[9872]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T18:50:42.909+00:00 db-1 CRON[7395]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T18:53:47.698+00:00 web-1 CRON[9380]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T19:35:27.164+00:00 web-1 sshd[8588]: Failed password for invalid user admin from 203.0.113.226 port 49379 ssh2
+2026-10-14T19:40:02.459+00:00 web-1 CRON[1047]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T19:41:13.452+00:00 db-1 CRON[1709]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T19:45:27.179+00:00 web-1 sshd[1919]: Failed password for invalid user admin from 203.0.113.27 port 44904 ssh2
+2026-10-14T19:45:56.061+00:00 web-1 CRON[7798]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T19:59:12.100+00:00 db-1 CRON[3913]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T20:01:40.798+00:00 db-1 sshd[2727]: Failed password for invalid user admin from 203.0.113.101 port 43473 ssh2
+2026-10-14T20:10:36.880+00:00 web-1 systemd[7770]: example-app.service: Watchdog timeout (limit 30s)!
+2026-10-14T20:30:22.029+00:00 db-1 CRON[8051]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T20:41:56.070+00:00 web-1 sshd[3690]: Failed password for invalid user admin from 203.0.113.91 port 53516 ssh2
+2026-10-14T20:48:25.681+00:00 web-1 CRON[9350]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T20:57:17.047+00:00 web-1 CRON[6345]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T21:02:55.482+00:00 web-1 CRON[6346]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T21:22:30.940+00:00 web-1 CRON[3835]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T21:22:33.245+00:00 db-1 CRON[5434]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T21:27:09.110+00:00 db-1 CRON[3358]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T21:36:40.846+00:00 db-1 CRON[6959]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T21:57:14.804+00:00 web-1 CRON[4437]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T22:01:47.910+00:00 db-1 CRON[1899]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T22:04:25.464+00:00 web-1 CRON[1501]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T22:18:43.627+00:00 db-1 CRON[2845]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T22:26:10.558+00:00 web-1 CRON[3305]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T22:29:51.637+00:00 web-1 CRON[5319]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T22:38:20.201+00:00 db-1 CRON[7023]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T23:06:25.808+00:00 web-1 CRON[7042]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T23:14:10.305+00:00 web-1 kernel[3173]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #53300: comm example-app: reading directory lblock 0
+2026-10-14T23:24:07.247+00:00 web-1 CRON[5676]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T23:24:59.710+00:00 web-1 CRON[3850]: (root) CMD (/usr/local/bin/backup.sh --quiet)
+2026-10-14T23:54:33.391+00:00 db-1 sshd[6080]: Failed password for invalid user admin from 203.0.113.34 port 52233 ssh2
+2026-10-14T23:54:41.601+00:00 db-1 kernel[8557]: EXT4-fs error (device sda1): ext4_find_entry:1455: inode #96063: comm example-app: reading directory lblock 0

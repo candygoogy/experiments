@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- shell:head -->
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <!-- shell:header -->
+    <main id="tool" class="wrap">
+      <h1>Template</h1>
+      <p class="intro">One sentence that says what this does.</p>
+      <noscript>
+        <p>This tool needs JavaScript. It runs entirely in your browser.</p>
+      </noscript>
+      <!-- The family's two columns (shared/work.css): the input, then an
+           example answer until the visitor's own takes its place. -->
+      <div class="work needs-js">
+        <div class="input">
+          <h2 class="label">Your input</h2>
+        </div>
+        <section class="pane example" aria-labelledby="example-label">
+          <h2 class="label" id="example-label">Example</h2>
+        </section>
+        <section class="pane yours" aria-labelledby="yours-label" hidden>
+          <h2 class="label" id="yours-label"></h2>
+        </section>
+      </div>
+    </main>
+    <!-- shell:footer -->
+  </body>
+</html>

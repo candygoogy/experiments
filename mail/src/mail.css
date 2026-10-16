@@ -1,0 +1,162 @@
+/* The mail check: the domain on the left, its answer on the right (under
+   it on phones). */
+
+/* The last answer, once a newer check has failed: dimmed under its
+   "Last checked" label. */
+.pane.is-stale .out {
+  opacity: 0.5;
+  transition: opacity var(--dur-ui) var(--ease-out);
+}
+
+/* The field and its button, one line. */
+.field {
+  display: flex;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.field input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 var(--sp-4);
+  /* The field's only edge: the shared field line (3:1 or more). */
+  border: var(--rule) solid var(--field-line);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font: var(--fw-regular) var(--fs-body) / 1 var(--ff-text);
+  transition: border-color var(--dur-ui) var(--ease-out);
+}
+
+.field input::placeholder {
+  color: var(--soft);
+}
+
+.field input:hover {
+  border-color: var(--ink);
+}
+
+.field button {
+  min-height: 48px;
+  padding: 0 var(--sp-5);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--bg);
+  font: var(--fw-medium) var(--fs-meta) / 1 var(--ff-text);
+  cursor: pointer;
+  transition: transform 120ms var(--ease-ui);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .field button:active {
+    transform: scale(0.97);
+  }
+}
+
+/* The line under the field names the domain, which can be one unbroken
+   label of 63 characters: it wraps anywhere rather than run off a phone. */
+.problem {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-meta);
+  overflow-wrap: anywhere;
+}
+
+.network {
+  margin-top: var(--sp-4);
+  max-width: 48ch;
+  font-size: var(--fs-sm);
+  color: var(--soft);
+}
+
+/* The verdict, then each check. */
+.verdict {
+  margin-top: var(--sp-5);
+  font: var(--fw-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
+  letter-spacing: var(--ls-d-md);
+  text-wrap: balance;
+}
+
+.checks {
+  margin: var(--sp-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A check: its name and level on the left, what it says on the right. */
+.check {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 5fr);
+  column-gap: var(--sp-6);
+  row-gap: var(--sp-2);
+  padding-block: var(--sp-4);
+  border-top: var(--rule) solid var(--line);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+
+/* .name alone would also reach the theme switch's labels. */
+.check .name {
+  font: var(--fw-medium) var(--fs-body) / var(--lh-tight) var(--ff-text);
+}
+
+/* The level, as a word in a pill: a problem in solid ink, weak (or a
+   check that couldn't be made) outlined in ink, set up outlined soft. A
+   note has none. */
+.level {
+  padding: 1px 9px;
+  border: var(--rule) solid var(--chip-line);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+  color: var(--soft);
+}
+
+.is-weak .level,
+.is-unchecked .level {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.is-missing .level,
+.is-broken .level,
+.is-unsafe .level {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+}
+
+/* What a check says can name a domain it pulls in, as long as any. */
+.says {
+  max-width: 60ch;
+  overflow-wrap: anywhere;
+}
+
+.details {
+  display: grid;
+  gap: 2px;
+  margin: var(--sp-2) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-sm);
+  color: var(--soft);
+  overflow-wrap: anywhere;
+}
+
+/* Phones: the name and level above what the check says. */
+@media (max-width: 40rem) {
+  .check {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .head {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,48 @@
+/* One disclosure for every tool: a native <details> whose summary reads
+   like a link (the accent, no marker) with a small chevron after it that
+   turns over when it opens. The summary keeps its line's height; its 44px
+   touch target is laid over it.
+
+   <details class="disclosure">
+     <summary>Show everything</summary>
+     …
+   </details> */
+.disclosure > summary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: var(--acc);
+  cursor: pointer;
+  list-style: none;
+}
+
+.disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure > summary::before {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 44px;
+  translate: 0 -50%;
+}
+
+.disclosure > summary::after {
+  content: "";
+  width: 0.45em;
+  height: 0.45em;
+  margin-left: 0.5em;
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  rotate: 45deg;
+  translate: 0 -0.15em;
+  transition:
+    rotate var(--dur-ui) var(--ease-out),
+    translate var(--dur-ui) var(--ease-out);
+}
+
+.disclosure[open] > summary::after {
+  rotate: -135deg;
+  translate: 0 0.15em;
+}

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- shell:head -->
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <!-- shell:header -->
+    <main id="tool" class="wrap">
+      <h1>{{title}}</h1>
+      <p class="intro">{{intro}}</p>
+      <noscript>
+        <p>{{noscript}}</p>
+      </noscript>
+      <div class="work needs-js">
+        <div class="input">
+          <label class="label" for="file">{{fileLabel}}</label>
+          <textarea
+            id="file"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            placeholder="{{placeholder}}"
+            aria-describedby="problem"
+          ></textarea>
+          <p class="problem" id="problem" hidden></p>
+          <label class="drop">
+            <input type="file" class="visually-hidden" multiple />
+            <span class="drop-main"
+              >{{drop}} <span class="pick">{{pick}}</span></span
+            >
+          </label>
+        </div>
+        <section class="pane example" aria-labelledby="example-label">
+          <h2 class="label" id="example-label">{{example}}</h2>
+          <!-- example -->
+        </section>
+        <section class="pane yours" aria-labelledby="yours-label" hidden>
+          <h2 class="label" id="yours-label">{{yours}}</h2>
+          <div class="out"></div>
+        </section>
+      </div>
+      <p class="live visually-hidden" aria-live="polite"></p>
+    </main>
+    <!-- shell:footer -->
+  </body>
+</html>

@@ -1,0 +1,61 @@
+{
+  "_comment": "The example on the page: made-up DNS answers for shop.example (the .example name is kept for examples, RFC 2606, so it is nobody’s real domain), in the shape Cloudflare gives them. The DKIM key was generated for this file and belongs to nothing.",
+  "shop.example MX": {
+    "Status": 0,
+    "AD": true,
+    "Answer": [
+      {
+        "type": 15,
+        "data": "10 mx1.mailhost.example."
+      },
+      {
+        "type": 15,
+        "data": "20 mx2.mailhost.example."
+      }
+    ]
+  },
+  "shop.example TXT": {
+    "Status": 0,
+    "AD": true,
+    "Answer": [
+      {
+        "type": 16,
+        "data": "\"v=spf1 include:_spf.mailhost.example ~all\""
+      },
+      {
+        "type": 16,
+        "data": "\"example-site-verification=made-up\""
+      }
+    ]
+  },
+  "_spf.mailhost.example TXT": {
+    "Status": 0,
+    "AD": true,
+    "Answer": [
+      {
+        "type": 16,
+        "data": "\"v=spf1 ip4:192.0.2.0/24 ip4:198.51.100.0/24 -all\""
+      }
+    ]
+  },
+  "_dmarc.shop.example TXT": {
+    "Status": 0,
+    "AD": true,
+    "Answer": [
+      {
+        "type": 16,
+        "data": "\"v=DMARC1; p=quarantine; rua=mailto:dmarc@shop.example\""
+      }
+    ]
+  },
+  "s1._domainkey.shop.example TXT": {
+    "Status": 0,
+    "AD": true,
+    "Answer": [
+      {
+        "type": 16,
+        "data": "\"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8cX8pWv7VrwQr+Z8G5v3vTD/eD4iTQBI4W6G+Ftr9QuutsYUzZgVGGoPEGIsBo30roRzFaauR54z/6jwZbAF4fo68CZ6ECD0BsTzHphRQD8WR/DuX1eNrsJ9PapZsM881i+6b5YSqgHlhGB7ELuP0+teZqvcc+MTWFtqOQYDocQIOPcTba7VNfpp5qNZQgrdC\" \"u/J/2h6Kxv8NC3LyvB8KmCZG05iTwpUWCb/QhqedxVr20EbmFQu8OlAsS5qGJtI0+wpBO9M3UZiy23c3CKEMY6nJ1NueVUWU/8Gxm4XYSs33EjCag0WDlNn82vAcbmNMIrI5OqIYSEUZvx8T/krQQIDAQAB\""
+      }
+    ]
+  }
+}

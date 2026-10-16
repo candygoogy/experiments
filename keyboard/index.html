@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- shell:head -->
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <!-- shell:header -->
+    <main id="tool" class="wrap">
+      <h1>{{title}}</h1>
+      <p class="intro">{{intro}}</p>
+      <noscript>
+        <p>{{noscript}}</p>
+      </noscript>
+      <p class="phone-note">{{phone}}</p>
+      <div class="controls needs-js">
+        <button class="start" type="button">{{start}}</button>
+        <p class="hint" hidden>{{stopHint}}</p>
+        <button class="over" type="button" hidden>{{startOver}}</button>
+        <div class="layout" role="group" aria-label="{{layoutLabel}}">
+          <button type="button" data-layout="iso" aria-pressed="true">
+            {{layouts.iso}}
+          </button>
+          <button type="button" data-layout="ansi" aria-pressed="false">
+            {{layouts.ansi}}
+          </button>
+        </div>
+      </div>
+      <div class="test needs-js" tabindex="-1">
+        <div class="board" aria-hidden="true"></div>
+      </div>
+      <section class="readout needs-js">
+        <div>
+          <h2 class="label">{{soFar}}</h2>
+          <p class="progress num"></p>
+          <p class="extra num" hidden></p>
+          <p class="try-iso" hidden>{{tryIso}}</p>
+          <p class="rollover num"></p>
+        </div>
+        <div>
+          <h2 class="label">{{findings}}</h2>
+          <ul class="findings"></ul>
+          <p class="soft">
+            <span class="swatch" aria-hidden="true"></span>{{limits}}
+          </p>
+          <p class="soft">{{avoid}}</p>
+          <p class="soft narrow-note">{{narrow}}</p>
+        </div>
+      </section>
+      <p class="live visually-hidden" aria-live="polite"></p>
+    </main>
+    <!-- shell:footer -->
+  </body>
+</html>

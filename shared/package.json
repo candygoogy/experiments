@@ -1,0 +1,11 @@
+{
+  "name": "@exp/shared",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./vite": "./vite.ts",
+    "./theme-switch": "./theme-switch.ts",
+    "./dropzone": "./dropzone.ts",
+    "./*.css": "./*.css"
+  }
+}
