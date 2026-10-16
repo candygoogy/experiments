@@ -6,7 +6,7 @@ import "@exp/shared/theme-switch.css";
 import "@exp/shared/disclosure.css";
 import "@exp/shared/work.css";
 import "./subnet.css";
-import { initThemeSwitch } from "@exp/shared/theme-switch";
+import { initHeader } from "@exp/shared/header";
 import { COPY, MAP } from "./copy";
 import { drawStrip } from "./draw";
 import { end, hosts, cidr, v4, type Range4 } from "./ip";
@@ -15,8 +15,7 @@ import { label, renderPlan } from "./render";
 import { addSplit, MAX_PARTS, splitEqual, splitFit, type Split } from "./split";
 import { MAX_STRIPS, strips, type Strip } from "./strip";
 
-const themes = document.querySelector<HTMLElement>("[data-theme-switch]");
-if (themes) initThemeSwitch(themes);
+initHeader();
 
 const find = <T extends Element>(selector: string): T => {
   const node = document.querySelector<T>(selector);

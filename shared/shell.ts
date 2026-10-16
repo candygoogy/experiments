@@ -1,8 +1,9 @@
 // The page shell every experiment shares: what goes in the head (title,
 // theme metas, the pre-paint theme script), the header (a skip link, the
-// wordmark back to candygoogy.dev, Experiments, the theme switch) and the
-// footer (the privacy line, the source, the license). Built into
-// index.html by defineExperiment() in vite.ts; styled by shell.css.
+// wordmark back to candygoogy.dev, Experiments, the theme switch; on
+// phones, Menu and its menu, as on the site) and the footer (the privacy
+// line, the source, the license). Built into index.html by
+// defineExperiment() in vite.ts; styled by shell.css, run by header.ts.
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
@@ -33,9 +34,21 @@ export const TITLE_END = " – candygoogy";
 /** The footer's privacy line unless an experiment gives its own. */
 export const PRIVACY =
   "Runs in your browser. Nothing you drop here is uploaded.";
+/** The menu's route, as on candygoogy.dev: the site's sections, with
+ * Experiments, where every tool belongs, as the current one. */
+export const ROUTE = [
+  { href: `${SITE}/#projects`, label: "Projects" },
+  { href: `${SITE}/experiments`, label: "Experiments", current: true },
+  { href: `${SITE}/#about`, label: "About" },
+  { href: `${SITE}/#contact`, label: "Contact" },
+] as const;
+
 /** The first Tab stop on every page, as on candygoogy.dev: past the
  * header to the tool (every index.html has <main id="tool">). */
 export const SKIP = "Skip to content";
+/** The phone header's button, and its word while the menu is open. */
+export const MENU = "Menu";
+export const CLOSE = "Close";
 
 /** The pre-paint theme script, exactly as it's inlined and hashed. */
 export const themeScript = (): string =>
@@ -44,12 +57,16 @@ export const themeScript = (): string =>
     "utf8",
   );
 
-const escape = (text: string) =>
+/** Text made safe for HTML, in an element or a quoted attribute. A line
+ * break is written as &#10;, so a placeholder's lines stay lines; in text
+ * it reads the same. */
+export const escape = (text: string): string =>
   text
     .replaceAll("&", "&amp;")
     .replaceAll('"', "&quot;")
     .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
+    .replaceAll(">", "&gt;")
+    .replaceAll("\n", "&#10;");
 
 const OPTIONS = [
   { value: "auto", label: "Auto" },
@@ -63,7 +80,7 @@ const themeSwitch = () => {
       `<button type="button" data-value="${o.value}" aria-pressed="false">` +
       `<span class="face"><span class="name">${o.label}</span>` +
       (o.value === "auto" ? `<span class="resolved"></span>` : "") +
-      `<span class="icon icon-${o.value}" aria-hidden="true"></span></span>` +
+      `</span>` +
       (o.value === "auto"
         ? `<span class="visually-hidden" data-resolved></span>`
         : "") +
@@ -73,7 +90,7 @@ const themeSwitch = () => {
     (o) =>
       `<span class="face" data-label="${o.label}">` +
       (o.value === "auto" ? `<span class="resolved"></span>` : "") +
-      `<span class="icon icon-${o.value}"></span></span>`,
+      `</span>`,
   ).join("");
   return (
     `<div class="themes" role="group" aria-label="Theme" data-theme-switch>` +
@@ -99,12 +116,31 @@ export function shellHtml(o: ShellOptions): {
     `<link rel="apple-touch-icon" href="/apple-touch-icon.png" />`,
     `<script>${themeScript()}</script>`,
   ].join("\n    ");
+  const brand = `<a class="brand" href="${SITE}/">candygoogy</a>`;
+  // Where the row doesn't fit, the menu (header.ts): its top row is the
+  // header's, with Close where Menu was; under it, low, the site's route,
+  // drawn in its timeline's line and rings, then the theme switch.
+  const route = ROUTE.map(
+    (r) =>
+      `<li><a href="${r.href}"${"current" in r ? ` aria-current="true"` : ""}>` +
+      `<span class="route-node" aria-hidden="true"><span></span></span>` +
+      `<span class="route-name"><span>${r.label}</span></span></a></li>`,
+  ).join("");
   const header =
     `<a class="skip" href="#tool">${SKIP}</a>` +
     `<header class="top wrap">` +
-    `<a class="brand" href="${SITE}/">candygoogy</a>` +
-    `<nav aria-label="Main"><ul><li><a href="${SITE}/experiments">Experiments</a></li></ul></nav>` +
+    brand +
+    `<nav class="nav" aria-label="Main"><ul><li><a href="${SITE}/experiments">Experiments</a></li></ul></nav>` +
     `<div class="tools">${themeSwitch()}</div>` +
+    `<button type="button" class="toggle" aria-expanded="false" aria-controls="menu" aria-haspopup="dialog" data-menu-open>` +
+    `<span class="swap"><span>${MENU}</span></span></button>` +
+    `<dialog id="menu" class="menu" aria-label="${MENU}" tabindex="-1" data-menu>` +
+    `<div class="top wrap">${brand}` +
+    `<button type="button" class="toggle" data-menu-close><span class="swap">` +
+    `<span aria-hidden="true">${MENU}</span><span>${CLOSE}</span></span></button></div>` +
+    `<nav class="route wrap" aria-label="Pages"><ul>${route}</ul></nav>` +
+    `<div class="menu-end wrap">${themeSwitch()}</div>` +
+    `</dialog>` +
     `</header>`;
   const footer =
     `<footer class="foot wrap"><div class="inner">` +

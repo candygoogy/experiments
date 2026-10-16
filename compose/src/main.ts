@@ -7,12 +7,11 @@ import "@exp/shared/dropzone.css";
 import "@exp/shared/work.css";
 import "./compose.css";
 import { initDropZone } from "@exp/shared/dropzone";
-import { initThemeSwitch } from "@exp/shared/theme-switch";
+import { initHeader } from "@exp/shared/header";
 import { COPY } from "./copy";
 import { drawWires } from "./wires";
 
-const themes = document.querySelector<HTMLElement>("[data-theme-switch]");
-if (themes) initThemeSwitch(themes);
+initHeader();
 
 const find = <T extends Element>(selector: string): T => {
   const node = document.querySelector<T>(selector);

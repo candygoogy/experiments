@@ -10,6 +10,10 @@ const BG = { light: "#f4f4f5", dark: "#121214" } as const;
 
 type Theme = "auto" | "light" | "dark";
 
+// There are two (the header's, and the menu's on phones): a theme put on
+// by one is shown by both.
+const syncs: (() => void)[] = [];
+
 const saved = (): Theme => {
   try {
     const value = localStorage.getItem("theme");
@@ -44,7 +48,8 @@ export function initThemeSwitch(group: HTMLElement): void {
     if (resolved) resolved.textContent = dark.matches ? " (dark)" : " (light)";
   };
 
-  const apply = (value: Theme) => {
+  // Puts the theme on this page, and both switches show it.
+  const show = (value: Theme) => {
     if (value === "auto") {
       delete root.dataset["theme"];
       meta?.setAttribute("content", "light dark");
@@ -53,13 +58,17 @@ export function initThemeSwitch(group: HTMLElement): void {
       meta?.setAttribute("content", value);
     }
     barColor(value);
+    for (const s of syncs) s();
+  };
+
+  const apply = (value: Theme) => {
+    show(value);
     try {
       if (value === "auto") localStorage.removeItem("theme");
       else localStorage.setItem("theme", value);
     } catch {
       // Storage blocked: the choice lasts for this page only.
     }
-    sync();
   };
 
   group.addEventListener("click", (event) => {
@@ -83,7 +92,18 @@ export function initThemeSwitch(group: HTMLElement): void {
     requestAnimationFrame(() => root.classList.remove("theme-restore"));
   });
 
+  // A theme chosen in another open tab of this tool is put on here too,
+  // as a click would. That tab saved it already, so nothing is written
+  // back. A null key is storage cleared, which is Auto.
+  addEventListener("storage", (event) => {
+    if (event.key !== "theme" && event.key !== null) return;
+    const value = saved();
+    if (value === (root.dataset["theme"] ?? "auto")) return;
+    show(value);
+  });
+
   dark.addEventListener("change", sync);
+  syncs.push(sync);
   sync();
   requestAnimationFrame(() => {
     group.dataset["ready"] = "";

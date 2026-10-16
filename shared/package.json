@@ -5,6 +5,7 @@
   "exports": {
     "./vite": "./vite.ts",
     "./theme-switch": "./theme-switch.ts",
+    "./header": "./header.ts",
     "./dropzone": "./dropzone.ts",
     "./*.css": "./*.css"
   }

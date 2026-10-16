@@ -4,7 +4,6 @@ import "@exp/shared/base.css";
 import "@exp/shared/shell.css";
 import "@exp/shared/theme-switch.css";
 import "@exp/shared/work.css";
-import { initThemeSwitch } from "@exp/shared/theme-switch";
+import { initHeader } from "@exp/shared/header";
 
-const themes = document.querySelector<HTMLElement>("[data-theme-switch]");
-if (themes) initThemeSwitch(themes);
+initHeader();

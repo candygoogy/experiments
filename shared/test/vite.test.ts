@@ -33,6 +33,10 @@ describe("cspFor", () => {
     expect(csp).toContain("worker-src 'self'");
     expect(csp).not.toMatch(/worker-src[^;]*blob:/);
   });
+
+  test("csp allows no plugins", () => {
+    expect(cspFor({ ...min }, "x")).toContain("object-src 'none'");
+  });
 });
 
 describe("shellHtml", () => {

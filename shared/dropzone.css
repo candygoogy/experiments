@@ -54,9 +54,20 @@
   border-color: var(--ink);
 }
 
-.drop:focus-within {
+/* The ring is for the keyboard. A file picked with the mouse leaves focus
+   on the hidden input (the click puts it there, and it is still there
+   when the file picker closes), which :focus-within alone keeps ringing.
+   Browsers without :has() fall back to it. */
+.drop:has(:focus-visible) {
   outline: var(--focus-width) solid var(--focus);
   outline-offset: var(--focus-offset);
+}
+
+@supports not selector(:has(:focus-visible)) {
+  .drop:focus-within {
+    outline: var(--focus-width) solid var(--focus);
+    outline-offset: var(--focus-offset);
+  }
 }
 
 .drop-main {

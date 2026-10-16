@@ -297,6 +297,69 @@ export async function checkBasics(
     await context.close();
   }
 
+  // (k) Phones: the header is the wordmark and Menu. Menu opens the site's
+  // route with Experiments as the current stop, the page behind can't
+  // scroll, both theme switches agree, and Esc closes it with focus back
+  // on Menu. Scrolling down takes the header away; scrolling up brings it
+  // back.
+  {
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 640 },
+    });
+    const p = await context.newPage();
+    await p.goto(base);
+    const menuButton = p.locator("[data-menu-open]");
+    const menu = p.locator("[data-menu]");
+    await expect(menuButton, "Menu on phones").toBeVisible();
+    await expect(
+      p.locator("header.top > .nav"),
+      "nav in the menu",
+    ).toBeHidden();
+    await menuButton.focus();
+    await p.keyboard.press("Enter");
+    await expect(menu, "menu open").toBeVisible();
+    await expect(menuButton).toHaveAttribute("aria-expanded", "true");
+    await expect(p.locator("[data-menu-close]"), "Close focused").toBeFocused();
+    await expect(menu.locator(".route a")).toHaveText([
+      "Projects",
+      "Experiments",
+      "About",
+      "Contact",
+    ]);
+    await expect(menu.locator(".route a[aria-current]")).toHaveText(
+      "Experiments",
+    );
+    expect(
+      await p.evaluate(
+        () => getComputedStyle(document.documentElement).overflow,
+      ),
+      "page behind locked",
+    ).toBe("hidden");
+    await menu.locator('button[data-value="light"]').click();
+    await expect(p.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(
+      p.locator('header.top > .tools button[data-value="light"]'),
+      "both switches agree",
+    ).toHaveAttribute("aria-pressed", "true");
+    await p.keyboard.press("Escape");
+    await expect(menu, "Esc closes").toBeHidden();
+    await expect(menuButton, "focus back on Menu").toBeFocused();
+    await expect(menuButton).toHaveAttribute("aria-expanded", "false");
+    await menuButton.blur();
+    const header = p.locator("header.top");
+    const tall = await p.evaluate(
+      () => document.documentElement.scrollHeight > innerHeight + 300,
+    );
+    if (tall) {
+      await p.mouse.move(195, 400);
+      await p.mouse.wheel(0, 300);
+      await expect(header, "away on scroll down").toHaveClass(/\baway\b/);
+      await p.mouse.wheel(0, -60);
+      await expect(header, "back on scroll up").not.toHaveClass(/\baway\b/);
+    }
+    await context.close();
+  }
+
   // (i) Without JavaScript: the heading, and a plain word that the tool
   // needs it.
   {

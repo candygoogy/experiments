@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import type { Plugin, UserConfig } from "vite";
 import { thirdPartyNotices } from "./licenses.ts";
 import {
+  escape,
   shellHtml,
   themeScript,
   type ExperimentOptions,
@@ -37,6 +38,8 @@ export function cspFor(o: ExperimentOptions, script: string): string {
     "font-src 'self'",
     // A tool's Web Worker comes from its own files, never a blob.
     "worker-src 'self'",
+    // No plugins, so no <object> or <embed> either.
+    "object-src 'none'",
     "frame-ancestors 'none'",
     "base-uri 'none'",
     "form-action 'none'",
@@ -131,6 +134,32 @@ function preloadFonts(): Plugin {
             injectTo: "head" as const,
           }));
       },
+    },
+  };
+}
+
+// A tool's words come from its src/copy.ts: each {{path}} in index.html
+// (a key, or keys joined by dots) is filled in at build time, so the
+// heading and the sentence are in the HTML itself. A path with no words
+// stops the build.
+export function words(copy: object): Plugin {
+  return {
+    name: "experiment-words",
+    transformIndexHtml: {
+      order: "pre",
+      handler: (html) =>
+        html.replace(/\{\{([\w.]+)\}\}/g, (_, path: string) => {
+          const value = path
+            .split(".")
+            .reduce<unknown>(
+              (o, k) => (o as Record<string, unknown> | undefined)?.[k],
+              copy,
+            );
+          if (typeof value !== "string") {
+            throw new Error(`index.html: no words for {{${path}}}`);
+          }
+          return escape(value);
+        }),
     },
   };
 }

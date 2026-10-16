@@ -8,10 +8,9 @@ import "@exp/shared/disclosure.css";
 import "@exp/shared/work.css";
 import "./photo.css";
 import { initDropZone } from "@exp/shared/dropzone";
-import { initThemeSwitch } from "@exp/shared/theme-switch";
+import { initHeader } from "@exp/shared/header";
 
-const themes = document.querySelector<HTMLElement>("[data-theme-switch]");
-if (themes) initThemeSwitch(themes);
+initHeader();
 
 const zone = document.querySelector<HTMLLabelElement>(".drop");
 const input = zone?.querySelector<HTMLInputElement>("input");
