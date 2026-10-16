@@ -30,6 +30,8 @@ const send = (page: Page, events: [string, string][]) =>
 async function startTesting(page: Page) {
   await page.goto(BASE);
   await expect(key(page, "KeyQ")).toBeAttached();
+  // A computer: no keyboard note, the controls straight away.
+  await expect(page.locator(".phone")).toBeHidden();
   await page.click('[data-layout="iso"]');
   await expect(key(page, "IntlBackslash")).toBeAttached();
   await page.click(".start");
@@ -96,7 +98,7 @@ test("progress is read out at most once a second", async ({ page }) => {
   await expect(page.locator(".live")).toHaveText("20 of 105 keys pressed.");
 });
 
-test("a phone says it needs a keyboard, until one types", async ({
+test("a phone asks for a keyboard first, until one types", async ({
   browser,
 }) => {
   const context = await browser.newContext({
@@ -106,15 +108,28 @@ test("a phone says it needs a keyboard, until one types", async ({
   });
   const page = await context.newPage();
   await page.goto(BASE);
-  await expect(page.locator(".phone-note")).toBeVisible();
+  const note = page.locator(".phone");
+  await expect(note).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2 })).toHaveText(
+    "This needs a physical keyboard",
+  );
+  // Seen without scrolling, in place of the controls.
+  const box = await note.boundingBox();
+  expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(844);
   await expect(page.locator(".start")).toBeHidden();
-  await expect(key(page, "KeyA")).toHaveAttribute("data-state", "idle");
+  await expect(page.locator(".readout")).toBeHidden();
+  // The first key press only shows the controls, with Start focused.
   await page.keyboard.press("KeyA");
-  await expect(page.locator(".phone-note")).toBeHidden();
+  await expect(note).toBeHidden();
+  await expect(page.locator(".start")).toBeFocused();
+  await expect(key(page, "KeyA")).toHaveAttribute("data-state", "idle");
   await page.locator('[data-layout="iso"]').click();
-  await page.locator(".start").click();
+  await page.locator(".start").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator(".hint")).toBeVisible();
   await page.keyboard.press("KeyB");
   await expect(key(page, "KeyB")).toHaveAttribute("data-state", "seen");
+  await expect(page.locator(".progress")).toHaveText("1 of 88 keys pressed.");
   await context.close();
 });
 

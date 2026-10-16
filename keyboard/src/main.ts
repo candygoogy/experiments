@@ -5,7 +5,7 @@ import "@exp/shared/shell.css";
 import "@exp/shared/theme-switch.css";
 import "@exp/shared/work.css";
 import "./keyboard.css";
-import { initThemeSwitch } from "@exp/shared/theme-switch";
+import { initHeader } from "@exp/shared/header";
 import { COPY, KEY_NAMES } from "./copy";
 import {
   codesOf,
@@ -17,8 +17,7 @@ import {
 import { KeyTracker } from "./tracker";
 import { renderBoard } from "./view";
 
-const themes = document.querySelector<HTMLElement>("[data-theme-switch]");
-if (themes) initThemeSwitch(themes);
+initHeader();
 
 // A key held this long, with no release, may be stuck.
 const HELD_MS = 3000;
@@ -60,12 +59,15 @@ let news: string[] = [];
 // Nothing is read out before the first key pressed while testing.
 let heard = false;
 
-// Phones (a coarse pointer, no fine one) usually have no keyboard: the
-// page says so. A real key press means there is one after all.
-const noKeyboard =
-  matchMedia("(pointer: coarse)").matches &&
+// Touch only (a coarse pointer, and nothing that's fine or hovers): a
+// phone, or a tablet without its keyboard. keyboard.css asks for a
+// keyboard there, from the same queries, until a real key press shows
+// one is connected. A touchscreen laptop has its trackpad, so it's not
+// touch only.
+const touchOnly = () =>
+  matchMedia("(pointer: coarse) and (any-hover: none)").matches &&
   !matchMedia("(any-pointer: fine)").matches;
-tool.dataset["mode"] = noKeyboard ? "phone" : "idle";
+tool.dataset["mode"] = "idle";
 
 // Below this width the whole board's legends would be too small to read
 // (about 7px at 768px wide), so it's drawn without its number pad, which
@@ -212,8 +214,14 @@ function stopTesting() {
 addEventListener(
   "keydown",
   (e) => {
-    if (tool.dataset["mode"] === "phone") {
-      tool.dataset["mode"] = "idle";
+    if (!("keyboard" in tool.dataset) && touchOnly()) {
+      if (!e.code || e.code === "Unidentified") return;
+      // A keyboard after all: the controls take the note's place, and
+      // Start has the focus, so Enter starts. The key itself does nothing
+      // else (Enter mustn't press Start too); shortcuts still work.
+      tool.dataset["keyboard"] = "";
+      if (!e.ctrlKey && !e.metaKey && !e.altKey) e.preventDefault();
+      start.focus();
       return;
     }
     if (!testing) return;

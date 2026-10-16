@@ -10,8 +10,12 @@ export const COPY = {
     "Press every key and watch it light up. Find the dead ones, the stuck ones, and the ones that type twice.",
   start: "Start testing",
   stopHint: "Press Esc to stop testing.",
+  // A touch-only device (a phone, a tablet without its keyboard), until
+  // the first key press from a connected keyboard.
+  phoneTitle: "This needs a physical keyboard",
   phone:
-    "This needs a physical keyboard. Connect one, or open this page on a computer.",
+    "Connect one by Bluetooth or USB, then press any key. Or open this page on a computer.",
+  phoneWhy: "The on-screen keyboard can’t be tested here.",
   soFar: "So far",
   findings: "Findings",
   limits:
