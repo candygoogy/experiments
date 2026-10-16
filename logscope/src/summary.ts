@@ -400,6 +400,7 @@ const EXPORT_NAME: Record<string, string> = {
   "ev-csv": "CSV",
   "ev-txt": "text",
   "ev-xml": "XML",
+  evtx: ".evtx",
 };
 
 /** The line under the verdict: how much, from when to when, what it is. */
@@ -443,9 +444,12 @@ export function about(result: Result): string {
   if (result.zone !== null) {
     line += ` ${fill(copy.timesIn, { zone: zoneName(result.zone) })}`;
   }
-  if (result.skipped === 1) line += ` ${copy.skippedOne}`;
-  else if (result.skipped) {
-    line += ` ${fill(copy.skipped, { n: formatNumber(result.skipped) })}`;
+  // An .evtx file holds events; the text formats are read a line at a time.
+  const evtx = result.format === "evtx";
+  if (result.skipped === 1) {
+    line += ` ${evtx ? copy.skippedEventOne : copy.skippedOne}`;
+  } else if (result.skipped) {
+    line += ` ${fill(evtx ? copy.skippedEvents : copy.skipped, { n: formatNumber(result.skipped) })}`;
   }
   return line;
 }

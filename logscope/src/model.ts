@@ -13,7 +13,7 @@ export const LEVELS: readonly Level[] = [
 
 /** The formats this page reads. */
 export type Format =
-  "ev-csv" | "ev-txt" | "ev-xml" | "syslog" | "access" | "nginx-error";
+  "ev-csv" | "ev-txt" | "ev-xml" | "evtx" | "syslog" | "access" | "nginx-error";
 
 /** What kind of log it is, which decides the words and the filters. */
 export type Kind = "windows" | "server" | "web";
@@ -22,6 +22,7 @@ export const KIND: Record<Format, Kind> = {
   "ev-csv": "windows",
   "ev-txt": "windows",
   "ev-xml": "windows",
+  evtx: "windows",
   syslog: "server",
   "nginx-error": "server",
   access: "web",

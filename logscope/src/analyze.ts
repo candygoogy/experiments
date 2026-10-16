@@ -75,6 +75,8 @@ export interface Options {
 export interface Analyzer {
   /** A line, or a piece of a long one (`more`: it goes on). */
   line(text: string, more?: boolean): void;
+  /** An event that couldn't be read (an .evtx record). */
+  skip(): void;
   end(): Result;
 }
 
@@ -326,7 +328,7 @@ export function analyzer(format: Format, options: Options = {}): Analyzer {
       ? windowsTable(",", add, context)
       : format === "ev-txt"
         ? windowsTable("\t", add, context)
-        : format === "ev-xml"
+        : format === "ev-xml" || format === "evtx"
           ? windowsXml(add, context)
           : format === "syslog"
             ? syslog(add, context, options.now ?? new Date())
@@ -335,8 +337,9 @@ export function analyzer(format: Format, options: Options = {}): Analyzer {
               : nginxError(add, context);
 
   // A line passed on in pieces (lines.ts): the XML reads every piece, a
-  // line-per-event format only the first.
-  const pieces = format === "ev-xml";
+  // line-per-event format only the first. An .evtx comes as one event's
+  // XML at a time (evtx.ts).
+  const pieces = format === "ev-xml" || format === "evtx";
   let continuing = false;
 
   return {
@@ -345,6 +348,7 @@ export function analyzer(format: Format, options: Options = {}): Analyzer {
       else if (!continuing) parser.line(text);
       continuing = more;
     },
+    skip: context.skip,
     end() {
       parser.end();
       for (const g of groups.values()) {

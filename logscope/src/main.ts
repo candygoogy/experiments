@@ -7,7 +7,7 @@ import "@exp/shared/dropzone.css";
 import "@exp/shared/work.css";
 import "./logscope.css";
 import { initDropZone } from "@exp/shared/dropzone";
-import { initThemeSwitch } from "@exp/shared/theme-switch";
+import { initHeader } from "@exp/shared/header";
 import { copy, fill } from "./copy.ts";
 import { canonical } from "./known.ts";
 import type { Group, Level, Result } from "./model.ts";
@@ -15,8 +15,7 @@ import { PAGE, renderAnswer, row, START_LEVELS } from "./render.ts";
 import { groupName, groupPlain, isNoise, plainMessage } from "./summary.ts";
 import type { FromWorker } from "./worker.ts";
 
-const themes = document.querySelector<HTMLElement>("[data-theme-switch]");
-if (themes) initThemeSwitch(themes);
+initHeader();
 
 const zone = document.querySelector<HTMLLabelElement>(".drop");
 const input = zone?.querySelector<HTMLInputElement>("input");
@@ -183,11 +182,7 @@ function read(file: File, skipped: File[]) {
     if (worker === mine) worker = null;
     if (message.type === "problem") {
       problem(
-        message.reason === "evtx"
-          ? [copy.evtx, copy.evtxHow]
-          : message.reason === "not-a-log"
-            ? [copy.notALog]
-            : [copy.unreadable],
+        message.reason === "not-a-log" ? [copy.notALog] : [copy.unreadable],
       );
       return;
     }

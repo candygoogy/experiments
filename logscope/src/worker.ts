@@ -2,16 +2,18 @@
 // decoded a piece at a time, so a log of hundreds of megabytes never sits
 // in memory whole and the page keeps answering. The text encoding and the
 // format are decided from the start of the file; progress goes back to
-// the page as the bytes go by.
+// the page as the bytes go by. An .evtx file is read a chunk at a time
+// instead (evtx.ts).
 import { analyzer, type Analyzer } from "./analyze.ts";
 import { detect, encoding, isEvtx } from "./detect.ts";
+import { EVTX_CHUNK, evtxChunk, evtxStart, isChunk } from "./evtx.ts";
 import { lines } from "./lines.ts";
 import type { Result } from "./model.ts";
 
 export type FromWorker =
   | { type: "progress"; read: number; total: number }
   | { type: "done"; result: Result }
-  | { type: "problem"; reason: "evtx" | "not-a-log" | "unreadable" };
+  | { type: "problem"; reason: "not-a-log" | "unreadable" };
 
 // How much of the file decides the encoding and the format.
 const HEAD = 64 * 1024;
@@ -20,10 +22,37 @@ const PROGRESS_MS = 100;
 
 const post = (message: FromWorker) => postMessage(message);
 
+/** An .evtx file, a chunk at a time. Chunks are in the order Windows
+ * reused them, not in time order, which the counts don't mind. */
+async function readEvtx(file: File, head: Uint8Array) {
+  const run = analyzer("evtx");
+  let chunks = 0;
+  let told = 0;
+  for (let at = evtxStart(head); at < file.size; at += EVTX_CHUNK) {
+    const bytes = new Uint8Array(
+      await file.slice(at, at + EVTX_CHUNK).arrayBuffer(),
+    );
+    if (isChunk(bytes)) chunks++;
+    evtxChunk(bytes, (xml) => run.line(xml), run.skip);
+    const now = performance.now();
+    if (now - told > PROGRESS_MS) {
+      told = now;
+      post({ type: "progress", read: at + bytes.length, total: file.size });
+    }
+  }
+  // Not one chunk of events: a header and nothing else, or not an .evtx.
+  if (!chunks) {
+    post({ type: "problem", reason: "unreadable" });
+    return;
+  }
+  post({ type: "progress", read: file.size, total: file.size });
+  post({ type: "done", result: run.end() });
+}
+
 async function read(file: File) {
   const start = new Uint8Array(await file.slice(0, HEAD).arrayBuffer());
   if (isEvtx(start)) {
-    post({ type: "problem", reason: "evtx" });
+    await readEvtx(file, start);
     return;
   }
 

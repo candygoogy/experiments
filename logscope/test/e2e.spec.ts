@@ -104,6 +104,7 @@ test.describe("every format gives its verdict", () => {
     ["en-system.txt", RESTARTS],
     ["system.xml", RESTARTS],
     ["wevtutil.xml", RESTARTS],
+    ["system.evtx", RESTARTS],
     [
       "syslog-3164.log",
       "The most frequent error is “Failed password for invalid user admin from … port … ssh2”, 40 times.",
@@ -271,11 +272,48 @@ test("the filter fields have an edge you can see; chips say what they stand for"
   expect(Object.values(copy.slots)).toContain(await chip.textContent());
 });
 
-test("an .evtx file: how to export it instead", async ({ page }) => {
+test("an .evtx file dropped on the page, again, then chosen", async ({
+  page,
+}) => {
+  const errors = consoleErrors(page);
+  await page.goto(BASE);
+  const body = [...readFileSync(fixture("system.evtx"))];
+  const drop = async (name: string) => {
+    const transfer = await page.evaluateHandle(
+      ([name, bytes]) => {
+        const dt = new DataTransfer();
+        dt.items.add(new File([new Uint8Array(bytes)], name));
+        return dt;
+      },
+      [name, body] as const,
+    );
+    const zone = page.locator(".drop");
+    for (const type of ["dragenter", "dragover", "drop"]) {
+      await zone.dispatchEvent(type, { dataTransfer: transfer });
+    }
+  };
+  const about = page.locator(".answer .about");
+  await drop("System.evtx");
+  await expect(page.locator(".answer .verdict")).toHaveText(RESTARTS);
+  await expect(about).toContainText("436 events in the System log");
+  await expect(about).toContainText("exported as .evtx");
+  await expect(page.locator("#yours-label")).toHaveText("System.evtx");
+  // Another drop reads again.
+  await page.setInputFiles(".drop input", fixture("access.log"));
+  await expect(page.locator(".answer .verdict")).not.toHaveText(RESTARTS);
+  await drop("Again.evtx");
+  await expect(page.locator(".answer .verdict")).toHaveText(RESTARTS);
+  await expect(page.locator("#yours-label")).toHaveText("Again.evtx");
+  await page.setInputFiles(".drop input", fixture("system.evtx"));
+  await expect(page.locator("#yours-label")).toHaveText("system.evtx");
+  await expect(page.locator(".answer .verdict")).toHaveText(RESTARTS);
+  expect(errors).toEqual([]);
+});
+
+test("an .evtx header with no events after it", async ({ page }) => {
   await page.goto(BASE);
   await page.setInputFiles(".drop input", fixture("fake.evtx"));
-  await expect(page.locator(".answer .problem")).toHaveText(copy.evtx);
-  await expect(page.locator(".answer .problem-how")).toHaveText(copy.evtxHow);
+  await expect(page.locator(".answer .problem")).toHaveText(copy.unreadable);
 });
 
 test("not a log", async ({ page }) => {

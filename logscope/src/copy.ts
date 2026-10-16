@@ -11,7 +11,7 @@ export const copy = {
   oneAtATime: "One file at a time: showing {name}.",
   drop: "Drop a log here, or choose the file",
   howTo:
-    "From Event Viewer: select a log, then Save All Events As… and pick CSV or XML. Server logs (syslog, nginx, Apache) work as they are.",
+    "From Event Viewer: right-click a log, choose Save All Events As… and drop the .evtx file here (CSV and XML work too). Server logs (syslog, nginx, Apache) work as they are.",
   reading: "Reading the log… {pct}%",
 
   // Windows verdicts.
@@ -58,6 +58,9 @@ export const copy = {
   utc: "UTC",
   skipped: "{n} lines couldn’t be read and were left out.",
   skippedOne: "One line couldn’t be read and was left out.",
+  // The same for an .evtx file, which holds events, not lines.
+  skippedEvents: "{n} events couldn’t be read and were left out.",
+  skippedEventOne: "One event couldn’t be read and was left out.",
   syslogName: "a syslog file",
   nginxErrorName: "an nginx error log",
 
@@ -126,11 +129,8 @@ export const copy = {
   },
 
   // Problems.
-  evtx: "This is an .evtx file, which this page can’t read yet.",
-  evtxHow:
-    "Open it in Event Viewer, then use Save All Events As… and pick CSV or XML. Or, in a terminal: wevtutil qe System /f:RenderedXml /e:Events > system.xml",
   notALog:
-    "This doesn’t look like a log this page reads: Event Viewer’s CSV, text or XML, syslog, or a web server’s access or error log.",
+    "This doesn’t look like a log this page reads: Event Viewer’s .evtx, CSV, text or XML, syslog, or a web server’s access or error log.",
   unreadable: "This file couldn’t be read.",
   empty: "This log has no events.",
 

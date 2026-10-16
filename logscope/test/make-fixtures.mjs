@@ -428,7 +428,349 @@ for (let i = 0; i < 12; i++) {
 nginx.push(`${nginxTime(OCT(8, 0, 1))} [notice] 1#1: signal process started`);
 files["nginx-error.log"] = `${nginx.join("\n")}\n`;
 
-// --- Not readable here.
+// --- .evtx: Windows' own binary log, laid out as `wevtutil epl` writes
+// it, with the same week as the XML. A 4 KB header, then 64 KB chunks of
+// records; each event is binary XML, a template (written out the first
+// time a chunk uses it, pointed back to after that) and its values. The
+// checksums are real, so Windows' own reader opens the file too
+// (Get-WinEvent -Path system.evtx).
+const CRC = Array.from({ length: 256 }, (_, n) => {
+  let c = n;
+  for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+  return c >>> 0;
+});
+const crc32 = (...parts) => {
+  let c = 0xffffffff;
+  for (const part of parts) {
+    for (const b of part) c = CRC[(c ^ b) & 0xff] ^ (c >>> 8);
+  }
+  return (c ^ 0xffffffff) >>> 0;
+};
+// Value types.
+const T = {
+  string: 0x01,
+  u8: 0x04,
+  u16: 0x06,
+  u32: 0x08,
+  u64: 0x0a,
+  guid: 0x0f,
+  filetime: 0x11,
+  sid: 0x13,
+  hex64: 0x15,
+  binxml: 0x21,
+  strings: 0x81,
+};
+// A template's shape: elements, attributes, text, and numbered slots
+// (`optional` ones are left out when they have no value).
+const el = (name, attributes, children = []) => ({
+  name,
+  attributes,
+  children,
+});
+const slot = (n, type, optional = false) => ({ slot: n, type, optional });
+const SYSTEM = el(
+  "Event",
+  [["xmlns", "http://schemas.microsoft.com/win/2004/08/events/event"]],
+  [
+    el(
+      "System",
+      [],
+      [
+        el("Provider", [
+          ["Name", slot(0, T.string)],
+          ["Guid", slot(1, T.guid, true)],
+          ["EventSourceName", slot(2, T.string, true)],
+        ]),
+        el("EventID", [["Qualifiers", slot(3, T.u16, true)]], [slot(4, T.u16)]),
+        el("Version", [], [slot(5, T.u8)]),
+        el("Level", [], [slot(6, T.u8)]),
+        el("Task", [], [slot(7, T.u16)]),
+        el("Opcode", [], [slot(8, T.u8)]),
+        el("Keywords", [], [slot(9, T.hex64)]),
+        el("TimeCreated", [["SystemTime", slot(10, T.filetime)]]),
+        el("EventRecordID", [], [slot(11, T.u64)]),
+        el("Correlation", [["ActivityID", slot(12, T.guid, true)]]),
+        el("Execution", [
+          ["ProcessID", slot(13, T.u32)],
+          ["ThreadID", slot(14, T.u32)],
+        ]),
+        el("Channel", [], [slot(15, T.string)]),
+        el("Computer", [], [slot(16, T.string)]),
+        el("Security", [["UserID", slot(17, T.sid, true)]]),
+      ],
+    ),
+    slot(18, T.binxml),
+  ],
+);
+// The event's data: one named string, or (as classic sources write it) a
+// list of strings, one <Data> each.
+const DETAIL = el(
+  "EventData",
+  [],
+  [el("Data", [["Name", "Detail"]], [slot(0, T.string)])],
+);
+const DETAIL_LIST = el(
+  "EventData",
+  [],
+  [el("Data", [["Name", "Detail"]], [slot(0, T.strings)])],
+);
+
+/** A GUID's bytes, from "{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}". */
+function guidBytes(text) {
+  const h = text.replace(/[{}-]/g, "");
+  const b = Buffer.from(h, "hex");
+  return Buffer.concat([
+    Buffer.from(b.subarray(0, 4)).reverse(),
+    Buffer.from(b.subarray(4, 6)).reverse(),
+    Buffer.from(b.subarray(6, 8)).reverse(),
+    b.subarray(8),
+  ]);
+}
+const SYSTEM_SID = Buffer.from([1, 1, 0, 0, 0, 0, 0, 5, 18, 0, 0, 0]);
+const FILETIME_1970 = 116_444_736_000_000_000n;
+
+class EvtxChunk {
+  constructor() {
+    this.b = Buffer.alloc(0x10000);
+    this.pos = 512;
+    this.names = new Map();
+    this.templates = new Map();
+    this.first = null;
+    this.last = null;
+    this.lastAt = 0;
+  }
+  u8(v) {
+    this.pos = this.b.writeUInt8(v, this.pos);
+  }
+  u16(v) {
+    this.pos = this.b.writeUInt16LE(v, this.pos);
+  }
+  u32(v) {
+    this.pos = this.b.writeUInt32LE(v, this.pos);
+  }
+  u64(v) {
+    this.pos = this.b.writeBigUInt64LE(BigInt(v), this.pos);
+  }
+  bytes(buf) {
+    if (this.pos + buf.length > this.b.length) throw new RangeError("full");
+    this.pos += buf.copy(this.b, this.pos);
+  }
+  /** A name: written out the first time, pointed back to after that. */
+  name(text) {
+    if (this.names.has(text)) return this.u32(this.names.get(text));
+    const at = this.pos + 4;
+    this.names.set(text, at);
+    this.u32(at);
+    this.u32(0);
+    this.u16(0);
+    this.u16(text.length);
+    this.bytes(Buffer.from(`${text}\0`, "utf16le"));
+  }
+  text(s) {
+    this.u8(0x05);
+    this.u8(T.string);
+    this.u16(s.length);
+    this.bytes(Buffer.from(s, "utf16le"));
+  }
+  part(p) {
+    if (typeof p === "string") return this.text(p);
+    if ("slot" in p) {
+      this.u8(p.optional ? 0x0e : 0x0d);
+      this.u16(p.slot);
+      return this.u8(p.type);
+    }
+    const start = this.pos;
+    this.u8(p.attributes.length ? 0x41 : 0x01);
+    this.u16(0xffff);
+    const sizeAt = this.pos;
+    this.u32(0);
+    this.name(p.name);
+    let listAt = 0;
+    if (p.attributes.length) {
+      listAt = this.pos;
+      this.u32(0);
+    }
+    p.attributes.forEach(([name, value], i) => {
+      this.u8(i < p.attributes.length - 1 ? 0x46 : 0x06);
+      this.name(name);
+      this.part(value);
+    });
+    if (listAt) this.b.writeUInt32LE(this.pos - listAt - 4, listAt);
+    if (p.children.length) {
+      this.u8(0x02);
+      for (const child of p.children) this.part(child);
+      this.u8(0x04);
+    } else {
+      this.u8(0x03);
+    }
+    this.b.writeUInt32LE(this.pos - start - 7, sizeAt);
+  }
+  /** A template and its values: [type, bytes or a writer] for each slot. */
+  instance(id, tree, values) {
+    this.u8(0x0c);
+    this.u8(0x01);
+    this.u32(id);
+    if (this.templates.has(id)) {
+      this.u32(this.templates.get(id));
+    } else {
+      const at = this.pos + 4;
+      this.templates.set(id, at);
+      this.u32(at);
+      this.u32(0);
+      this.bytes(
+        guidBytes(`{00000000-0000-0000-0000-${String(id).padStart(12, "0")}}`),
+      );
+      const sizeAt = this.pos;
+      this.u32(0);
+      this.fragment(() => this.part(tree));
+      this.b.writeUInt32LE(this.pos - sizeAt - 4, sizeAt);
+    }
+    this.u32(values.length);
+    const descriptors = this.pos;
+    for (const [type] of values) {
+      this.u16(0);
+      this.u8(type);
+      this.u8(0);
+    }
+    values.forEach(([, value], i) => {
+      const start = this.pos;
+      if (typeof value === "function") value();
+      else this.bytes(value);
+      this.b.writeUInt16LE(this.pos - start, descriptors + i * 4);
+    });
+  }
+  fragment(body) {
+    for (const b of [0x0f, 1, 1, 0]) this.u8(b);
+    body();
+    this.u8(0x00);
+  }
+  /** A record, or false (and nothing written) when it doesn't fit. */
+  record(id, filetime, body) {
+    const saved = [this.pos, new Map(this.names), new Map(this.templates)];
+    const start = this.pos;
+    try {
+      this.u32(0x2a2a);
+      this.u32(0);
+      this.u64(id);
+      this.u64(filetime);
+      this.fragment(body);
+      const size = this.pos + 4 - start;
+      this.u32(size);
+      this.b.writeUInt32LE(size, start + 4);
+    } catch (error) {
+      if (!(error instanceof RangeError)) throw error;
+      [this.pos, this.names, this.templates] = saved;
+      this.b.fill(0, start);
+      return false;
+    }
+    this.first ??= id;
+    this.last = id;
+    this.lastAt = start;
+    return true;
+  }
+  /** The chunk, with its header. */
+  done() {
+    const h = this.b;
+    h.write("ElfChnk\0", 0, "latin1");
+    // The records' numbers in the log, then their IDs: the same here.
+    for (const [at, v] of [
+      [8, this.first],
+      [16, this.last],
+      [24, this.first],
+      [32, this.last],
+    ]) {
+      h.writeBigUInt64LE(BigInt(v), at);
+    }
+    h.writeUInt32LE(128, 40);
+    h.writeUInt32LE(this.lastAt, 44);
+    h.writeUInt32LE(this.pos, 48);
+    h.writeUInt32LE(crc32(h.subarray(512, this.pos)), 52);
+    h.writeUInt32LE(crc32(h.subarray(0, 120), h.subarray(128, 512)), 124);
+    return h;
+  }
+}
+
+function evtx(events) {
+  const chunks = [];
+  let chunk = new EvtxChunk();
+  let id = 1;
+  for (const e of events) {
+    const provider = PROVIDERS[e.source] ?? `Name="${e.source}"`;
+    const attr = (name) => new RegExp(`${name}="([^"]*)"`).exec(provider)?.[1];
+    const utf16 = (s) => Buffer.from(s, "utf16le");
+    const u = (n, bytes) => {
+      const b = Buffer.alloc(bytes);
+      b.writeUIntLE(n, 0, bytes);
+      return b;
+    };
+    const u64 = (n) => {
+      const b = Buffer.alloc(8);
+      b.writeBigUInt64LE(BigInt(n));
+      return b;
+    };
+    // The XML fixture's times end in .1234567.
+    const time = BigInt(e.t) * 10_000n + FILETIME_1970 + 1_234_567n;
+    const classic = e.source === "EventLog";
+    const guid = attr("Guid");
+    const sourceName = attr("EventSourceName");
+    const none = Buffer.alloc(0);
+    const body = (record) => () =>
+      chunk.instance(1, SYSTEM, [
+        [T.string, utf16(attr("Name"))],
+        guid ? [T.guid, guidBytes(guid)] : [0, none],
+        sourceName ? [T.string, utf16(sourceName)] : [0, none],
+        classic ? [T.u16, u(0x8000, 2)] : [0, none],
+        [T.u16, u(e.id, 2)],
+        [T.u8, u(0, 1)],
+        [T.u8, u(LEVEL_N[e.level], 1)],
+        [T.u16, u(0, 2)],
+        [T.u8, u(0, 1)],
+        [T.hex64, u64(0x8000000000000000n)],
+        [T.filetime, u64(time)],
+        [T.u64, u64(record)],
+        [0, none],
+        [T.u32, u(4, 4)],
+        [T.u32, u(8, 4)],
+        [T.string, utf16("System")],
+        [T.string, utf16("EXAMPLE-PC")],
+        classic ? [0, none] : [T.sid, SYSTEM_SID],
+        [
+          T.binxml,
+          () =>
+            chunk.fragment(() =>
+              classic
+                ? chunk.instance(3, DETAIL_LIST, [
+                    [T.strings, utf16(`${e.message}\0`)],
+                  ])
+                : chunk.instance(2, DETAIL, [[T.string, utf16(e.message)]]),
+            ),
+        ],
+      ]);
+    if (!chunk.record(id, time, body(id))) {
+      chunks.push(chunk);
+      chunk = new EvtxChunk();
+      if (!chunk.record(id, time, body(id))) throw new Error("event too big");
+    }
+    id++;
+  }
+  chunks.push(chunk);
+  const done = chunks.map((c) => c.done());
+  const header = Buffer.alloc(4096);
+  header.write("ElfFile\0", 0, "latin1");
+  header.writeBigUInt64LE(0n, 8);
+  header.writeBigUInt64LE(BigInt(done.length - 1), 16);
+  header.writeBigUInt64LE(BigInt(id), 24);
+  header.writeUInt32LE(128, 32);
+  header.writeUInt16LE(2, 36);
+  header.writeUInt16LE(3, 38);
+  header.writeUInt16LE(4096, 40);
+  header.writeUInt16LE(done.length, 42);
+  header.writeUInt32LE(crc32(header.subarray(0, 120)), 124);
+  return Buffer.concat([header, ...done]);
+}
+files["system.evtx"] = evtx(week);
+
+// --- Not readable here: an .evtx header with no events after it.
 files["fake.evtx"] = Buffer.concat([
   Buffer.from("ElfFile\0", "latin1"),
   Buffer.alloc(120),

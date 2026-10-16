@@ -750,12 +750,6 @@ describe("wevtutil's XML", () => {
     );
     expect(about(r)).toContain("exported as XML");
   });
-
-  test("the page recommends the command that keeps the message", () => {
-    expect(copy.evtxHow).toContain(
-      "wevtutil qe System /f:RenderedXml /e:Events > system.xml",
-    );
-  });
 });
 
 describe("the log's own clock", () => {
