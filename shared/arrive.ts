@@ -15,9 +15,16 @@ function token(name: string, fallback: string): string {
   );
 }
 
+// Milliseconds from a CSS time: the build minifies "200ms" to ".2s".
+export function ms(value: string): number {
+  const n = parseFloat(value);
+  if (Number.isNaN(n)) return NaN;
+  return value.trim().endsWith("ms") ? n : n * 1000;
+}
+
 export function arrive(...els: (Element | null | undefined)[]): void {
   if (calm.matches) return;
-  const duration = parseFloat(token("--dur-ui", "200ms")) || 200;
+  const duration = ms(token("--dur-ui", "200ms")) || 200;
   const easing = token("--ease-ui", "cubic-bezier(0.23, 1, 0.32, 1)");
   for (const el of els) {
     el?.animate(

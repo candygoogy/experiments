@@ -163,6 +163,29 @@ test("a domain's answer takes the example's place, worst first in each row", asy
   expect(errors).toEqual([]);
 });
 
+// The built CSS has the token minified (200ms becomes .2s); the answer
+// must still take the full 200ms to arrive, not 0.2ms.
+test("the answer fades in over 200ms, as built", async ({ page }) => {
+  await fakeDns(page, SHOP);
+  await page.addInitScript(() => {
+    const seen: number[] = [];
+    (window as unknown as { seen: number[] }).seen = seen;
+    const animate = Element.prototype.animate;
+    Element.prototype.animate = function (keyframes, options) {
+      if (this.classList.contains("yours") && typeof options === "object") {
+        seen.push(Number(options.duration));
+      }
+      return animate.call(this, keyframes, options);
+    };
+  });
+  await page.goto(BASE);
+  await ask(page, "shop.example.net");
+  await expect(page.locator(".pane.yours")).toBeVisible();
+  expect(
+    await page.evaluate(() => (window as unknown as { seen: number[] }).seen),
+  ).toEqual([200]);
+});
+
 test("not a domain: one calm line, and no question asked", async ({ page }) => {
   const asked = await fakeDns(page, {});
   await page.goto(BASE);
