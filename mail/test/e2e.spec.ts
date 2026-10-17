@@ -408,6 +408,44 @@ test("a DMARC lookup that fails: couldn't check, never can be faked", async ({
   expect(errors).toEqual([]);
 });
 
+// On a phone the footer reads as on the site: the link first, on its own
+// row, then the privacy line and the license under it in one column. The
+// link's 44px target reaches 22px from its middle, so it needs about 10px
+// clear below its line to stay off the privacy text.
+test("on a phone the footer puts the link first, the notes in one column under it", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+  });
+  const page = await context.newPage();
+  await page.goto(BASE);
+  const foot = page.locator("footer.foot");
+  const box = async (selector: string) => {
+    const b = await foot.locator(selector).boundingBox();
+    if (!b) throw new Error(`${selector} has no box`);
+    return b;
+  };
+  const link = await box("a");
+  const privacy = await box(".privacy");
+  const license = await box("span");
+  expect(link.y + link.height, "link above the privacy line").toBeLessThan(
+    privacy.y,
+  );
+  expect(
+    Math.abs(privacy.x - license.x),
+    "privacy and MIT start together",
+  ).toBeLessThanOrEqual(1);
+  expect(license.y, "MIT under the privacy line").toBeGreaterThanOrEqual(
+    privacy.y + privacy.height,
+  );
+  expect(
+    link.y + link.height + 10,
+    "the link's target clear of the privacy text",
+  ).toBeLessThanOrEqual(privacy.y);
+  await context.close();
+});
+
 test("the check's code fails to load: one calm line, and the button works again", async ({
   page,
 }) => {

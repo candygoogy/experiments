@@ -510,14 +510,24 @@ noscript p {
   translate: -50% -50%;
 }
 
-/* Phones: the privacy line on its own row, the link and the license
-   under it, far enough apart that the targets don't touch. */
+/* Phones: the link first on its own row, as on the site, then the
+   privacy line and the license under it in one column, a line apart. The
+   link's line stands 24px clear of the notes (its margin and the gap), so
+   its 44px target ends about 14px above them; only the order changes, so
+   the markup reads the same as on a desktop. */
 @media (max-width: 32.5rem) {
   .foot .inner {
-    row-gap: var(--sp-5);
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: var(--sp-2);
+  }
+
+  .foot a {
+    order: -1;
+    margin-bottom: var(--sp-4);
   }
 
   .foot .privacy {
-    flex-basis: 100%;
+    flex: none;
   }
 }
