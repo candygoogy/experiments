@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node ../shared/scripts/fonts.mjs && vite build",
+    "build": "vite build",
     "preview": "wrangler dev --port 4425 --ip 127.0.0.1"
   },
   "dependencies": {

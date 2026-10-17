@@ -19,7 +19,9 @@ import {
 
 export type { ExperimentOptions, ShellOptions };
 
-const FONTS = ["CabinetGrotesk-Variable.woff2", "Satoshi-Variable.woff2"];
+// Committed in shared/fonts/ (SIL Open Font License 1.1, the same files
+// as candygoogy.dev's src/fonts/).
+const FONTS = ["Newsreader-Display.woff2", "SchibstedGrotesk.woff2"];
 const FONTS_DIR = fileURLToPath(new URL("./fonts/", import.meta.url));
 // Files every experiment serves as they are (the icons).
 const PUBLIC_DIR = fileURLToPath(new URL("./public/", import.meta.url));
@@ -53,14 +55,12 @@ function shell(o: ExperimentOptions): Plugin {
   return {
     name: "experiment-shell",
     // Without the font files the page would quietly fall back to system
-    // fonts: stop instead (`npm run fonts` fetches them).
+    // fonts: stop instead.
     transform(_code, id) {
       if (!id.replace(/\\/g, "/").endsWith("/shared/fonts.css")) return;
       const missing = FONTS.filter((f) => !existsSync(FONTS_DIR + f));
       if (missing.length) {
-        this.error(
-          `fonts: ${missing.join(", ")} missing in shared/fonts/. Run npm run fonts.`,
-        );
+        this.error(`fonts: ${missing.join(", ")} missing in shared/fonts/.`);
       }
     },
     transformIndexHtml: {

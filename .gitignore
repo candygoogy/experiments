@@ -1,7 +1,6 @@
 node_modules/
 dist/
 .wrangler/
-shared/fonts/
 .dev.vars
 .env*
 *.log

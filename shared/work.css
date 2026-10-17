@@ -65,7 +65,7 @@ html:not(.js) .needs-js {
   padding-top: var(--sp-7);
   border-top: var(--rule) solid var(--ink);
   color: var(--ink);
-  font: var(--fw-bold) var(--fs-d-sm) / var(--lh-tight) var(--ff-display);
+  font: var(--fw-d-bold) var(--fs-d-sm) / var(--lh-tight) var(--ff-display);
   letter-spacing: var(--ls-d-sm);
   overflow-wrap: anywhere;
 }

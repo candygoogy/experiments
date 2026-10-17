@@ -1,51 +1,53 @@
-/* The official WOFF2 files from shared/scripts/fonts.mjs, served from the
-   experiment's own domain. Each face has a fallback on the local Arial,
+/* The WOFF2 files committed in shared/fonts/ (SIL Open Font License 1.1,
+   the same files as candygoogy.dev's src/fonts/), served from the
+   experiment's own domain. Each face has a fallback on a local system
+   face (Times New Roman for Newsreader, Arial for Schibsted Grotesk),
    scaled to the web font's metrics (the values candygoogy.dev's build
    generates), so swapping in the web font doesn't shift the layout.
    tokens.css reads the two families through --font-display and
    --font-text. */
 
 @font-face {
-  font-family: "Cabinet Grotesk";
-  src: url("./fonts/CabinetGrotesk-Variable.woff2") format("woff2");
+  font-family: "Newsreader";
+  src: url("./fonts/Newsreader-Display.woff2") format("woff2");
   font-display: swap;
-  font-weight: 100 900;
+  font-weight: 500 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Cabinet Grotesk fallback";
+  font-family: "Newsreader fallback";
+  src: local("Times New Roman");
+  font-display: swap;
+  font-weight: 500 700;
+  font-style: normal;
+  size-adjust: 106.5846%;
+  ascent-override: 68.9593%;
+  descent-override: 24.8629%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("./fonts/SchibstedGrotesk.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 400 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Schibsted Grotesk fallback";
   src: local("Arial");
   font-display: swap;
-  font-weight: 100 900;
+  font-weight: 400 700;
   font-style: normal;
-  size-adjust: 102.0635%;
-  ascent-override: 85.241%;
-  descent-override: 27.4339%;
-  line-gap-override: 8.818%;
-}
-
-@font-face {
-  font-family: "Satoshi";
-  src: url("./fonts/Satoshi-Variable.woff2") format("woff2");
-  font-display: swap;
-  font-weight: 300 900;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Satoshi fallback";
-  src: local("Arial");
-  font-display: swap;
-  font-weight: 300 900;
-  font-style: normal;
-  size-adjust: 109.0173%;
-  ascent-override: 92.6458%;
-  descent-override: 22.0149%;
-  line-gap-override: 9.1729%;
+  size-adjust: 104.4907%;
+  ascent-override: 93.4593%;
+  descent-override: 24.6733%;
+  line-gap-override: 0%;
 }
 
 :root {
-  --font-display: "Cabinet Grotesk", "Cabinet Grotesk fallback", sans-serif;
-  --font-text: "Satoshi", "Satoshi fallback", sans-serif;
+  --font-display: "Newsreader", "Newsreader fallback", serif;
+  --font-text: "Schibsted Grotesk", "Schibsted Grotesk fallback", sans-serif;
 }

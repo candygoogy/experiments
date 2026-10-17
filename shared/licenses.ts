@@ -3,6 +3,8 @@
 // the build's own helpers it copies in (Vite's preload helper, Rolldown's
 // runtime), each with its licence text as the package ships it. Sorted by
 // name and free of dates or paths, so every build writes the same file.
+// After the packages come the two fonts every page uses (shared/fonts/,
+// built by candygoogy.dev's scripts/make-fonts.py), each with its OFL text.
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,6 +13,25 @@ const NODE_MODULES = fileURLToPath(
   new URL("../node_modules/", import.meta.url),
 );
 const MARK = "node_modules/";
+const FONTS_DIR = fileURLToPath(new URL("./fonts/", import.meta.url));
+
+// The google/fonts commit candygoogy.dev's scripts/make-fonts.py builds the
+// fonts from, and each font's version there.
+export const FONTS_COMMIT = "47d54ca1ebb14fd864695f1d39dc734f39017c33";
+export const FONTS = [
+  {
+    name: "Newsreader",
+    version: "1.003",
+    source: "ofl/newsreader",
+    license: "OFL-Newsreader.txt",
+  },
+  {
+    name: "Schibsted Grotesk",
+    version: "1.100",
+    source: "ofl/schibstedgrotesk",
+    license: "OFL-SchibstedGrotesk.txt",
+  },
+];
 
 /** The package a bundled module came from, as its folder and name. */
 function packageOf(id: string): { dir: string; name: string } | null {
@@ -50,11 +71,12 @@ export function thirdPartyNotices(moduleIds: Iterable<string>): string {
     if (found) packages.set(found.name, found.dir);
   }
   const head = [
-    "Third-party code in this page",
+    "Third-party code and fonts in this page",
     "",
     packages.size
       ? "This page includes code from the open-source packages below, each under its own licence."
       : "This page includes no third-party code.",
+    "The two fonts it uses come last, each under the SIL Open Font License 1.1.",
   ];
   const entries = [...packages]
     .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
@@ -72,5 +94,17 @@ export function thirdPartyNotices(moduleIds: Iterable<string>): string {
         licenceText(dir),
       ].join("\n");
     });
-  return `${[...head, ...entries.flatMap((e) => ["", e])].join("\n")}\n`;
+  const fonts = FONTS.map((font) =>
+    [
+      "-".repeat(72),
+      `${font.name} ${font.version} (OFL-1.1)`,
+      "",
+      `From google/fonts at commit ${FONTS_COMMIT} (${font.source}), subset by candygoogy.dev's scripts/make-fonts.py.`,
+      "",
+      readFileSync(join(FONTS_DIR, font.license), "utf8")
+        .replace(/\r\n/g, "\n")
+        .trim(),
+    ].join("\n"),
+  );
+  return `${[...head, ...[...entries, ...fonts].flatMap((e) => ["", e])].join("\n")}\n`;
 }

@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { build } from "vite";
 import { afterAll, describe, expect, test } from "vitest";
+import { FONTS_COMMIT } from "../licenses.ts";
 
 const ROOT = join(import.meta.dirname, "..", "..");
 const outs: string[] = [];
@@ -47,6 +48,29 @@ describe("third-party-licenses.txt", () => {
     expect(text).toContain("vite 8.3.4 (MIT)");
     expect(text).not.toContain("exifr");
     expect(text).not.toContain("fflate");
+  });
+
+  test("battery names both fonts with their copyright and full OFL", async () => {
+    const text = await notices("battery");
+    for (const [entry, license] of [
+      ["Newsreader 1.003 (OFL-1.1)", "OFL-Newsreader.txt"],
+      ["Schibsted Grotesk 1.100 (OFL-1.1)", "OFL-SchibstedGrotesk.txt"],
+    ] as const) {
+      expect(text).toContain(`\n${entry}\n`);
+      const ofl = readFileSync(join(ROOT, "shared", "fonts", license), "utf8")
+        .replace(/\r\n/g, "\n")
+        .trim();
+      expect(text).toContain(ofl);
+    }
+    expect(text).toContain(
+      "Copyright 2020 The Newsreader Project Authors (http://github.com/productiontype/Newsreader)",
+    );
+    expect(text).toContain(
+      "Copyright 2023 The Schibsted-Grotesk Project Authors (https://github.com/schibsted/schibsted-grotesk)",
+    );
+    expect(text).toContain(`google/fonts at commit ${FONTS_COMMIT}`);
+    // After the packages.
+    expect(text.indexOf("\nvite ")).toBeLessThan(text.indexOf("\nNewsreader "));
   });
 
   test("the file is the same on every build", async () => {

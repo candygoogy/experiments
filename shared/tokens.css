@@ -10,19 +10,21 @@
  */
 
 :root {
-  /* Type families: --font-display (Cabinet Grotesk) and --font-text
-     (Satoshi) come from Astro's fonts API, with metric-matched fallbacks. */
+  /* Type families: --font-display (Newsreader) and --font-text
+     (Schibsted Grotesk) come from Astro's fonts API, with metric-matched
+     fallbacks. */
   --ff-display: var(--font-display);
   --ff-text: var(--font-text);
 
-  /* Text sizes (Satoshi). rem, so they follow the reader's font size. */
+  /* Text sizes (Schibsted Grotesk). rem, so they follow the reader's
+     font size. */
   --fs-xs: 0.8125rem; /* 13px: theme switch */
   --fs-sm: 0.875rem; /* 14px: index meta, footer */
   --fs-meta: 0.9375rem; /* 15px: nav, years, fact labels */
   --fs-body: 1.0625rem; /* 17px: body */
   --fs-lede: 1.25rem; /* 20px: hero line, band lede */
 
-  /* Display sizes (Cabinet Grotesk). Fluid sizes mix rem with vw so they
+  /* Display sizes (Newsreader). Fluid sizes mix rem with vw so they
      still grow with browser zoom (WCAG 1.4.4). */
   --fs-d-xs: 1.0625rem; /* skill group titles */
   --fs-d-sm: 1.25rem; /* story subheads */
@@ -38,16 +40,19 @@
   --lh-band: 0.9;
 
   /* Display headlines tighten as they grow. */
-  --ls-d-sm: -0.01em;
-  --ls-d-md: -0.015em;
-  --ls-section: -0.03em;
-  --ls-hero: -0.035em;
-  --ls-band: -0.04em;
+  --ls-d-sm: -0.003em;
+  --ls-d-md: -0.005em;
+  --ls-section: -0.01em;
+  --ls-hero: -0.01em;
+  --ls-band: -0.012em;
 
   --fw-regular: 400;
   --fw-medium: 500;
+  --fw-semibold: 600; /* the wordmark */
   --fw-bold: 700;
-  --fw-heavy: 800;
+  /* Newsreader's weights, for the display family only. */
+  --fw-d-bold: 560;
+  --fw-d-heavy: 650;
 
   --measure: 58ch;
   --measure-lede: 46ch;

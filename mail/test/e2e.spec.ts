@@ -408,11 +408,11 @@ test("a DMARC lookup that fails: couldn't check, never can be faked", async ({
   expect(errors).toEqual([]);
 });
 
-// On a phone the footer reads as on the site: the link first, on its own
-// row, then the privacy line and the license under it in one column. The
-// link's 44px target reaches 22px from its middle, so it needs about 10px
-// clear below its line to stay off the privacy text.
-test("on a phone the footer puts the link first, the notes in one column under it", async ({
+// On a phone the footer keeps "Source" and "MIT" together on the first
+// line, with the privacy line under them. The link's 44px target reaches
+// 22px from its middle, so it needs about 10px clear below its line to stay
+// off the privacy text.
+test("on a phone the footer puts Source and MIT on one line, the privacy line under them", async ({
   browser,
 }) => {
   const context = await browser.newContext({
@@ -429,16 +429,15 @@ test("on a phone the footer puts the link first, the notes in one column under i
   const link = await box("a");
   const privacy = await box(".privacy");
   const license = await box("span");
-  expect(link.y + link.height, "link above the privacy line").toBeLessThan(
-    privacy.y,
-  );
   expect(
-    Math.abs(privacy.x - license.x),
-    "privacy and MIT start together",
-  ).toBeLessThanOrEqual(1);
-  expect(license.y, "MIT under the privacy line").toBeGreaterThanOrEqual(
-    privacy.y + privacy.height,
-  );
+    Math.abs(link.y + link.height / 2 - (license.y + license.height / 2)),
+    "Source and MIT on one line",
+  ).toBeLessThanOrEqual(2);
+  expect(license.x, "MIT after Source").toBeGreaterThan(link.x + link.width);
+  expect(
+    Math.max(link.y + link.height, license.y + license.height),
+    "both above the privacy line",
+  ).toBeLessThan(privacy.y);
   expect(
     link.y + link.height + 10,
     "the link's target clear of the privacy text",

@@ -479,14 +479,19 @@ test("a narrow window drops the number pad, so the legends stay readable", async
     } else {
       await expect(note).toBeHidden();
     }
-    const q = await key(page, "KeyQ").evaluate((g) => ({
-      legend: (g.querySelector("text") as Element).getBoundingClientRect()
-        .height,
-      cap: (g.querySelector(".cap") as Element).getBoundingClientRect().width,
-    }));
-    // The "Q" glyph box: 9px at 768 when the whole board was squeezed in.
+    const q = await key(page, "KeyQ").evaluate((g) => {
+      const text = g.querySelector("text") as SVGTextElement;
+      // The board is scaled to fit: the legend's size as drawn on screen.
+      const scale = text.getBoundingClientRect().height / text.getBBox().height;
+      return {
+        legend: scale * parseFloat(getComputedStyle(text).fontSize),
+        cap: (g.querySelector(".cap") as Element).getBoundingClientRect().width,
+      };
+    });
+    // The legends' size on screen: about 7px at 768 when the whole board
+    // was squeezed in.
     expect(q.legend, `legend at ${width}`).toBeGreaterThanOrEqual(
-      width < 1000 ? 10.5 : 14,
+      width < 1000 ? 8.25 : 11,
     );
     expect(q.cap, `key at ${width}`).toBeGreaterThanOrEqual(32);
     await context.close();

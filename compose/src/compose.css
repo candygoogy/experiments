@@ -73,7 +73,7 @@ textarea:hover {
 /* The verdict, then the map, then each finding. */
 .verdict {
   margin-top: var(--sp-5);
-  font: var(--fw-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
+  font: var(--fw-d-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
   letter-spacing: var(--ls-d-md);
   text-wrap: balance;
 }

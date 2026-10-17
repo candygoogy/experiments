@@ -4,7 +4,7 @@
 import { initThemeSwitch } from "./theme-switch.ts";
 
 /** Below this the header is the wordmark and Menu (as in shell.css). */
-const PHONE = "(max-width: 32.5rem)";
+const PHONE = "(max-width: 34rem)";
 
 export function initHeader(): void {
   for (const group of document.querySelectorAll<HTMLElement>(

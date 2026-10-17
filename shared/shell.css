@@ -51,7 +51,7 @@ main {
   margin-right: auto;
   color: var(--ink);
   background: none;
-  font: var(--fw-heavy) 1.125rem / 1 var(--ff-display);
+  font: var(--fw-semibold) 1.125rem / 1 var(--ff-text);
   letter-spacing: var(--ls-d-sm);
 }
 
@@ -154,10 +154,10 @@ main {
 }
 
 /* Without JavaScript there's no menu: on phones the link takes a second
-   row under the wordmark. With it, below 32.5rem, where the wordmark, the
+   row under the wordmark. With it, below 34rem, where the wordmark, the
    link and the theme switch no longer fit on one line (they need about
-   505px), the header is one row: the wordmark and Menu. */
-@media (max-width: 32.5rem) {
+   527px), the header is one row: the wordmark and Menu. */
+@media (max-width: 34rem) {
   .nav {
     order: 3;
     flex-basis: 100%;
@@ -254,19 +254,19 @@ html.menu-on.menu-bar {
 
 /* Each stop is a row one and a half times its name's size. The nodes sit
    on the page edge, under the wordmark: half the names' cap height
-   (0.67em) across, ringed like the line, 2px, and centred on the
-   capitals' middle, 0.07em above the row's (Cabinet Grotesk at this line
+   (0.685em) across, ringed like the line, 2px, and centred on the
+   capitals' middle, 0.12em above the row's (Newsreader at this line
    height). The names start one step in. */
 .route ul {
   --row: 1.5em;
   --dot: 0.34em;
   --weight: 2px;
-  --mid: calc(var(--row) / 2 - 0.07em);
+  --mid: calc(var(--row) / 2 - 0.12em);
   position: relative;
   margin: 0;
   padding: 0;
   list-style: none;
-  font: var(--fw-bold) var(--fs-d-hero) / var(--lh-display) var(--ff-display);
+  font: var(--fw-d-bold) var(--fs-d-hero) / var(--lh-display) var(--ff-display);
   letter-spacing: var(--ls-section);
 }
 
@@ -441,7 +441,8 @@ html.menu-on.menu-bar {
 
 /* From 130%: the clip keeps room below for descenders (Projects,
    Experiments), and 110% would leave the tops of the capitals showing in
-   it. */
+   it. Newsreader's ascenders stand level with the name's top, so at 130%
+   they start about 0.07em below the clip. */
 @keyframes menu-rise {
   from {
     transform: translateY(130%) skewY(4deg);
@@ -510,24 +511,17 @@ noscript p {
   translate: -50% -50%;
 }
 
-/* Phones: the link first on its own row, as on the site, then the
-   privacy line and the license under it in one column, a line apart. The
-   link's line stands 24px clear of the notes (its margin and the gap), so
-   its 44px target ends about 14px above them; only the order changes, so
-   the markup reads the same as on a desktop. */
+/* Phones: the link and the license together on the first line, then the
+   privacy line on its own full row under them. Only the order changes, so
+   the markup reads the same as on a desktop. The 24px row gap keeps the
+   link's 44px target about 12px clear of the privacy text. */
 @media (max-width: 32.5rem) {
   .foot .inner {
-    flex-direction: column;
-    align-items: flex-start;
-    row-gap: var(--sp-2);
-  }
-
-  .foot a {
-    order: -1;
-    margin-bottom: var(--sp-4);
+    row-gap: var(--sp-5);
   }
 
   .foot .privacy {
-    flex: none;
+    order: 1;
+    flex: 0 0 100%;
   }
 }

@@ -16,7 +16,7 @@
 
 /* Verdict first. */
 .verdict {
-  font: var(--fw-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
+  font: var(--fw-d-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
   letter-spacing: var(--ls-d-md);
   text-wrap: balance;
 }
@@ -198,7 +198,7 @@
 }
 
 .group .count {
-  font: var(--fw-bold) var(--fs-d-md) / 1.1 var(--ff-display);
+  font: var(--fw-d-bold) var(--fs-d-md) / 1.1 var(--ff-display);
   letter-spacing: var(--ls-d-md);
   text-align: right;
 }
@@ -208,7 +208,7 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--sp-1) var(--sp-3);
-  font: var(--fw-bold) var(--fs-d-xs) / 1.3 var(--ff-display);
+  font: var(--fw-d-bold) var(--fs-d-xs) / 1.3 var(--ff-display);
 }
 
 /* The level as a word, never colour alone; the worst ones in ink. */

@@ -661,6 +661,10 @@ test("the answer reads first, under its column's label; the picture sits beside 
     });
     const row = page.locator(".answer .photo");
     await expect(row.locator(".download")).toBeVisible();
+    // The row rises into place as it arrives: measure it once it's there.
+    await page.evaluate(() =>
+      Promise.all(document.getAnimations().map((a) => a.finished)),
+    );
     // The verdict, then the picture with its name: the order it reads in.
     expect(
       await row.evaluate((r) => [...r.children].map((c) => c.className)),
