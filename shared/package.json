@@ -7,6 +7,7 @@
     "./theme-switch": "./theme-switch.ts",
     "./header": "./header.ts",
     "./dropzone": "./dropzone.ts",
+    "./arrive": "./arrive.ts",
     "./*.css": "./*.css"
   }
 }

@@ -46,3 +46,28 @@
   rotate: -135deg;
   translate: 0 0.15em;
 }
+
+/* What it holds fades in and settles as it opens, and fades out before it
+   folds away (content-visibility waits for it). Under reduced motion it
+   opens and closes at once: base.css's 1ms rule doesn't reach
+   ::details-content, so the transition is only set here. */
+@supports selector(::details-content) {
+  .disclosure::details-content {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+
+  .disclosure[open]::details-content {
+    opacity: 1;
+    translate: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .disclosure::details-content {
+      transition:
+        opacity var(--dur-ui) var(--ease-ui),
+        translate var(--dur-ui) var(--ease-ui),
+        content-visibility var(--dur-ui) allow-discrete;
+    }
+  }
+}

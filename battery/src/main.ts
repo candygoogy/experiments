@@ -6,6 +6,7 @@ import "@exp/shared/theme-switch.css";
 import "@exp/shared/dropzone.css";
 import "@exp/shared/work.css";
 import "./battery.css";
+import { arrive } from "@exp/shared/arrive";
 import { initDropZone } from "@exp/shared/dropzone";
 import { initHeader } from "@exp/shared/header";
 import { designLabel, drawHistory, floorLabel, wornLabel } from "./chart";
@@ -169,6 +170,7 @@ function show(a: Answer) {
   yours?.classList.toggle("unnamed", !a.product);
   answer?.replaceChildren(...a.nodes);
   if (yours) yours.hidden = false;
+  arrive(yours);
   // The drop zone steps back to one line over the answer, which takes the
   // full width.
   askForAnother();

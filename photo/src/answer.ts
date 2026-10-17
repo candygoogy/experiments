@@ -1,6 +1,7 @@
 // What happens once photos arrive: each is read, summed up and cleaned,
 // in its own row. Loaded only when a file is on its way (main.ts), so the
 // page itself carries none of this.
+import { arrive } from "@exp/shared/arrive";
 import { zipSync } from "fflate";
 import { copy, fill, plural, together } from "./copy";
 import { detect, type PhotoType } from "./detect";
@@ -306,6 +307,7 @@ export async function readAll(files: File[]) {
     const answered = await answerFor(file, many);
     if (mine !== run) return; // a newer drop took over
     list.append(answered.row);
+    arrive(answered.row);
     answers.push(answered);
     if (answered.later) later.push(answered.later);
     if (answered.copy) copies.push(answered.copy);

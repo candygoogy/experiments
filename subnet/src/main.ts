@@ -6,6 +6,7 @@ import "@exp/shared/theme-switch.css";
 import "@exp/shared/disclosure.css";
 import "@exp/shared/work.css";
 import "./subnet.css";
+import { arrive } from "@exp/shared/arrive";
 import { initHeader } from "@exp/shared/header";
 import { COPY, MAP } from "./copy";
 import { drawStrip } from "./draw";
@@ -318,6 +319,7 @@ function openPanel(button: HTMLButtonElement, index: number) {
   button.setAttribute("aria-expanded", "true");
   button.setAttribute("aria-controls", panel.id);
   button.after(panel);
+  arrive(panel);
   choices[0]?.focus();
 }
 

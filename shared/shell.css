@@ -138,7 +138,7 @@ main {
   display: inline-grid;
   justify-items: end;
   clip-path: inset(-0.08em -0.1em -0.22em -0.1em);
-  transition: scale 120ms var(--ease-ui);
+  transition: scale var(--dur-press) var(--ease-ui);
 }
 
 .swap > span {
@@ -328,7 +328,7 @@ html.menu-on.menu-bar {
   transform-origin: left;
   transition:
     transform var(--dur-ui) var(--ease-out),
-    scale 120ms var(--ease-ui);
+    scale var(--dur-press) var(--ease-ui);
 }
 
 @media (hover: hover) and (pointer: fine) {

@@ -127,6 +127,7 @@
   color: var(--soft);
   font: var(--fw-medium) var(--fs-sm) / 1 var(--ff-text);
   cursor: pointer;
+  transition: transform var(--dur-press) var(--ease-ui);
 }
 
 .level-toggle .num {
@@ -403,6 +404,15 @@
   color: var(--acc);
   font: var(--fw-regular) var(--fs-body) / 1 var(--ff-text);
   cursor: pointer;
+  transition: transform var(--dur-press) var(--ease-ui);
+}
+
+/* A press settles the button a little, as on mail's Check. */
+@media (prefers-reduced-motion: no-preference) {
+  .level-toggle:active,
+  .more:active {
+    transform: scale(0.97);
+  }
 }
 
 .level-toggle:focus-visible,

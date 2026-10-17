@@ -46,7 +46,7 @@
   color: var(--bg);
   font: var(--fw-medium) var(--fs-meta) / 1 var(--ff-text);
   cursor: pointer;
-  transition: transform 120ms var(--ease-ui);
+  transition: transform var(--dur-press) var(--ease-ui);
 }
 
 @media (prefers-reduced-motion: no-preference) {

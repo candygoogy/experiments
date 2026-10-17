@@ -6,6 +6,7 @@ import "@exp/shared/theme-switch.css";
 import "@exp/shared/dropzone.css";
 import "@exp/shared/work.css";
 import "./logscope.css";
+import { arrive } from "@exp/shared/arrive";
 import { initDropZone } from "@exp/shared/dropzone";
 import { initHeader } from "@exp/shared/header";
 import { copy, fill } from "./copy.ts";
@@ -60,6 +61,7 @@ function problem(lines: string[]) {
     ],
     lines.join(" "),
   );
+  arrive(answer);
 }
 
 /** Wires the filters of a drawn answer to its lists. */
@@ -190,6 +192,7 @@ function read(file: File, skipped: File[]) {
       const { nodes, said } = renderAnswer(document, message.result, "answer");
       show(nodes, said);
       wire(message.result);
+      arrive(answer);
     } catch {
       // Never left on "Reading the log… 100%".
       problem([copy.unreadable]);

@@ -145,6 +145,8 @@
     0.9985,
     1
   );
+  /* A button settling under a press, and back. */
+  --dur-press: 120ms;
   --dur-fast: 150ms;
   --dur-ui: 200ms;
   --dur-move: 350ms;

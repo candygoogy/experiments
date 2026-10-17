@@ -332,6 +332,16 @@ test("a HEIC this browser can't show itself: drawn by its video decoder, turned,
   expect(
     await canvas.evaluate((c: HTMLCanvasElement) => [c.width, c.height]),
   ).toEqual([60, 80]);
+  // The row has settled from its arrival (shared/arrive.ts) before the
+  // thumbnail's place is taken, so the rise isn't read as a shift.
+  await canvas.evaluate((c) =>
+    Promise.all(
+      c
+        .closest(".photo")
+        ?.getAnimations()
+        .map((a) => a.finished) ?? [],
+    ),
+  );
   const box = await canvas.boundingBox();
 
   // Each tile's colour, read at the middle of each quarter of the canvas.

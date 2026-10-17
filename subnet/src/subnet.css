@@ -352,9 +352,13 @@ textarea:hover {
       display: none;
     }
 
+    /* Shown while closed, so without the disclosure's closed fade
+       (shared/disclosure.css, imported before this). */
     .more::details-content {
       display: block;
       content-visibility: visible;
+      opacity: 1;
+      translate: none;
     }
   }
 }
@@ -440,6 +444,7 @@ textarea:hover {
   color: var(--ink);
   font: var(--fw-medium) var(--fs-sm) / 1 var(--ff-text);
   cursor: pointer;
+  transition: transform var(--dur-press) var(--ease-ui);
 }
 
 /* The same as the website's theme switch: the pill stays 32px, the touch
@@ -475,6 +480,7 @@ textarea:hover {
   background: none;
   color: var(--ink);
   font: var(--fw-medium) var(--fs-sm) / 1 var(--ff-text);
+  transition: transform var(--dur-press) var(--ease-ui);
 }
 
 .split-add::after {
@@ -521,4 +527,14 @@ textarea:hover {
   background: var(--ink);
   color: var(--bg);
   font: var(--fw-medium) var(--fs-sm) / 1 var(--ff-text);
+  transition: transform var(--dur-press) var(--ease-ui);
+}
+
+/* A press settles the button a little, as on mail's Check. */
+@media (prefers-reduced-motion: no-preference) {
+  .split:active,
+  .split-ways button:active,
+  .split-add:active {
+    transform: scale(0.97);
+  }
 }

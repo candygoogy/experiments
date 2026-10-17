@@ -24,7 +24,7 @@
   border-radius: var(--r-pill);
   font: var(--fw-medium) var(--fs-meta) / 1 var(--ff-text);
   cursor: pointer;
-  transition: transform 120ms var(--ease-ui);
+  transition: transform var(--dur-press) var(--ease-ui);
 }
 
 .start {

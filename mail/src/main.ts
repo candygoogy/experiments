@@ -5,6 +5,7 @@ import "@exp/shared/shell.css";
 import "@exp/shared/theme-switch.css";
 import "@exp/shared/work.css";
 import "./mail.css";
+import { arrive } from "@exp/shared/arrive";
 import { initHeader } from "@exp/shared/header";
 import { COPY } from "./copy";
 import { normalizeDomain, reservedName } from "./normalize";
@@ -96,6 +97,7 @@ form.addEventListener("submit", (event) => {
       out.replaceChildren(...result.nodes);
       example.hidden = true;
       yours.hidden = false;
+      arrive(yours);
       live.textContent = COPY.ready(domain, result.verdict);
     })
     // The check's code didn't load, or something else broke: say so
