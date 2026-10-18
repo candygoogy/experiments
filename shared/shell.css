@@ -219,7 +219,7 @@ main {
   outline: none;
 }
 
-/* A column, so the route and the theme switch can sit at the bottom. */
+/* A column, so the theme switch can sit at the bottom. */
 .menu[open] {
   display: flex;
   flex-direction: column;
@@ -246,13 +246,13 @@ html.menu-on.menu-bar {
 }
 
 /* The route: one line through a node per destination, in the site's
-   career timeline's line and rings, drawn to the names' scale. It sits
-   low, with the switch, where a thumb reaches; the open page colour is
-   above it, under the top row, as on the site when its index of projects
-   doesn't fit. A tool page only needs the way back. */
+   career timeline's line and rings, drawn to the names' scale. It comes
+   first, right under the top row, as on the site: the main sections are
+   what the menu is opened for. A tool page only needs the way back, so
+   there's no index of projects under it, as on the site where the index
+   doesn't fit. */
 .route {
-  margin-top: auto;
-  padding-block: var(--sp-7);
+  padding-block: var(--sp-5) var(--sp-7);
 }
 
 /* Each stop is a row one and a half times its name's size. The nodes sit
@@ -345,9 +345,11 @@ html.menu-on.menu-bar {
 }
 
 /* The theme switch, gutter to gutter like the top row, at the bottom of
-   the screen where a thumb reaches it (clear of the home indicator). On a
-   short screen it follows the route, never over it. */
+   the screen where a thumb reaches it (clear of the home indicator): the
+   open page colour is above it. On a short screen it follows the route,
+   never over it. */
 .menu-end {
+  margin-top: auto;
   padding-bottom: calc(var(--sp-7) + env(safe-area-inset-bottom, 0px));
 }
 

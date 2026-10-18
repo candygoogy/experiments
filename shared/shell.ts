@@ -118,8 +118,9 @@ export function shellHtml(o: ShellOptions): {
   ].join("\n    ");
   const brand = `<a class="brand" href="${SITE}/">candygoogy</a>`;
   // Where the row doesn't fit, the menu (header.ts): its top row is the
-  // header's, with Close where Menu was; under it, low, the site's route,
-  // drawn in its timeline's line and rings, then the theme switch.
+  // header's, with Close where Menu was; right under it the site's route,
+  // drawn in its timeline's line and rings, and the theme switch at the
+  // bottom.
   const route = ROUTE.map(
     (r) =>
       `<li><a href="${r.href}"${"current" in r ? ` aria-current="true"` : ""}>` +

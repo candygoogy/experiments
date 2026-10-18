@@ -331,6 +331,21 @@ export async function checkBasics(
     await expect(menu.locator(".route a[aria-current]")).toHaveText(
       "Experiments",
     );
+    // As on the site: the route right under the top row, the switch at the
+    // bottom, the open page colour between them. Layout boxes, so the
+    // opening motion's transforms don't count.
+    const gaps = await menu.evaluate((m) => {
+      const top = m.querySelector<HTMLElement>(".top");
+      const route = m.querySelector<HTMLElement>(".route");
+      const end = m.querySelector<HTMLElement>(".menu-end");
+      if (!top || !route || !end) return { aboveRoute: NaN, belowEnd: NaN };
+      return {
+        aboveRoute: route.offsetTop - (top.offsetTop + top.offsetHeight),
+        belowEnd: m.clientHeight - (end.offsetTop + end.offsetHeight),
+      };
+    });
+    expect(gaps.aboveRoute, "route right under the top row").toBe(0);
+    expect(gaps.belowEnd, "switch at the bottom").toBe(0);
     expect(
       await p.evaluate(
         () => getComputedStyle(document.documentElement).overflow,
