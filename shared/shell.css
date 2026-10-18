@@ -248,9 +248,8 @@ html.menu-on.menu-bar {
 /* The route: one line through a node per destination, in the site's
    career timeline's line and rings, drawn to the names' scale. It comes
    first, right under the top row, as on the site: the main sections are
-   what the menu is opened for. A tool page only needs the way back, so
-   there's no index of projects under it, as on the site where the index
-   doesn't fit. */
+   what the menu is opened for. The site's index of featured projects
+   follows it, where there's room (.menu-index, below). */
 .route {
   padding-block: var(--sp-5) var(--sp-7);
 }
@@ -344,10 +343,129 @@ html.menu-on.menu-bar {
   scale: 0.97;
 }
 
+/* The site's index of featured projects (its ProjectIndex.astro, as in
+   its menu), under the route, on the page gutter under the wordmark, as
+   the switch is. The rows get the whole width, so each project's line
+   stays on one line on a 375px phone. The route's own padding keeps it
+   clear of the last stop; its own keeps the switch clear of its last
+   row. */
+.menu-index {
+  padding-bottom: var(--sp-7);
+}
+
+.menu-index[hidden] {
+  display: none;
+}
+
+.menu-index h2 {
+  /* Room for the first row's focus ring, clear of the heading. */
+  margin-bottom: var(--sp-2);
+  font: var(--fw-medium) var(--fs-sm) / 1.4 var(--ff-text);
+  color: var(--soft);
+}
+
+.menu-index ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The name over its line, the rows close together, with a rule between
+   them only (the list doesn't end on one). Each row is still well over
+   44px tall. */
+.menu-index a {
+  display: grid;
+  padding-block: var(--sp-2);
+  background: none;
+  color: var(--ink);
+}
+
+.menu-index li + li {
+  border-top: var(--rule) solid var(--line);
+}
+
+/* Names are one line: no extra leading above or below. */
+.menu-index-name {
+  font: var(--fw-d-bold) var(--fs-d-lg) / 1 var(--ff-display);
+  letter-spacing: var(--ls-d-md);
+  transition: color var(--dur-ui) var(--ease-out);
+}
+
+/* Hover feedback that doesn't depend on motion. */
+.menu-index a:hover .menu-index-name {
+  color: var(--acc);
+}
+
+.menu-index-blurb {
+  margin-top: var(--sp-1);
+  font-size: var(--fs-meta);
+  color: var(--soft);
+  text-wrap: balance;
+}
+
+/* A hyphenated word ("check-up") never breaks at its hyphen. */
+.menu-index-nobr {
+  white-space: nowrap;
+}
+
+/* With a pointer, the name and its line step in together, as the
+   route's names do. */
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .menu-index-name,
+  .menu-index-blurb {
+    transition:
+      color var(--dur-ui) var(--ease-out),
+      transform var(--dur-ui) var(--ease-out);
+  }
+
+  .menu-index a:hover :is(.menu-index-name, .menu-index-blurb) {
+    transform: translateX(6px);
+  }
+}
+
+/* Forced colours: the rows are links by their place, as the route's are,
+   so no underline is drawn under them. */
+@media (forced-colors: active) {
+  .menu-index a {
+    text-decoration: none;
+  }
+}
+
+/* While the menu measures what fits (header.ts), nothing transitions. */
+.menu.fitting,
+.menu.fitting * {
+  transition: none !important;
+}
+
+/* Shorter: the names alone, each row the height of a touch target. The
+   lines leave the accessibility tree too; the links keep the names. */
+.menu:is([data-fit="names"], [data-fit="close"]) .menu-index a {
+  min-height: 44px;
+  padding-block: 0;
+  align-content: center;
+}
+
+.menu:is([data-fit="names"], [data-fit="close"]) .menu-index-blurb {
+  display: none;
+}
+
+/* Shorter still: the route's rows a little closer (the names keep their
+   size), and less room between the route and the index, and between the
+   index and the switch: enough for an iPhone in Safari with its toolbars
+   (393x659) to keep the names. */
+.menu[data-fit="close"] .route,
+.menu[data-fit="close"] .menu-index {
+  padding-bottom: var(--sp-5);
+}
+
+.menu[data-fit="close"] .route ul {
+  --row: 1.25em;
+}
+
 /* The theme switch, gutter to gutter like the top row, at the bottom of
    the screen where a thumb reaches it (clear of the home indicator): the
-   open page colour is above it. On a short screen it follows the route,
-   never over it. */
+   open page colour is above it. On a short screen it follows the index
+   (or the route), never over it. */
 .menu-end {
   margin-top: auto;
   padding-bottom: calc(var(--sp-7) + env(safe-area-inset-bottom, 0px));
@@ -357,12 +475,51 @@ html.menu-on.menu-bar {
   width: 100%;
 }
 
-/* Opening: the line draws down from the first stop, and each stop's ring
-   lands and its name rises out of its clip as the line reaches it (the
-   line's curve passes the stops about 50ms apart); the filled node fills
-   after its ring; the switch comes last, 80ms after the last stop.
+/* Opening, as on the site: the route comes first. The line draws down
+   from the first stop, and each stop's ring lands and its name rises out
+   of its clip as the line reaches it (the line's curve passes the stops
+   about 50ms apart); the filled node fills after its ring. The index
+   follows, 80ms in, its heading then its rows rising in turn, 40ms apart
+   (half the page's stagger: the menu is opened often, and is for going
+   somewhere); the switch comes last, 80ms after the index's last row
+   (80ms after the route's last stop, at 195ms, without the index). Each
+   row's place is mapped here, not set in a style="" the tools' CSP would
+   refuse: a fifth row needs its own line, and moves the switch's --end.
    Closing is one quick fade. Under reduced motion it simply appears and
    goes. */
+.menu {
+  --lead: 80ms;
+}
+
+.menu-index {
+  --rise: var(--lead);
+}
+
+.menu-index li {
+  --i: 0;
+  --rise: calc(var(--lead) + 40ms + var(--i) * 40ms);
+}
+
+.menu-index li:nth-child(2) {
+  --i: 1;
+}
+
+.menu-index li:nth-child(3) {
+  --i: 2;
+}
+
+.menu-index li:nth-child(4) {
+  --i: 3;
+}
+
+.menu-end {
+  --end: calc(var(--lead) + 240ms);
+}
+
+.menu-index[hidden] ~ .menu-end {
+  --end: 280ms;
+}
+
 .route li:nth-child(2) {
   --at: 50ms;
 }
@@ -401,8 +558,12 @@ html.menu-on.menu-bar {
     animation: menu-rise 1s var(--ease-out) var(--at, 0ms) backwards;
   }
 
+  .menu[open] .menu-index :is(h2, li) {
+    animation: menu-up 900ms var(--ease-out) var(--rise, 0ms) backwards;
+  }
+
   .menu[open] .menu-end {
-    animation: menu-up 900ms var(--ease-out) 280ms backwards;
+    animation: menu-up 900ms var(--ease-out) var(--end) backwards;
   }
 
   .menu.closing {

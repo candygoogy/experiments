@@ -43,6 +43,34 @@ export const ROUTE = [
   { href: `${SITE}/#contact`, label: "Contact" },
 ] as const;
 
+/** The menu's index of featured projects, as on candygoogy.dev's menu:
+ * its heading, then each project's name and line, in the site's order.
+ * The site's daily check compares it with the live site, so a change
+ * there shows up here. */
+export const FEATURED_TITLE = "A few things I’ve built";
+export const FEATURED = [
+  {
+    href: `${SITE}/fettle`,
+    name: "Fettle",
+    blurb: "Windows check-up, printed as a readable receipt",
+  },
+  {
+    href: `${SITE}/idiff`,
+    name: "Install diff",
+    blurb: "What an installer did to your PC, in plain words",
+  },
+  {
+    href: `${SITE}/#notary`,
+    name: "Notary",
+    blurb: "Claude Code mods that check Claude’s work",
+  },
+  {
+    href: `${SITE}/#candygoogy-bot`,
+    name: "candygoogy-bot",
+    blurb: "Telegram bot that wakes and shuts down my PCs",
+  },
+] as const;
+
 /** The first Tab stop on every page, as on candygoogy.dev: past the
  * header to the tool (every index.html has <main id="tool">). */
 export const SKIP = "Skip to content";
@@ -67,6 +95,19 @@ export const escape = (text: string): string =>
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll("\n", "&#10;");
+
+/** Escaped text whose hyphenated words ("check-up") never break at the
+ * hyphen, as the site's Keep.astro does: each is wrapped in a no-wrap
+ * span. */
+const keep = (text: string): string =>
+  text
+    .split(/([\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+)/u)
+    .map((part, i) =>
+      i % 2 === 1
+        ? `<span class="menu-index-nobr">${escape(part)}</span>`
+        : escape(part),
+    )
+    .join("");
 
 const OPTIONS = [
   { value: "auto", label: "Auto" },
@@ -119,14 +160,26 @@ export function shellHtml(o: ShellOptions): {
   const brand = `<a class="brand" href="${SITE}/">candygoogy</a>`;
   // Where the row doesn't fit, the menu (header.ts): its top row is the
   // header's, with Close where Menu was; right under it the site's route,
-  // drawn in its timeline's line and rings, and the theme switch at the
-  // bottom.
+  // drawn in its timeline's line and rings; under that the site's index
+  // of featured projects, where the screen has room for it; and the theme
+  // switch at the bottom.
   const route = ROUTE.map(
     (r) =>
       `<li><a href="${r.href}"${"current" in r ? ` aria-current="true"` : ""}>` +
       `<span class="route-node" aria-hidden="true"><span></span></span>` +
       `<span class="route-name"><span>${r.label}</span></span></a></li>`,
   ).join("");
+  const featured = FEATURED.map(
+    (f) =>
+      `<li><a href="${escape(f.href)}">` +
+      `<span class="menu-index-name">${escape(f.name)}</span>` +
+      `<span class="menu-index-blurb">${keep(f.blurb)}</span></a></li>`,
+  ).join("");
+  const index =
+    `<div class="menu-index wrap" data-menu-index>` +
+    `<nav aria-labelledby="menu-index-title">` +
+    `<h2 id="menu-index-title">${escape(FEATURED_TITLE)}</h2>` +
+    `<ol>${featured}</ol></nav></div>`;
   const header =
     `<a class="skip" href="#tool">${SKIP}</a>` +
     `<header class="top wrap">` +
@@ -140,6 +193,7 @@ export function shellHtml(o: ShellOptions): {
     `<button type="button" class="toggle" data-menu-close><span class="swap">` +
     `<span aria-hidden="true">${MENU}</span><span>${CLOSE}</span></span></button></div>` +
     `<nav class="route wrap" aria-label="Pages"><ul>${route}</ul></nav>` +
+    index +
     `<div class="menu-end wrap">${themeSwitch()}</div>` +
     `</dialog>` +
     `</header>`;

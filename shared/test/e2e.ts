@@ -6,6 +6,7 @@ import { expect, type Page } from "@playwright/test";
 import { execFileSync, spawn } from "node:child_process";
 import { join } from "node:path";
 import { stripVTControlCharacters } from "node:util";
+import { FEATURED, FEATURED_TITLE } from "../shell.ts";
 
 const ROOT = join(import.meta.dirname, "..", "..");
 const WRANGLER = join(ROOT, "node_modules", "wrangler", "bin", "wrangler.js");
@@ -374,6 +375,59 @@ export async function checkBasics(
       await p.mouse.wheel(0, -60);
       await expect(header, "back on scroll up").not.toHaveClass(/\baway\b/);
     }
+    await context.close();
+  }
+
+  // (k, continued) The menu's featured index, as on the site: on a tall
+  // phone it shows under the route, the switch still at the bottom; on an
+  // iPhone in Safari, names only; turned to a shorter one with the menu
+  // open, it goes, and the route stays right under the top row.
+  {
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+    });
+    const p = await context.newPage();
+    await p.goto(base);
+    await p.locator("[data-menu-open]").click();
+    const menu = p.locator("[data-menu]");
+    const index = menu.locator("[data-menu-index]");
+    await expect(index, "index shown on a tall phone").toBeVisible();
+    await expect(index.locator("h2")).toHaveText(FEATURED_TITLE);
+    const rows = index.locator("li > a");
+    await expect(rows.locator(":scope > span:first-child")).toHaveText(
+      FEATURED.map((f) => f.name),
+    );
+    expect(
+      await rows.evaluateAll((all) => all.map((a) => a.getAttribute("href"))),
+      "index links, in order",
+    ).toEqual(FEATURED.map((f) => f.href));
+    const layout = () =>
+      menu.evaluate((m) => {
+        const top = m.querySelector<HTMLElement>(".top");
+        const route = m.querySelector<HTMLElement>(".route");
+        const end = m.querySelector<HTMLElement>(".menu-end");
+        if (!top || !route || !end) return { aboveRoute: NaN, belowEnd: NaN };
+        return {
+          aboveRoute: route.offsetTop - (top.offsetTop + top.offsetHeight),
+          belowEnd: m.clientHeight - (end.offsetTop + end.offsetHeight),
+        };
+      });
+    expect((await layout()).belowEnd, "switch at the bottom").toBe(0);
+    // An iPhone in Safari with its toolbars keeps the names (the closest
+    // step), the switch still on screen.
+    await p.setViewportSize({ width: 393, height: 659 });
+    await expect(menu, "names, closer, on an iPhone").toHaveAttribute(
+      "data-fit",
+      "close",
+    );
+    await expect(index).toBeVisible();
+    expect((await layout()).belowEnd, "switch at the bottom").toBe(0);
+    await p.setViewportSize({ width: 360, height: 640 });
+    await expect(index, "index gone on a short phone").toBeHidden();
+    await expect(index).toHaveJSProperty("hidden", true);
+    const short = await layout();
+    expect(short.aboveRoute, "route right under the top row").toBe(0);
+    expect(short.belowEnd, "switch at the bottom").toBe(0);
     await context.close();
   }
 

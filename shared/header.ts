@@ -17,7 +17,8 @@ export function initHeader(): void {
 }
 
 // The menu opens as a modal dialog: the page behind can't be reached or
-// scrolled. Close, Esc, a link or a wider window closes it, and focus
+// scrolled. Its featured index shows as much as the screen has room for
+// (fit, below). Close, Esc, a link or a wider window closes it, and focus
 // goes back to Menu.
 function initMenu() {
   const root = document.documentElement;
@@ -28,6 +29,38 @@ function initMenu() {
   // The fallback close below, cleared when the menu closes or opens, so
   // a menu opened again soon after isn't shut by it.
   let fallback = 0;
+
+  // As on the site, the featured index takes what room there is under the
+  // route, with the switch still at the bottom of the screen: each
+  // project's name and line; or, shorter, the names alone; or the names
+  // with the route's rows a little closer. Where even that doesn't fit,
+  // it goes, rather than squeeze or push the switch down. Read from layout
+  // boxes, so the opening's transforms don't count. Those are whole
+  // pixels, each rounded on its own: at a scaling like 150% a switch that
+  // fits can read a pixel past the bottom, so a pixel over still fits.
+  // Transitions are off while it measures (.fitting): under reduced motion
+  // every change is a 1ms transition, and a box would still read its old
+  // size.
+  const index = menu.querySelector<HTMLElement>("[data-menu-index]");
+  const end = menu.querySelector<HTMLElement>(".menu-end");
+  const fits = () =>
+    !!end && end.offsetTop + end.offsetHeight <= menu.clientHeight + 1;
+  const fit = () => {
+    if (!index) return;
+    menu.classList.add("fitting");
+    index.hidden = false;
+    let fitted = false;
+    for (const step of ["full", "names", "close"]) {
+      menu.setAttribute("data-fit", step);
+      fitted = fits();
+      if (fitted) break;
+    }
+    if (!fitted) {
+      index.hidden = true;
+      menu.removeAttribute("data-fit");
+    }
+    menu.classList.remove("fitting");
+  };
 
   // Quicker than it opens: the menu fades away over the page (its top row
   // over the header's own, so the wordmark stays put), then closes.
@@ -50,6 +83,7 @@ function initMenu() {
     root.classList.toggle("menu-bar", innerWidth > root.clientWidth);
     root.classList.add("menu-on");
     menu.showModal();
+    fit();
     button.setAttribute("aria-expanded", "true");
     // Opened from the keyboard, focus goes to Close (where Menu was);
     // from a tap or a click, to the menu itself, so no ring shows.
@@ -85,6 +119,12 @@ function initMenu() {
   // Wide enough for the full row again (a tablet turned): no menu.
   matchMedia(PHONE).addEventListener("change", (event) => {
     if (!event.matches && menu.open) menu.close();
+  });
+
+  // A window resized with the menu open (a phone turned): the index
+  // comes or goes.
+  addEventListener("resize", () => {
+    if (menu.open) fit();
   });
 
   // Leaving the page with it open: a page coming back from the
