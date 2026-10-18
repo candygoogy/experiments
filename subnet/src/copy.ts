@@ -12,10 +12,10 @@ export const COPY = {
   title: "Subnet planner",
   // The meta description.
   description:
-    "Type your network ranges to see them as a map, with the numbers worked out and the clashes named in plain words.",
+    "Type your network ranges to see them as a map, with the numbers worked out and the clashes named.",
   noscript: "This tool needs JavaScript. It runs entirely in your browser.",
   intro:
-    "Type your network ranges to see them as a map, with the numbers worked out and the clashes named in plain words.",
+    "Type your network ranges to see them as a map, with the numbers worked out and the clashes named.",
   fileLabel: "Your ranges",
   placeholder: "home 192.168.1.0/24\niot 192.168.20.0/24",
   hint: "One range per line, with a name first if you like.",

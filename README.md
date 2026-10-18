@@ -4,15 +4,15 @@ Small tools that run in the browser, each on its own subdomain of [candygoogy.de
 
 ## The experiments
 
-| Experiment     | Where                     | What it does                                                                                                     |
-| -------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Battery check  | `battery.candygoogy.dev`  | Drop in the report Windows makes about your battery, and get a plain answer on its health.                       |
-| Keyboard check | `keyboard.candygoogy.dev` | Press every key and watch it light up. Find the dead ones, the stuck ones, and the ones that type twice.         |
-| Photo check    | `photo.candygoogy.dev`    | Drop in a photo to see what it gives away, and get a clean copy without it.                                      |
-| Compose map    | `compose.candygoogy.dev`  | Paste a docker-compose file to see your services as a map, and what’s exposed, in plain words.                   |
-| logscope       | `logscope.candygoogy.dev` | Drop a log from Windows or a server, and see what happened, grouped and explained in plain words.                |
-| Mail check     | `mail.candygoogy.dev`     | Type a domain to see how well its email is protected against fakes, in plain words.                              |
-| Subnet planner | `subnet.candygoogy.dev`   | Type your network ranges to see them as a map, with the numbers worked out and the clashes named in plain words. |
+| Experiment     | Where                     | What it does                                                                                             |
+| -------------- | ------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Battery check  | `battery.candygoogy.dev`  | Drop in the report Windows makes about your battery, and get a plain answer on its health.               |
+| Keyboard check | `keyboard.candygoogy.dev` | Press every key and watch it light up. Find the dead ones, the stuck ones, and the ones that type twice. |
+| Photo check    | `photo.candygoogy.dev`    | Drop in a photo to see what it gives away, and get a clean copy without it.                              |
+| Compose map    | `compose.candygoogy.dev`  | Paste a docker-compose file to see your services as a map, and what's exposed.                           |
+| logscope       | `logscope.candygoogy.dev` | Drop a log from Windows or a server, and see what happened, grouped and explained.                       |
+| Mail check     | `mail.candygoogy.dev`     | Type a domain to see how well its email is protected against fakes.                                      |
+| Subnet planner | `subnet.candygoogy.dev`   | Type your network ranges to see them as a map, with the numbers worked out and the clashes named.        |
 
 ### What Mail check sends
 

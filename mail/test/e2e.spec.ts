@@ -1,5 +1,6 @@
 import { expect, test, type Page, type Route } from "@playwright/test";
 import { checkBasics, serve } from "../../shared/test/e2e";
+import { COPY } from "../src/copy";
 import { answerFor, type Table } from "../src/table";
 
 const PORT = 4425;
@@ -74,7 +75,10 @@ const ask = async (page: Page, text: string) => {
 test("meets the shared basics, with Cloudflare's DNS as its one host", async ({
   page,
 }) => {
-  await checkBasics(page, BASE, { connectSrc: ["https://cloudflare-dns.com"] });
+  await checkBasics(page, BASE, {
+    connectSrc: ["https://cloudflare-dns.com"],
+    noscript: COPY.noscript,
+  });
 });
 
 test("the example is on the page, asks no DNS, and says nothing aloud", async ({

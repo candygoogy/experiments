@@ -8,10 +8,10 @@ export const COPY = {
   title: "Compose map",
   // The meta description.
   description:
-    "Paste a docker-compose file to see your services as a map, and what’s exposed, in plain words.",
+    "Paste a docker-compose file to see your services as a map, and what’s exposed.",
   noscript: "This tool needs JavaScript. It runs entirely in your browser.",
   intro:
-    "Paste a docker-compose file to see your services as a map, and what’s exposed, in plain words.",
+    "Paste a docker-compose file to see your services as a map, and what’s exposed.",
   fileLabel: "Your compose file",
   placeholder:
     'services:\n  web:\n    image: nginx:1.27\n    ports:\n      - "8080:80"',

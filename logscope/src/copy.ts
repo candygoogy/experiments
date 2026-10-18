@@ -3,7 +3,7 @@
 export const copy = {
   title: "logscope",
   intro:
-    "Drop a log from Windows or a server, and see what happened, grouped and explained in plain words.",
+    "Drop a log from Windows or a server, and see what happened, grouped and explained.",
   example: "Example log",
   // Over the drop zone; the answer's label is the file's name.
   fileLabel: "Your log",

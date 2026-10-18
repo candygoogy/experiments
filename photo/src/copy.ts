@@ -95,10 +95,10 @@ export const copy = {
       7: "turned 90° right, mirrored",
       8: "turned 90° left",
     },
-    ResolutionUnit: { 1: "none", 2: "inches", 3: "centimetres" },
-    FocalPlaneResolutionUnit: { 1: "none", 2: "inches", 3: "centimetres" },
+    ResolutionUnit: { 1: "none", 2: "inches", 3: "centimeters" },
+    FocalPlaneResolutionUnit: { 1: "none", 2: "inches", 3: "centimeters" },
     ColorSpace: { 1: "sRGB", 65535: "uncalibrated" },
-    YCbCrPositioning: { 1: "centred", 2: "co-sited" },
+    YCbCrPositioning: { 1: "centered", 2: "co-sited" },
     ExposureProgram: {
       0: "not set",
       1: "manual",
@@ -113,7 +113,7 @@ export const copy = {
     MeteringMode: {
       0: "unknown",
       1: "average",
-      2: "centre-weighted",
+      2: "center-weighted",
       3: "spot",
       4: "multi-spot",
       5: "pattern",

@@ -7,10 +7,10 @@ export const COPY = {
   title: "Mail check",
   // The meta description.
   description:
-    "Type a domain to see how well its email is protected against fakes, in plain words.",
-  noscript: "This tool needs JavaScript. It runs entirely in your browser.",
-  intro:
-    "Type a domain to see how well its email is protected against fakes, in plain words.",
+    "Type a domain to see how well its email is protected against fakes.",
+  noscript:
+    "This tool needs JavaScript. It runs in your browser and sends only DNS names, to Cloudflare’s public DNS.",
+  intro: "Type a domain to see how well its email is protected against fakes.",
   fieldLabel: "Domain or email address",
   placeholder: "example.com",
   check: "Check",

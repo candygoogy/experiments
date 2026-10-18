@@ -162,7 +162,7 @@ describe("details", () => {
       ResolutionUnit: "inches",
       ColorSpace: "uncalibrated",
       ComponentsConfiguration: "Y, Cb, Cr",
-      YCbCrPositioning: "centred",
+      YCbCrPositioning: "centered",
       Creator: "Test Person",
     });
     const flash = (v: number) =>

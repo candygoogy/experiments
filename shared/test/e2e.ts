@@ -136,6 +136,8 @@ function start(dir: string, port: number, answers: () => Promise<boolean>) {
 export interface BasicsOptions {
   /** The hosts the experiment may connect to (its CSP connect-src). */
   connectSrc?: string[];
+  /** The page's line for no JavaScript, if not the shared one. */
+  noscript?: string;
 }
 
 const AXE_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
@@ -371,7 +373,8 @@ export async function checkBasics(
     const note = p.locator("noscript p");
     await expect(note).toBeVisible();
     await expect(note).toHaveText(
-      "This tool needs JavaScript. It runs entirely in your browser.",
+      options.noscript ??
+        "This tool needs JavaScript. It runs entirely in your browser.",
     );
     await context.close();
   }
