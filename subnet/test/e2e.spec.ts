@@ -27,6 +27,21 @@ const type = async (page: Page, text: string) => {
   await page.locator("#plan").fill(text);
 };
 
+// A whole plan pasted at once, as compose's checks paste a file. (fill()
+// inserts the text line by line, one input event per line, and with an
+// input listener on the page the browser lays the field out again after
+// each one: 500 lines take it about 250 ms on its own, which a paste
+// never does.)
+const paste = async (page: Page, text: string) => {
+  await page.locator("#plan").evaluate((el, value) => {
+    const area = el as HTMLTextAreaElement;
+    area.value = value;
+    area.dispatchEvent(
+      new InputEvent("input", { inputType: "insertFromPaste", bubbles: true }),
+    );
+  }, text);
+};
+
 test("meets the shared basics", async ({ page }) => {
   await checkBasics(page, BASE);
 });
@@ -171,7 +186,7 @@ test(
     );
     // A few clashes too.
     lines.push("big 10.0.0.0/16", "dup 10.1.5.0/24");
-    await type(page, lines.join("\n"));
+    await paste(page, lines.join("\n"));
     await expect(page.locator(".pane.yours .ranges > li")).toHaveCount(502);
     await page.waitForTimeout(500);
     const long = await page.evaluate(
@@ -313,7 +328,7 @@ test(
       }).observe({ type: "longtask" });
     });
     const lines = Array.from({ length: 500 }, (_, i) => `n${i} 10.0.0.0/24`);
-    await type(page, lines.join("\n"));
+    await paste(page, lines.join("\n"));
     await expect(page.locator(".pane.yours .ranges > li")).toHaveCount(500);
     await page.waitForTimeout(1500);
     const long = await page.evaluate(
