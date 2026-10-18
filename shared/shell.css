@@ -358,8 +358,9 @@ html.menu-on.menu-bar {
 /* Opening: the line draws down from the first stop, and each stop's ring
    lands and its name rises out of its clip as the line reaches it (the
    line's curve passes the stops about 50ms apart); the filled node fills
-   after its ring; the switch comes last. Closing is one quick fade. Under
-   reduced motion it simply appears and goes. */
+   after its ring; the switch comes last, 80ms after the last stop.
+   Closing is one quick fade. Under reduced motion it simply appears and
+   goes. */
 .route li:nth-child(2) {
   --at: 50ms;
 }
@@ -399,7 +400,7 @@ html.menu-on.menu-bar {
   }
 
   .menu[open] .menu-end {
-    animation: menu-up 900ms var(--ease-out) 320ms backwards;
+    animation: menu-up 900ms var(--ease-out) 280ms backwards;
   }
 
   .menu.closing {
