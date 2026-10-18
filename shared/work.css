@@ -28,8 +28,9 @@
    photo's .lead), so the level never changes how it looks.
 
    An example drawn after the first paint holds its height with
-   --example-min (one column) and --example-min-wide (two), so its arrival
-   moves nothing below it. Each pane is a size container: what's in it
+   --example-min (one column) and --example-min-wide (two), plus
+   --example-slack for text another system sets a little taller, so its
+   arrival moves nothing below it. Each pane is a size container: what's in it
    follows the column's width, not the window's. */
 
 html:not(.js) .needs-js {
@@ -56,7 +57,9 @@ html:not(.js) .needs-js {
 }
 
 .pane.example {
-  min-height: var(--example-min-wide, var(--example-min, 0));
+  min-height: calc(
+    var(--example-min-wide, var(--example-min, 0px)) + var(--example-slack, 0px)
+  );
 }
 
 /* Each column opens on a dark rule, then its label. */
@@ -88,6 +91,6 @@ html:not(.js) .needs-js {
   }
 
   .pane.example {
-    min-height: var(--example-min, 0);
+    min-height: calc(var(--example-min, 0px) + var(--example-slack, 0px));
   }
 }

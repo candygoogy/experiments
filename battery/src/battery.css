@@ -241,8 +241,12 @@
    height in its range, so the example never needs more than it was given;
    it gets shorter as the text wraps less, once the numbers stop stacking
    (over 32.5rem, shared/base.css's .leaders), and again once the numbers
-   and the chart fit side by side (a 34rem column). */
+   and the chart fit side by side (a 34rem column). The heights were
+   measured on Windows, where the tallest step had 2px to spare; Linux
+   and macOS set the same text a few pixels taller, so every step gets
+   one body line more (--example-slack). */
 .example {
+  --example-slack: 1.75rem;
   --example-min: 53.75rem;
   --example-min-wide: 43.25rem;
 }
