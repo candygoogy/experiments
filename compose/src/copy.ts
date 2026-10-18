@@ -30,6 +30,17 @@ export const COPY = {
   stale: "The map still shows the last version that read correctly.",
   empty: "This file has no services to map.",
   tooBig: "This file is too big to read here.",
+  // Text the parser reads but the map can't be drawn from: a fault in this
+  // page, not something to fix in the file.
+  cantDraw: "Something in this file stopped the map from being drawn.",
+  // The page's reader didn't load (the network, say), or the file couldn't
+  // be read from disk.
+  wrong: "Something went wrong while reading this. Try again.",
+  // The page's reader is gone: a newer version of the page replaced it
+  // since this one opened. The page doesn't reload itself, which would
+  // lose what was pasted.
+  changed:
+    "This page has changed since it opened. Reload it, then paste or drop your file again.",
   include: "This file includes other files, which the map doesn’t follow.",
   // Several files (or "---" documents), merged as Docker Compose merges
   // them. Without -f it merges only a main file and its override; any

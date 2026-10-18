@@ -40,7 +40,7 @@ export function everything(doc: Document, all: Detail[]): HTMLDetailsElement {
   );
   box.append(label);
   for (const { block, rows } of all) {
-    const list = make(doc, "dl", "");
+    const list = make(doc, "dl", "leaders");
     for (const [key, value] of rows) {
       const row = make(doc, "div", "");
       row.append(make(doc, "dt", "", key), make(doc, "dd", "", value));

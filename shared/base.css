@@ -76,12 +76,130 @@ a {
   box-decoration-break: clone;
 }
 
+/* Forced colours drop background images, and with them the underline:
+   draw a real one instead, as the site does (the wordmark, the skip link,
+   the nav and the menu's route are links by their place, not a line). */
+@media (forced-colors: active) {
+  a:not(:where(.brand, .skip, .nav a, .route a)) {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+}
+
 /* One focus style everywhere: 2px ring in the accent, at least 3:1 against
    the page in both themes. */
 :focus-visible {
   outline: var(--focus-width) solid var(--focus);
   outline-offset: var(--focus-offset);
   border-radius: var(--r-focus);
+}
+
+/* Dotted leaders in a label-and-value list (.leaders), as on
+   candygoogy.dev's facts (its base.css and Facts.astro), as on a receipt
+   or a contents page: each label runs into a quiet dotted line, up to its
+   value, on the first line's baseline. Each child of the list is a row (a
+   dl's div, an ol's li), its first child the label and its last the value
+   (a dt and a dd, or two spans). The dots are a hairline dotted border
+   under a box set in the body face at the label's size, lifted 0.3em;
+   --leader colours them (the chip hairline by default). A no-break space
+   gives the box a baseline (one both faces have: neither has a zero-width
+   space, so that would leave the choice of font to the browser); screen
+   readers get nothing.
+
+   Each row is a grid of two columns: the label's, which takes the room
+   left over, and the value's, as wide as the value up to 28ch. Short of
+   room, the two share it equally, so the value wraps before the label
+   does, and a long unbroken label wraps too rather than pushing the value
+   out. A value that fits sits at the right edge; one that wraps reads
+   from the left, from where the leader ends, wrapped pretty like the
+   site's values. Tools can widen or narrow the 28ch, or lay the row out
+   their own way; the row, label and value rules are kept weak (:where)
+   for that.
+
+   Two differences from the site's on purpose: the site's rules are for a
+   dl's div, dt and dd only, and these take any row and its first and last
+   child, since the tools' lists are ols of spans too; and the site has no
+   list narrow enough to need the 16.5rem container query below, which
+   the tools' lists in narrow columns do. */
+@media screen {
+  .leaders {
+    container: leaders / inline-size;
+  }
+}
+
+:where(.leaders) > * {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, max-content);
+  align-items: baseline;
+}
+
+:where(.leaders) > * > :first-child {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+:where(.leaders) > * > :last-child {
+  min-width: 0;
+  max-width: 28ch;
+  margin: 0;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+:where(.leaders) > * > :first-child::after {
+  content: "\a0";
+  content: "\a0" / "";
+  flex: 1 0 var(--sp-5);
+  margin-inline: var(--sp-3);
+  overflow: hidden;
+  font-family: var(--ff-text);
+  font-weight: var(--fw-regular);
+  line-height: 1;
+  border-bottom: var(--rule) dotted var(--leader, var(--chip-line));
+  transform: translateY(-0.3em);
+}
+
+/* No leader, the label above its value: on phones, and wherever the list
+   itself is narrower than 16.5rem (264px), too narrow for a label, a
+   leader worth the name and a value side by side (the photo's fields in
+   a two-up row). Battery's 17rem numbers column keeps its leaders. */
+@media (max-width: 32.5rem) {
+  :where(.leaders) > * {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :where(.leaders) > * > :first-child {
+    display: block;
+  }
+
+  :where(.leaders) > * > :first-child::after {
+    display: none;
+  }
+
+  :where(.leaders) > * > :last-child {
+    max-width: none;
+  }
+}
+
+@container leaders (width < 16.5rem) {
+  :where(.leaders) > * {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :where(.leaders) > * > :first-child {
+    display: block;
+  }
+
+  :where(.leaders) > * > :first-child::after {
+    display: none;
+  }
+
+  :where(.leaders) > * > :last-child {
+    max-width: none;
+  }
 }
 
 /* Page width and side padding. */

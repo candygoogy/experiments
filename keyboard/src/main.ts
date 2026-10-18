@@ -220,11 +220,16 @@ addEventListener(
       // Start has the focus, so Enter starts. The key itself does nothing
       // else (Enter mustn't press Start too); shortcuts still work.
       tool.dataset["keyboard"] = "";
+      // With the menu open (a modal dialog), the key is the menu's: Esc
+      // closes it, and the page behind can't take the focus.
+      if (document.querySelector("dialog[open]")) return;
       if (!e.ctrlKey && !e.metaKey && !e.altKey) e.preventDefault();
       start.focus();
       return;
     }
-    if (!testing) return;
+    // The same while testing: Tab moves round the menu and Esc closes it,
+    // without counting or stopping the test.
+    if (!testing || document.querySelector("dialog[open]")) return;
     // Nothing the key would normally do happens while testing (Tab, the
     // arrows, Space, the F keys); Esc is tested too, then stops testing.
     e.preventDefault();
@@ -248,7 +253,9 @@ addEventListener(
   "keyup",
   (e) => {
     const wasDown = tracker.pressed.has(e.code);
-    if (!testing && !wasDown) return;
+    // With the menu open, only a key pressed before it opened lets go.
+    const menu = document.querySelector("dialog[open]");
+    if ((!testing || menu) && !wasDown) return;
     if (testing) e.preventDefault();
     tracker.up(e.code, e.timeStamp);
     if (held.delete(e.code)) renderFindings();

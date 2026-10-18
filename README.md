@@ -38,9 +38,8 @@ Requires Node 22.12 or newer.
 ```sh
 npm ci
 npx playwright install chromium  # once, for the browser checks
-npm run fonts                  # fetch the fonts (see below)
 npm run dev -w @exp/template   # Vite dev server
-npm run build                  # fonts, then every experiment's dist/
+npm run build                  # every experiment's dist/
 npm run preview -w @exp/template  # serve dist/ with Wrangler, headers included
 npm run lint                   # ESLint + Prettier check (never rewrites files)
 npm run typecheck              # tsc
@@ -61,10 +60,11 @@ copies `template/` to `<name>/`, renames it, and adds it to the workspaces. Wran
 
 ## Fonts
 
-Cabinet Grotesk and Satoshi come from [Fontshare](https://www.fontshare.com), under the ITF Free Font License. That license doesn't allow redistributing the font files through a repository, so they aren't in this repo. `npm run fonts` downloads the official packages and copies the variable WOFF2 files, unmodified, into the gitignored `shared/fonts/`. If the download fails or the license text changes, the build fails.
+Headings are set in [Newsreader](https://github.com/productiontype/Newsreader) by Production Type, and body text and the wordmark in [Schibsted Grotesk](https://github.com/schibsted/schibsted-grotesk) by Schibsted Media Group. Both are under the [SIL Open Font License 1.1](https://openfontlicense.org), so the WOFF2 files are committed in `shared/fonts/`, each next to its license (`OFL-Newsreader.txt`, `OFL-SchibstedGrotesk.txt`). They're the same files candygoogy.dev serves, built there by `scripts/make-fonts.py` from the upstream files in google/fonts, pinned to one commit: Newsreader at one optical size, both cut to the weights and characters the sites use. Each experiment serves them from its own domain, and its `third-party-licenses.txt` carries both licenses.
 
 ## License
 
 - **Code** is under the [MIT License](LICENSE).
+- The **fonts** in `shared/fonts/` are under the SIL Open Font License 1.1 (see [Fonts](#fonts)).
 - **Content** (the writing, images, logos and the candygoogy name and identity) is **© candygoogy, all rights reserved**. It isn't covered by the MIT License, so please don't reuse it without asking.
 - The **avatar** artwork the site icon is made from is by [@dark_night1109](https://x.com/dark_night1109/status/2104328383211737219). It belongs to the artist and isn't covered by the © candygoogy content line or the MIT License.

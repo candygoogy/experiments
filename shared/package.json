@@ -8,6 +8,8 @@
     "./header": "./header.ts",
     "./dropzone": "./dropzone.ts",
     "./arrive": "./arrive.ts",
+    "./copy": "./copy.ts",
+    "./stale": "./stale.ts",
     "./*.css": "./*.css"
   }
 }

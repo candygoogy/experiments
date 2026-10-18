@@ -11,13 +11,11 @@ import { initDropZone } from "@exp/shared/dropzone";
 import { initHeader } from "@exp/shared/header";
 import { designLabel, drawHistory, floorLabel, wornLabel } from "./chart";
 import { copy, fill } from "./copy";
-import { parseReport, type Battery, type Estimate } from "./parse";
+import { parseReport, tooBig, type Battery, type Estimate } from "./parse";
 import { verdictText } from "./verdict";
 
 initHeader();
 
-// Reports are tens or hundreds of kilobytes; anything far bigger isn't one.
-const MAX_BYTES = 20 * 1024 * 1024;
 const SVG = "http://www.w3.org/2000/svg";
 const NBSP = " ";
 
@@ -70,7 +68,7 @@ const make = <K extends keyof HTMLElementTagNameMap>(
 };
 
 function numbers(b: Battery): HTMLDListElement {
-  const list = make("dl", "numbers");
+  const list = make("dl", "numbers leaders");
   const rows: [string, string | null][] = [
     [
       copy.original,
@@ -266,8 +264,9 @@ function withOneFile(a: Answer, file: File, skipped: File[]): Answer {
 let run = 0;
 async function read(file: File, skipped: File[]) {
   const mine = ++run;
+  const big = tooBig(file.size);
   let source: string | null = null;
-  if (file.size <= MAX_BYTES) {
+  if (!big) {
     try {
       source = await file.text();
     } catch {
@@ -277,7 +276,11 @@ async function read(file: File, skipped: File[]) {
   if (mine !== run) return; // a newer drop took over
   show(
     withOneFile(
-      source === null ? trouble(copy.notAReport) : answerFor(source),
+      big
+        ? trouble(copy.tooBig)
+        : source === null
+          ? trouble(copy.notAReport)
+          : answerFor(source),
       file,
       skipped,
     ),

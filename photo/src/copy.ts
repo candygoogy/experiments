@@ -1,4 +1,6 @@
 // Every word the page says, in one place.
+import { fill } from "@exp/shared/copy";
+
 export const copy = {
   title: "Photo check",
   intro:
@@ -30,6 +32,13 @@ export const copy = {
   heic: "This browser can’t show this HEIC photo, so there’s no preview here.",
   unknownType:
     "This isn’t a photo this page can read. It reads JPEG, PNG, WebP and HEIC.",
+  // A file over the size cap (answer.ts, MAX_MB): never read.
+  tooBig:
+    "This file is too big for this page to read. It reads photos up to {n} MB.",
+  // The page's reader didn't load (the network, or a newer version of the
+  // page since this one opened). Also in index.html, so the page can say it
+  // without loading this file.
+  wrong: "Something went wrong while reading. Try again.",
   unreadable: "This page couldn’t read this photo’s details.",
   cantClean: "This photo stores its details in a way this page can’t clean.",
   damaged: "No clean copy: this file is damaged.",
@@ -129,11 +138,7 @@ export const copy = {
   >,
 } as const;
 
-/** Puts values into a sentence: fill("{n} photos", { n: 3 }). */
-export const fill = (text: string, values: Record<string, string | number>) =>
-  text.replace(/\{(\w+)\}/g, (all, key: string) =>
-    key in values ? String(values[key]) : all,
-  );
+export { fill };
 
 /** The one or the other form, by count, filled in. */
 export const plural = (

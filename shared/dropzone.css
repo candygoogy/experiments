@@ -70,9 +70,10 @@
   }
 }
 
+/* The prompt is something to click, so it's in the text face (the serif
+   is for titles and verdicts), a step up and semibold to lead the zone. */
 .drop-main {
-  font: var(--fw-d-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
-  letter-spacing: var(--ls-d-md);
+  font: var(--fw-semibold) var(--fs-lede) / var(--lh-tight) var(--ff-text);
 }
 
 .pick {
@@ -80,6 +81,16 @@
   background: linear-gradient(currentColor, currentColor) no-repeat 0 100% /
     100% 1px;
   padding-bottom: 1px;
+}
+
+/* Forced colors drop the drawn underline (a gradient), so the link takes
+   a real one, as candygoogy.dev's links do there. */
+@media (forced-colors: active) {
+  .pick {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
 }
 
 .drop-how {
@@ -106,5 +117,5 @@
 }
 
 .drop.has-result .drop-main {
-  font-size: var(--fs-d-xs);
+  font-size: var(--fs-body);
 }

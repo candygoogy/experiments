@@ -1,4 +1,6 @@
-/* Copied from candygoogy.dev src/styles/tokens.css. Change both together. */
+/* Copied from candygoogy.dev src/styles/tokens.css. Change both together.
+   One token is the experiments' own: --dur-press, a button settling
+   under a press, which the site writes out as 120ms where it's used. */
 /*
  * Design tokens for candygoogy.dev.
  *
@@ -43,16 +45,20 @@
   --ls-d-sm: -0.003em;
   --ls-d-md: -0.005em;
   --ls-section: -0.01em;
-  --ls-hero: -0.01em;
-  --ls-band: -0.012em;
+  --ls-hero: -0.018em;
+  --ls-band: -0.02em;
+  /* The wordmark, set tight at its heavy weight. */
+  --ls-wordmark: -0.02em;
 
+  /* Schibsted Grotesk's weights, for the text family (--ff-text). */
   --fw-regular: 400;
   --fw-medium: 500;
-  --fw-semibold: 600; /* the wordmark */
+  --fw-semibold: 600;
   --fw-bold: 700;
-  /* Newsreader's weights, for the display family only. */
-  --fw-d-bold: 560;
-  --fw-d-heavy: 650;
+  --fw-heavy: 800; /* the wordmark; the font file stops here */
+  /* Newsreader's weights, for the display family (--ff-display) only. */
+  --fw-d-bold: 650;
+  --fw-d-heavy: 700;
 
   --measure: 58ch;
   --measure-lede: 46ch;
@@ -74,7 +80,10 @@
   --gutter: clamp(1.25rem, 5vw, 4.5rem);
   --gap-hero: clamp(2.5rem, 7vw, 7.5rem);
   --space-section: clamp(5rem, 13vh, 9.5rem);
-  --space-hero-top: clamp(4.5rem, 14vh, 10.5rem);
+  /* The space over a page's headline follows the window's height, but no
+     more than its width allows: on a tall, narrow window (a phone) the
+     headline is small, and height alone left it far below the header. */
+  --space-hero-top: clamp(3rem, min(14vh, 12vw), 10.5rem);
   --space-hero-bottom: clamp(4rem, 10vh, 7.5rem);
   --space-band: clamp(4rem, 10vh, 7.5rem);
 

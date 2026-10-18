@@ -31,7 +31,7 @@
   font-family: "Schibsted Grotesk";
   src: url("./fonts/SchibstedGrotesk.woff2") format("woff2");
   font-display: swap;
-  font-weight: 400 700;
+  font-weight: 400 800;
   font-style: normal;
 }
 
@@ -39,7 +39,7 @@
   font-family: "Schibsted Grotesk fallback";
   src: local("Arial");
   font-display: swap;
-  font-weight: 400 700;
+  font-weight: 400 800;
   font-style: normal;
   size-adjust: 104.4907%;
   ascent-override: 93.4593%;

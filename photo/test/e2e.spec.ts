@@ -1,8 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 import exifr from "exifr";
 import { unzipSync } from "fflate";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import sharp from "sharp";
 import { deflateSync } from "node:zlib";
 import {
   checkBasics,
@@ -440,6 +441,56 @@ test(
   },
 );
 
+test(
+  "a full-size camera photo: read and cleaned with no task over 200 ms",
+  { tag: "@perf" },
+  async ({ page }) => {
+    // A 48-megapixel JPEG, as a phone's main camera saves at full size,
+    // with Exif naming the camera: made here, by sharp, from noise, so it
+    // compresses about as little as a real photo.
+    const [width, height] = [8000, 6000];
+    const buffer = await sharp({
+      create: {
+        width,
+        height,
+        channels: 3,
+        background: { r: 120, g: 140, b: 160 },
+        noise: { type: "gaussian", mean: 128, sigma: 12 },
+      },
+    })
+      .withExif({ IFD0: { Make: "Example", Model: "Phone 15" } })
+      .jpeg({ quality: 90 })
+      .toBuffer();
+    await page.addInitScript(() => {
+      const w = window as unknown as { tasks: number[] };
+      w.tasks = [];
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) w.tasks.push(entry.duration);
+      }).observe({ type: "longtask", buffered: true });
+    });
+    await page.goto(BASE);
+    await page.evaluate(() => {
+      (window as unknown as { tasks: number[] }).tasks = [];
+    });
+    // From the disk, as a person's photo comes: handed over as bytes,
+    // Playwright would build the file in the page, one long task of its
+    // own.
+    const path = test.info().outputPath("big.jpg");
+    writeFileSync(path, buffer);
+    await page.setInputFiles(".drop input", path);
+    await expect(page.locator(".download")).toBeVisible({ timeout: 60_000 });
+    const tasks = await page.evaluate(
+      () => (window as unknown as { tasks: number[] }).tasks,
+    );
+    const longest = Math.max(0, ...tasks);
+    test.info().annotations.push({
+      type: "long tasks",
+      description: `${(buffer.length / 1024 / 1024).toFixed(1)} MB JPEG: ${tasks.map((t) => Math.round(t)).join(", ")} ms`,
+    });
+    expect(longest).toBeLessThanOrEqual(200);
+  },
+);
+
 test("an example photo, labelled, drawn by the same code, never announced", async ({
   page,
 }) => {
@@ -873,4 +924,182 @@ test("a clean copy's colours are drawn exactly as the photo's", async ({
     expect(LEAKS(out[name] ?? new Uint8Array()), name).toBe(false);
     expect(after[name]?.pixels, name).toEqual(before[name]?.pixels);
   }
+});
+
+test("a long unbroken key or value wraps: no sideways scroll at 390, and every value keeps its room at 1440", async ({
+  browser,
+}) => {
+  const base = new Uint8Array(await image().png().toBuffer());
+  // A PNG's header chunk always ends 33 bytes in.
+  const text = (key: string, value: string) =>
+    pngChunk("tEXt", ascii(`${key}\0${value}`));
+  const buffer = Buffer.from([
+    ...base.subarray(0, 33),
+    ...text(
+      "Description",
+      "https://example.com/a/very/long/path/without/any/spaces/that/must/break/somewhere/abcdefghijklmnopqrstuvwxyz0123456789",
+    ),
+    ...text(
+      "AVeryLongTextKeywordThatGoesOnAndOnWithoutSpacesToTestLabelWidthX",
+      "short",
+    ),
+    ...base.subarray(33),
+  ]);
+  for (const width of [390, 1440]) {
+    const context = await browser.newContext({
+      viewport: { width, height: 900 },
+    });
+    const page = await context.newPage();
+    await page.goto(BASE);
+    await page.setInputFiles(".drop input", {
+      name: "long-text.png",
+      mimeType: "image/png",
+      buffer,
+    });
+    await page.locator(".all summary").first().click();
+    const short = page.locator(".all dd", { hasText: /^short$/ });
+    await expect(short).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - innerWidth,
+      ),
+      `sideways scroll at ${width}`,
+    ).toBe(0);
+    // Every value keeps its room: none is cut short inside its box, and
+    // none runs into its name (beside it, or over it on a phone).
+    const rows = await page
+      .locator(".all")
+      .first()
+      .locator("dl > div")
+      .evaluateAll((divs) =>
+        divs.map((div) => {
+          const [dt, dd] = [div.firstElementChild, div.lastElementChild];
+          if (!dt || !dd) return { name: "", clipped: true, overlap: true };
+          const a = dt.getBoundingClientRect();
+          const b = dd.getBoundingClientRect();
+          return {
+            name: dt.textContent ?? "",
+            clipped:
+              b.width === 0 ||
+              dd.scrollWidth > dd.clientWidth ||
+              dt.scrollWidth > dt.clientWidth,
+            overlap:
+              a.left < b.right - 0.5 &&
+              b.left < a.right - 0.5 &&
+              a.top < b.bottom - 0.5 &&
+              b.top < a.bottom - 0.5,
+          };
+        }),
+      );
+    expect(rows.length, `rows at ${width}`).toBe(2);
+    for (const row of rows) {
+      expect(row.clipped, `${row.name} cut short at ${width}`).toBe(false);
+      expect(row.overlap, `${row.name} over its value at ${width}`).toBe(false);
+    }
+    await context.close();
+  }
+});
+
+// Between the widths where the shared list drops its leaders and where
+// this one does (photo.css, 18.5rem), each field's name stands over its
+// value with no leader. Checked again with the shared rule made as strong
+// as it once was, so the list holds whatever its weight.
+test("where the fields' list is narrow, each name stands over its value, with no leader", async ({
+  browser,
+}) => {
+  for (const width of [630, 1160]) {
+    const context = await browser.newContext({
+      viewport: { width, height: 900 },
+      bypassCSP: true,
+    });
+    const page = await context.newPage();
+    await page.goto(BASE);
+    await page.setInputFiles(".drop input", fixture("gps.jpg"));
+    await page.locator(".all summary").first().click();
+    const labels = () =>
+      page
+        .locator(".all dt")
+        .evaluateAll((dts) =>
+          dts.map(
+            (dt) =>
+              `${getComputedStyle(dt).display} ${getComputedStyle(dt, "::after").display}`,
+          ),
+        );
+    const listWidth = await page
+      .locator(".all dl")
+      .first()
+      .evaluate((dl) => dl.getBoundingClientRect().width);
+    expect(listWidth, `list width at ${width}`).toBeLessThan(18.5 * 16);
+    expect(listWidth, `list width at ${width}`).toBeGreaterThan(16.5 * 16);
+    const plain = await labels();
+    expect(plain.length).toBeGreaterThan(2);
+    expect(new Set(plain), `at ${width}`).toEqual(new Set(["block none"]));
+    await page.addStyleTag({
+      content:
+        ".leaders > * > :first-child { display: flex } .leaders > * > :first-child::after { display: block }",
+    });
+    expect(new Set(await labels()), `at ${width}, strong`).toEqual(
+      new Set(["block none"]),
+    );
+    await context.close();
+  }
+});
+
+test("a file over 100 MB is said so in its own row, and not read", async ({
+  page,
+}) => {
+  await page.goto(BASE);
+  // Made in the page: the file only has to be that big.
+  await page.evaluate(() => {
+    const input = document.querySelector<HTMLInputElement>(".drop input");
+    if (!input) return;
+    const files = new DataTransfer();
+    files.items.add(
+      new File([new Uint8Array(100 * 1024 * 1024 + 1)], "huge.jpg", {
+        type: "image/jpeg",
+      }),
+    );
+    input.files = files.files;
+    input.dispatchEvent(new Event("change"));
+  });
+  const row = page.locator(".photo");
+  await expect(row.locator(".lead")).toHaveText(
+    "This file is too big for this page to read. It reads photos up to 100 MB.",
+  );
+  await expect(row.locator(".num")).toHaveText("100.0 MB");
+  await expect(row.locator(".thumb")).toHaveCount(0);
+  await expect(page.locator(".download")).toHaveCount(0);
+  await expect(page.locator("[data-status]")).toHaveText(
+    "This file is too big for this page to read. It reads photos up to 100 MB.",
+  );
+});
+
+test("a reader that doesn't load: the page reloads once for the current one, then says so, and the next drop tries again", async ({
+  page,
+}) => {
+  const errors = consoleErrors(page);
+  let fail = true;
+  await page.route("**/assets/answer-*.js", (route) =>
+    fail ? route.abort() : route.continue(),
+  );
+  await page.goto(BASE);
+  // The first failure reloads the page.
+  await Promise.all([
+    page.waitForEvent("load"),
+    page.setInputFiles(".drop input", fixture("gps.jpg")),
+  ]);
+  expect(
+    await page.evaluate(() => sessionStorage.getItem("stale-reload")),
+  ).toBe("1");
+  // After that, a failure is said, in the answer's place.
+  await page.setInputFiles(".drop input", fixture("gps.jpg"));
+  await expect(page.locator(".answer .wrong")).toHaveText(copy.wrong);
+  await expect(page.locator("#yours-label")).toHaveText(copy.fileLabel);
+  await expect(page.locator("[data-status]")).toHaveText(copy.wrong);
+  // Once the file is there again, the next drop reads.
+  fail = false;
+  await page.setInputFiles(".drop input", fixture("gps.jpg"));
+  await expect(page.locator(".photo .lead")).toHaveText(GPS);
+  await expect(page.locator(".answer .wrong")).toHaveCount(0);
+  expect(errors.filter((e) => !/^Failed to load resource/.test(e))).toEqual([]);
 });

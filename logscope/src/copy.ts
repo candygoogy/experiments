@@ -154,8 +154,4 @@ export const copy = {
   },
 } as const;
 
-/** Puts values into a sentence: fill("{n} events", { n: 3 }). */
-export const fill = (text: string, values: Record<string, string | number>) =>
-  text.replace(/\{(\w+)\}/g, (all, key: string) =>
-    key in values ? String(values[key]) : all,
-  );
+export { fill } from "@exp/shared/copy";

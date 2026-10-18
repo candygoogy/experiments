@@ -19,6 +19,10 @@ test("index.html says what copy.ts says", () => {
   expect(say(".input .label")).toBe(copy.fileLabel);
   expect(say(".example .label")).toBe(copy.example);
   expect(say(".drop-main")).toBe(copy.drop);
+  // Said when the reader doesn't load (main.ts), so it's in the page.
+  expect(doc.querySelector("[data-answer]")?.getAttribute("data-wrong")).toBe(
+    copy.wrong,
+  );
 });
 
 // What several photos give away together: the counts, in words.

@@ -310,6 +310,66 @@ test("an .evtx file dropped on the page, again, then chosen", async ({
   expect(errors).toEqual([]);
 });
 
+test("a six-digit count fits its column, at 390 and 1440", async ({
+  browser,
+}) => {
+  // 100,000 failed requests, then a dozen missing pages: one list, a
+  // six-digit count and a two-digit one.
+  const lines: string[] = [];
+  for (let i = 0; i < 100_000; i++) {
+    lines.push(
+      `203.0.113.9 - - [08/Oct/2026:00:${String(i % 60).padStart(2, "0")}:22 +0000] "GET /api/orders HTTP/1.1" 500 12 "-" "Mozilla/5.0"`,
+    );
+  }
+  for (let i = 0; i < 12; i++) {
+    lines.push(
+      `198.51.100.23 - - [08/Oct/2026:01:00:${String(i).padStart(2, "0")} +0000] "GET /missing HTTP/1.1" 404 12 "-" "Mozilla/5.0"`,
+    );
+  }
+  const buffer = Buffer.from(lines.join("\n") + "\n");
+  for (const width of [390, 1440]) {
+    const context = await browser.newContext({
+      viewport: { width, height: 900 },
+    });
+    const page = await context.newPage();
+    await page.goto(BASE);
+    await page.setInputFiles(".drop input", {
+      name: "access.log",
+      mimeType: "text/plain",
+      buffer,
+    });
+    const counts = page.locator(".answer .groups[data-list=main] .count");
+    await expect(counts).toHaveText(["100,000", "12"]);
+    const fit = await counts.evaluateAll((all) =>
+      all.map((count) => {
+        const text = document.createRange();
+        text.selectNodeContents(count);
+        const what = count.nextElementSibling as HTMLElement;
+        const digits = text.getBoundingClientRect();
+        const box = count.getBoundingClientRect();
+        const name = what.getBoundingClientRect().left;
+        return {
+          // The digits inside their box, and both the box and the digits
+          // themselves clear of the group's name (digits too wide for the
+          // box spill out of it, so the box alone can't tell).
+          inside: digits.left >= box.left - 0.5,
+          clear: box.right <= name,
+          textClear: digits.right <= name + 0.5,
+          right: box.right,
+        };
+      }),
+    );
+    for (const f of fit) {
+      expect(f.inside, `count inside its box at ${width}`).toBe(true);
+      expect(f.clear, `count clear of the name at ${width}`).toBe(true);
+      expect(f.textClear, `digits clear of the name at ${width}`).toBe(true);
+    }
+    // One column: the counts end on one line.
+    expect(fit[0]?.right).toBeCloseTo(fit[1]?.right ?? 0, 0);
+    await context.close();
+  }
+});
+
 test("an .evtx header with no events after it", async ({ page }) => {
   await page.goto(BASE);
   await page.setInputFiles(".drop input", fixture("fake.evtx"));
@@ -367,3 +427,102 @@ test(
     }
   },
 );
+
+test("the main list and the quiet list share one count column", async ({
+  browser,
+}) => {
+  // A disk error 123,456 times and a warning 42 times; the quiet list
+  // holds a DCOM 10016 seven times.
+  const rows = ["Level,Date and Time,Source,Event ID,Task Category"];
+  const push = (
+    level: string,
+    source: string,
+    id: number,
+    message: string,
+    n: number,
+  ) => {
+    for (let i = 0; i < n; i++)
+      rows.push(
+        `${level},10/14/2026 ${1 + (i % 11)}:${String(i % 60).padStart(2, "0")}:44 PM,${source},${id},None,"${message}"`,
+      );
+  };
+  push("Error", "disk", 7, "The device has a bad block.", 123_456);
+  push(
+    "Warning",
+    "Microsoft-Windows-Time-Service",
+    129,
+    "NtpClient was unable to set a domain peer to use as a time source.",
+    42,
+  );
+  push(
+    "Error",
+    "DistributedCOM",
+    10016,
+    "The application-specific permission settings do not grant Local Activation permission.",
+    7,
+  );
+  const buffer = Buffer.from(rows.join("\r\n") + "\r\n");
+  for (const width of [390, 1440]) {
+    const context = await browser.newContext({
+      viewport: { width, height: 900 },
+    });
+    const page = await context.newPage();
+    await page.goto(BASE);
+    await page.setInputFiles(".drop input", {
+      name: "system.csv",
+      mimeType: "text/plain",
+      buffer,
+    });
+    await expect(
+      page.locator(".answer .groups[data-list=main] .count"),
+    ).toHaveText(["123,456", "42"]);
+    await expect(
+      page.locator(".answer .groups[data-list=noise] .count"),
+    ).toHaveText(["7"]);
+    const rows = await page.locator(".answer .group").evaluateAll((all) =>
+      all.map((g) => {
+        const count = g.querySelector(".count") as HTMLElement;
+        const text = document.createRange();
+        text.selectNodeContents(count);
+        const box = count.getBoundingClientRect();
+        return {
+          edges: [
+            Math.round(box.right),
+            Math.round(
+              g.querySelector(".what")?.getBoundingClientRect().left ?? 0,
+            ),
+          ],
+          column: box.width,
+          digits: text.getBoundingClientRect().width,
+        };
+      }),
+    );
+    expect(rows).toHaveLength(3);
+    for (const row of rows)
+      expect(row.edges, `count and name edges at ${width}`).toEqual(
+        rows[0]?.edges,
+      );
+    // The shared column is as wide as the widest count's digits, so lining
+    // up never comes from every count spilling out of one narrow column.
+    const widest = Math.max(...rows.map((row) => row.digits));
+    expect(
+      rows[0]?.column ?? 0,
+      `count column holds 123,456 at ${width}`,
+    ).toBeGreaterThanOrEqual(widest - 0.5);
+    await context.close();
+  }
+});
+
+// The theme switch in forced colours is checked once, in template/test.
+test("in forced colors the drop zone's link is underlined", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ forcedColors: "active" });
+  const page = await context.newPage();
+  await page.goto(BASE);
+  const underline = await page
+    .locator(".pick")
+    .evaluate((node) => getComputedStyle(node).textDecorationLine);
+  expect(underline).toBe("underline");
+  await context.close();
+});

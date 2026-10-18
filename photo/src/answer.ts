@@ -2,7 +2,6 @@
 // in its own row. Loaded only when a file is on its way (main.ts), so the
 // page itself carries none of this.
 import { arrive } from "@exp/shared/arrive";
-import { zipSync } from "fflate";
 import { copy, fill, plural, together } from "./copy";
 import { detect, type PhotoType } from "./detect";
 import { CantClean } from "./heif";
@@ -11,6 +10,7 @@ import { make as makeIn, noPreview, photoRow } from "./render";
 import { clean } from "./strip/index";
 import { details, sentences, summarize, type Detail } from "./summary";
 import { turnOf } from "./turn";
+import { zip } from "./zip";
 
 const zone = document.querySelector<HTMLLabelElement>(".drop");
 const status = document.querySelector<HTMLElement>("[data-status]");
@@ -36,6 +36,14 @@ interface CleanCopy {
   name: string;
   blob: Blob;
 }
+
+// The biggest file read. A phone's photo is a few MB (a 48-megapixel HEIC
+// or JPEG, 5 to 15), the JPEGs of the biggest cameras (100 megapixels and
+// more) a few tens, and a WebP can't pass 16383 pixels a side. Past this
+// it's no camera's photo, and the page would hold it twice over (the file
+// and its clean copy) while it reads it.
+const MAX_MB = 100;
+const MAX_BYTES = MAX_MB * 1024 * 1024;
 
 // Object URLs made for the current list, let go when the next one starts.
 let urls: string[] = [];
@@ -130,6 +138,26 @@ interface Answered {
 /** Reads one photo into its row. A photo that can't be read or cleaned
  * says so in its own row and never stops the others. */
 async function answerFor(file: File, many: boolean): Promise<Answered> {
+  const lead = many ? "h4" : "h3";
+  // Too big to read: said in its row, and nothing of it is read.
+  if (file.size > MAX_BYTES) {
+    const line = fill(copy.tooBig, { n: MAX_MB });
+    return {
+      row: photoRow(document, {
+        name: file.name,
+        size: file.size,
+        picture: null,
+        lines: [line],
+        lead,
+        details: [],
+      }),
+      copy: null,
+      lead: line,
+      photo: false,
+      place: false,
+      other: false,
+    };
+  }
   let bytes: Uint8Array | null = null;
   try {
     bytes = new Uint8Array(await file.arrayBuffer());
@@ -181,7 +209,7 @@ async function answerFor(file: File, many: boolean): Promise<Answered> {
     size: file.size,
     picture: shown.node,
     lines,
-    lead: many ? "h4" : "h3",
+    lead,
     details: all,
   });
   return {
@@ -224,21 +252,6 @@ async function photoCount(files: File[]): Promise<number> {
     ),
   );
   return types.filter((type) => type !== null).length;
-}
-
-/** Several clean copies as one zip, each name once. */
-async function zip(copies: CleanCopy[]): Promise<Blob> {
-  const files: Record<string, Uint8Array> = {};
-  for (const c of copies) {
-    let name = c.name;
-    for (let n = 2; name in files; n++) {
-      const dot = c.name.lastIndexOf(".");
-      name = `${c.name.slice(0, dot)} (${n})${c.name.slice(dot)}`;
-    }
-    files[name] = new Uint8Array(await c.blob.arrayBuffer());
-  }
-  // The photos are compressed already: stored as they are, not again.
-  return new Blob([zipSync(files, { level: 0 })], { type: "application/zip" });
 }
 
 function button(label: string, onClick: () => void | Promise<void>) {

@@ -171,8 +171,16 @@
   font-size: var(--fs-sm);
 }
 
-/* The groups: one row each, like the site's project rows. */
+/* The groups: one row each, like the site's project rows. The list holds
+   the columns and each row takes them up (subgrid), so the count column
+   is as wide as the largest count, never under 3.5rem, and every row
+   lines up with it. The largest count of both lists (render.ts puts it in
+   data-widest) sits unseen and flat in each list's first row, so the main
+   list and the noise list share one column width too. */
 .groups {
+  display: grid;
+  grid-template-columns: minmax(3.5rem, max-content) minmax(0, 1fr) 10rem;
+  column-gap: var(--sp-5);
   margin: var(--sp-5) 0 0;
   padding: 0;
   list-style: none;
@@ -182,11 +190,28 @@
    dates go under the group. */
 .group {
   display: grid;
-  grid-template-columns: 3.5rem minmax(0, 1fr) 10rem;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   gap: var(--sp-5);
   align-items: start;
   padding-block: var(--sp-5);
   border-top: var(--rule) solid var(--line);
+}
+
+.groups::before {
+  content: attr(data-widest);
+  grid-column: 1;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+.groups::before,
+.group .count {
+  font: var(--fw-d-bold) var(--fs-d-md) / 1.1 var(--ff-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ls-d-md);
 }
 
 .group:first-child {
@@ -198,8 +223,6 @@
 }
 
 .group .count {
-  font: var(--fw-d-bold) var(--fs-d-md) / 1.1 var(--ff-display);
-  letter-spacing: var(--ls-d-md);
   text-align: right;
 }
 
@@ -243,7 +266,10 @@
 .slot {
   padding: 0 0.3em;
   border: var(--rule) solid var(--chip-line);
+  font-family: var(--ff-text);
   font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+  letter-spacing: normal;
   white-space: nowrap;
 }
 
@@ -273,23 +299,18 @@
   font-size: var(--fs-d-xs);
 }
 
+/* Each client its address, a dotted leader and its requests at the right
+   (shared/base.css's .leaders), under a dark rule. */
 .clients ol {
   margin: var(--sp-3) 0 0;
-  padding: 0;
+  padding: var(--sp-2) 0 0;
+  border-top: var(--rule) solid var(--ink);
   list-style: none;
-}
-
-.clients li {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--sp-4);
-  padding-block: var(--sp-2);
-  border-top: var(--rule) solid var(--line);
   font-size: var(--fs-sm);
 }
 
-.clients li:first-child {
-  border-top-color: var(--ink);
+.clients li {
+  padding-block: var(--sp-2);
 }
 
 .clients p {
@@ -306,8 +327,12 @@
 }
 
 @container (max-width: 40rem) {
+  .groups {
+    grid-template-columns: minmax(3.5rem, max-content) minmax(0, 1fr);
+    column-gap: var(--sp-4);
+  }
+
   .group {
-    grid-template-columns: 3.5rem minmax(0, 1fr);
     gap: var(--sp-2) var(--sp-4);
   }
 
@@ -344,11 +369,12 @@
 }
 
 .example .groups {
+  grid-template-columns: minmax(3.5rem, max-content) minmax(0, 1fr);
+  column-gap: var(--sp-4);
   margin-top: var(--sp-5);
 }
 
 .example .group {
-  grid-template-columns: 3.5rem minmax(0, 1fr);
   gap: var(--sp-1) var(--sp-4);
   padding-block: var(--sp-4);
 }

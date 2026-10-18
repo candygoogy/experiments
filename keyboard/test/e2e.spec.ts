@@ -133,6 +133,52 @@ test("a phone asks for a keyboard first, until one types", async ({
   await context.close();
 });
 
+test("with the menu open, the keys are the menu's", async ({ browser }) => {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+    isMobile: true,
+  });
+  const page = await context.newPage();
+  await page.goto(BASE);
+  const menuButton = page.locator("[data-menu-open]");
+  const menu = page.locator("[data-menu]");
+  const inMenu = () =>
+    page.evaluate(() => !!document.activeElement?.closest("dialog[open]"));
+
+  // The first key on a phone, pressed in the menu: one Esc closes it, the
+  // controls show, and focus goes back to Menu, not to Start behind it.
+  await menuButton.click();
+  await expect(menu).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(menu).toBeHidden();
+  await expect(page.locator(".phone")).toBeHidden();
+  await expect(page.locator(".start")).toBeVisible();
+  await expect(menuButton).toBeFocused();
+
+  // Mid-test: Tab moves round the menu and one Esc closes it, and neither
+  // counts as a tested key nor stops the test.
+  await page.locator('[data-layout="iso"]').click();
+  await page.locator(".start").click();
+  await expect(page.locator(".hint")).toBeVisible();
+  await menuButton.click();
+  await expect(menu).toBeVisible();
+  await page.keyboard.press("Tab");
+  expect(await inMenu()).toBe(true);
+  await page.keyboard.press("Escape");
+  await expect(menu).toBeHidden();
+  await expect(menuButton).toBeFocused();
+  await expect(page.locator(".hint")).toBeVisible();
+  await expect(page.locator(".start")).toBeHidden();
+  await expect(key(page, "Tab")).toHaveAttribute("data-state", "idle");
+  await expect(key(page, "Escape")).toHaveAttribute("data-state", "idle");
+  // The menu closed, the keys are the test's again.
+  await page.keyboard.press("KeyB");
+  await expect(key(page, "KeyB")).toHaveAttribute("data-state", "seen");
+  await expect(page.locator(".progress")).toHaveText("1 of 88 keys pressed.");
+  await context.close();
+});
+
 test("losing focus releases held keys, with no stuck warning", async ({
   page,
 }) => {

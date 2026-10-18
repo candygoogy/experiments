@@ -266,6 +266,95 @@ test("a paste too big to read is never parsed", async ({ page }) => {
   await expect(page.locator(".pane.yours")).toBeHidden();
 });
 
+test("the cap counts bytes: a paste under it in characters but over it in bytes is too big too", async ({
+  page,
+}) => {
+  await page.goto(BASE);
+  // 1.1 million characters, 2.2 million bytes once written out.
+  const wide = `services:\n  a:\n    image: a:1\n# ${"é".repeat(1_100_000)}\n`;
+  await paste(page, wide);
+  await expect(page.locator("#problem")).toHaveText(
+    "This file is too big to read here.",
+  );
+});
+
+test("a file the map can't be drawn from says so, and the last map stays", async ({
+  page,
+}) => {
+  const errors = watch(page);
+  await page.goto(BASE);
+  await paste(page, FILE);
+  const yours = page.getByRole("region", { name: "Your map" });
+  await expect(yours.locator(".svc")).toHaveCount(2);
+  // The drawing breaks on the next file, as a fault in it would.
+  await page.evaluate(() => {
+    const make = Document.prototype.createElement;
+    Document.prototype.createElement = function (
+      this: Document,
+      ...args: Parameters<Document["createElement"]>
+    ) {
+      if ((window as unknown as { broken?: boolean }).broken) {
+        throw new Error("drawing broke");
+      }
+      return make.apply(this, args);
+    } as Document["createElement"];
+    (window as unknown as { broken?: boolean }).broken = true;
+  });
+  await paste(page, FILE.replace("app:", "web:"));
+  await expect(page.locator("#problem")).toHaveText(
+    "Something in this file stopped the map from being drawn. The map still shows the last version that read correctly.",
+  );
+  await expect(yours).toHaveClass(/is-stale/);
+  await expect(yours.locator(".svc")).toHaveCount(2);
+  await expect(page.locator(".live")).toHaveText(
+    "Something in this file stopped the map from being drawn. The map still shows the last version that read correctly.",
+  );
+  expect(errors).toEqual([]);
+});
+
+test("map code that's gone since the page opened: it says to reload, and never reloads itself", async ({
+  page,
+}) => {
+  const errors = watch(page);
+  await page.route("**/assets/answer-*.js", (route) => route.abort());
+  await page.goto(BASE);
+  let loads = 0;
+  page.on("load", () => loads++);
+  await paste(page, FILE);
+  await expect(page.locator("#problem")).toHaveText(
+    "This page has changed since it opened. Reload it, then paste or drop your file again.",
+  );
+  await expect(page.locator(".live")).toHaveText(
+    "This page has changed since it opened. Reload it, then paste or drop your file again.",
+  );
+  // Nothing reloaded: the pasted text is still there, and no flag was set.
+  expect(loads).toBe(0);
+  await expect(page.locator("#file")).toHaveValue(FILE);
+  expect(
+    await page.evaluate(() => sessionStorage.getItem("stale-reload")),
+  ).toBeNull();
+  // The text itself is fine: the field isn't marked.
+  await expect(page.locator("#file")).not.toHaveAttribute("aria-invalid");
+  await expect(page.locator(".pane.example")).toBeVisible();
+  expect(errors.filter((e) => !/^Failed to load resource/.test(e))).toEqual([]);
+});
+
+test("map code that loads but breaks: the page says something went wrong", async ({
+  page,
+}) => {
+  await page.route("**/assets/answer-*.js", (route) =>
+    route.fulfill({
+      contentType: "text/javascript",
+      body: 'throw new Error("broke");',
+    }),
+  );
+  await page.goto(BASE);
+  await paste(page, FILE);
+  await expect(page.locator("#problem")).toHaveText(
+    "Something went wrong while reading this. Try again.",
+  );
+});
+
 // A main file and its override, dropped together, as netbox-docker ships
 // them: the main file has no restart policy and no published port; the
 // override adds both.

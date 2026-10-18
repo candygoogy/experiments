@@ -14,10 +14,13 @@ export const COPY = {
   fieldLabel: "Domain or email address",
   placeholder: "example.com",
   check: "Check",
+  // What's sent: the domain, names built from it (_dmarc and its parents',
+  // the DKIM names under it, MTA-STS, TLS reporting) and the names its
+  // records point to (mail servers, SPF includes and redirects).
   network:
-    "The domain name is sent to Cloudflare’s public DNS (1.1.1.1) to look up its records. Nothing else leaves your browser.",
+    "DNS names from the domain and its records are sent to Cloudflare’s public DNS (1.1.1.1) to look them up. Nothing else leaves your browser.",
   privacy:
-    "Runs in your browser. Only the domain name is sent, to Cloudflare’s public DNS.",
+    "Runs in your browser. Only DNS names from the domain and its records are sent, to Cloudflare’s public DNS.",
   // A made-up domain under .example, the name kept for examples (RFC
   // 2606), so it can never be someone's real one.
   example: "Example: shop.example, a made-up domain",

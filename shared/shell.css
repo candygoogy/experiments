@@ -16,10 +16,13 @@ body > .wrap {
   width: 100%;
 }
 
-/* Skip to content, from candygoogy.dev's base.css: off the page until
-   it's focused, then over the header's top left corner. */
+/* Skip to content, from candygoogy.dev's base.css: off the window until
+   it's focused, then over the header's top left corner. Fixed, not
+   absolute: focus can reach it from the bottom of the page (Tab past the
+   last link wraps round to it), and it should show wherever the page is
+   scrolled. */
 .skip {
-  position: absolute;
+  position: fixed;
   top: var(--sp-3);
   left: var(--sp-3);
   z-index: 10;
@@ -51,8 +54,8 @@ main {
   margin-right: auto;
   color: var(--ink);
   background: none;
-  font: var(--fw-semibold) 1.125rem / 1 var(--ff-text);
-  letter-spacing: var(--ls-d-sm);
+  font: var(--fw-heavy) 1.125rem / 1 var(--ff-text);
+  letter-spacing: var(--ls-wordmark);
 }
 
 /* A 44px tall touch target, laid over the line without changing it. */

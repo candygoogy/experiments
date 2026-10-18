@@ -371,6 +371,61 @@ test("without JavaScript there's no example", async ({ browser }) => {
   await context.close();
 });
 
+test("the drop zone's prompt is set in the text face", async ({ page }) => {
+  await page.goto(BASE);
+  const face = await page.evaluate(() => [
+    getComputedStyle(document.querySelector(".drop-main") as Element)
+      .fontFamily,
+    getComputedStyle(document.body).fontFamily,
+  ]);
+  expect(face[0]).toBe(face[1]);
+  expect(face[0]).toMatch(/^"?Schibsted Grotesk/);
+});
+
+test("the numbers have dotted leaders, but not on a phone", async ({
+  browser,
+}) => {
+  for (const [width, leader] of [
+    [1440, true],
+    [390, false],
+  ] as const) {
+    const context = await browser.newContext({
+      viewport: { width, height: 900 },
+    });
+    const page = await context.newPage();
+    await page.goto(BASE);
+    await page.setInputFiles(".drop input", join(FIXTURES, "en.html"));
+    const rows = page.locator(".answer .numbers > div");
+    await expect(rows).toHaveCount(3);
+    const look = await rows.evaluateAll((all) =>
+      all.map((row) => {
+        const dt = row.querySelector("dt") as Element;
+        const dd = row.querySelector("dd") as Element;
+        const dots = getComputedStyle(dt, "::after");
+        return {
+          shown: dots.display !== "none" && dots.borderBottomStyle === "dotted",
+          // With a leader the value ends at the row's right edge, on the
+          // label's line; without, it starts under the label.
+          atRight:
+            Math.abs(
+              dd.getBoundingClientRect().right -
+                row.getBoundingClientRect().right,
+            ) < 1,
+          below:
+            dd.getBoundingClientRect().top >= dt.getBoundingClientRect().bottom,
+        };
+      }),
+    );
+    for (const row of look) {
+      expect(row.shown, `leader at ${width}`).toBe(leader);
+      expect(row.below, `value under its label at ${width}`).toBe(!leader);
+      if (leader)
+        expect(row.atRight, `value at the right at ${width}`).toBe(true);
+    }
+    await context.close();
+  }
+});
+
 test("the example arrives without moving anything", async ({ browser }) => {
   for (const viewport of SIZES) {
     const context = await browser.newContext({ viewport });

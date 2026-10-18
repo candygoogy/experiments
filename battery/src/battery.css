@@ -87,13 +87,17 @@
 
 @container (min-width: 34rem) {
   .detail {
-    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
     gap: var(--sp-6);
   }
 }
 
+/* The numbers open on a dark rule, each a label, a dotted leader and the
+   value at the right (shared/base.css's .leaders). */
 .numbers {
   margin: 0;
+  padding-top: var(--sp-2);
+  border-top: var(--rule) solid var(--ink);
   font-size: var(--fs-sm);
 }
 
@@ -107,15 +111,7 @@
 }
 
 .numbers div {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--sp-4);
   padding-block: var(--sp-2);
-  border-top: var(--rule) solid var(--line);
-}
-
-.numbers div:first-child {
-  border-top-color: var(--ink);
 }
 
 .numbers dt {
@@ -123,7 +119,6 @@
 }
 
 .numbers dd {
-  margin: 0;
   font-weight: var(--fw-medium);
 }
 
@@ -241,25 +236,38 @@
 }
 
 /* The space the example takes before it's drawn (shared/work.css),
-   measured every 20px from 320 to 1800 wide: --example-min in one column,
+   measured every 5px from 320 to 1800 wide: --example-min in one column,
    --example-min-wide in the right-hand one. Each step holds the tallest
    height in its range, so the example never needs more than it was given;
-   it gets shorter as the text wraps less, and again once the numbers and
-   the chart fit side by side (a 34rem column). */
+   it gets shorter as the text wraps less, once the numbers stop stacking
+   (over 32.5rem, shared/base.css's .leaders), and again once the numbers
+   and the chart fit side by side (a 34rem column). */
 .example {
-  --example-min: 49rem;
-  --example-min-wide: 44rem;
+  --example-min: 53.75rem;
+  --example-min-wide: 43.25rem;
 }
 
-@media (width >= 23.75rem) {
+@media (width >= 21.25rem) {
   .example {
-    --example-min: 44rem;
+    --example-min: 52rem;
   }
 }
 
-@media (width >= 32.5rem) {
+@media (width >= 22.5rem) {
   .example {
-    --example-min: 42.5rem;
+    --example-min: 49rem;
+  }
+}
+
+@media (width >= 25rem) {
+  .example {
+    --example-min: 47.5rem;
+  }
+}
+
+@media (width > 32.5rem) {
+  .example {
+    --example-min: 41.75rem;
   }
 }
 
@@ -269,27 +277,27 @@
   }
 }
 
-@media (width >= 40rem) {
+@media (width >= 41.25rem) {
+  .example {
+    --example-min: 33.75rem;
+  }
+}
+
+@media (width >= 43.75rem) {
   .example {
     --example-min: 32.25rem;
   }
 }
 
-@media (width >= 45rem) {
+@media (width >= 47.5rem) {
   .example {
     --example-min: 30.75rem;
   }
 }
 
-@media (width >= 51.25rem) {
-  .example {
-    --example-min: 29.25rem;
-  }
-}
-
 @media (width >= 60rem) {
   .example {
-    --example-min-wide: 42.5rem;
+    --example-min-wide: 41.75rem;
   }
 }
 
@@ -299,20 +307,14 @@
   }
 }
 
-@media (width >= 71.25rem) {
+@media (width >= 73.75rem) {
   .example {
     --example-min-wide: 33.75rem;
   }
 }
 
-@media (width >= 72.5rem) {
+@media (width >= 78.75rem) {
   .example {
     --example-min-wide: 32.25rem;
-  }
-}
-
-@media (width >= 81.25rem) {
-  .example {
-    --example-min-wide: 30.75rem;
   }
 }

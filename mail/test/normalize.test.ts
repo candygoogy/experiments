@@ -67,3 +67,28 @@ test.each([
 ])("not reserved: %s", (domain) => {
   expect(reservedName(domain)).toBe(false);
 });
+
+// .internal is set aside for private networks; .lan, .corp, .home and
+// .localdomain were never delegated and are used privately. Real names
+// that only contain those words are still checked.
+test.each([
+  "printer.internal",
+  "nas.lan",
+  "dc01.corp",
+  "router.home",
+  "localhost.localdomain",
+  "app.staging.internal",
+])("private-use: %s is never looked up", (domain) => {
+  expect(reservedName(domain)).toBe(true);
+});
+
+test.each([
+  "internal.com",
+  "lan.example.org",
+  "corp.com",
+  "home.com",
+  "myhome.co.uk",
+  "localdomain.net",
+])("private-use words in a real name: %s is checked", (domain) => {
+  expect(reservedName(domain)).toBe(false);
+});

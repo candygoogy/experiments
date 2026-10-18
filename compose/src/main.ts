@@ -8,7 +8,10 @@ import "@exp/shared/work.css";
 import "./compose.css";
 import { initDropZone } from "@exp/shared/dropzone";
 import { initHeader } from "@exp/shared/header";
+import { missingModule } from "@exp/shared/stale";
+import type { Result } from "./answer";
 import { COPY } from "./copy";
+import { MAX_BYTES, tooBig } from "./size";
 import { drawWires } from "./wires";
 
 initHeader();
@@ -27,9 +30,6 @@ const yours = find<HTMLElement>(".pane.yours");
 const out = find<HTMLElement>(".pane.yours .out");
 const live = find<HTMLElement>(".live");
 
-// Files bigger than this aren't compose files anyone writes by hand, and
-// a paste as big would hold the page while it's read.
-const MAX_BYTES = 2_000_000;
 // Typing waits for a pause; a paste or a drop is read at once.
 const PAUSE_MS = 250;
 // A problem found while typing is read out once typing has paused for a
@@ -81,12 +81,13 @@ function reset() {
 }
 
 // A text that doesn't read. A map already drawn stays (a file being typed
-// is often broken for a moment), dimmed, and the line says so.
+// is often broken for a moment), dimmed, and the line says so. `invalid`:
+// the problem is in the text, not in the page.
 let announce = 0;
-function trouble(text: string, now: boolean) {
+function trouble(text: string, now: boolean, invalid = true) {
   const mapped = !yours.hidden;
   const line = mapped ? `${text} ${COPY.stale}` : text;
-  showProblem(line);
+  showProblem(line, invalid);
   yours.classList.toggle("is-stale", mapped);
   clearTimeout(announce);
   if (now) say(line);
@@ -102,14 +103,33 @@ async function read(text: string, now: boolean) {
     reset();
     return;
   }
-  if (text.length > MAX_BYTES) {
+  if (tooBig(text)) {
     trouble(COPY.tooBig, now);
     return;
   }
-  // The parser and the drawing load with the first file.
-  const { answer } = await import("./answer");
+  // The parser and the drawing load with the first file. If they don't,
+  // the page says why, and never reloads itself: that would lose what was
+  // pasted. A missing file means a newer version of the page took their
+  // place (shared/stale.ts); anything else, the network.
+  let answer: typeof import("./answer").answer;
+  try {
+    ({ answer } = await import("./answer"));
+  } catch (error) {
+    if (mine === run) {
+      trouble(missingModule(error) ? COPY.changed : COPY.wrong, now, false);
+    }
+    return;
+  }
   if (mine !== run) return;
-  const result = answer(text, source);
+  let result: Result;
+  try {
+    result = answer(text, source);
+  } catch {
+    // Text the parser took but the drawing tripped on: said, and the last
+    // map stays as it was.
+    trouble(COPY.cantDraw, now);
+    return;
+  }
   if ("problem" in result) {
     trouble(result.problem, now);
     return;
@@ -160,22 +180,26 @@ initDropZone(
     const sorted = [...files].sort(
       (a, b) => rank(a.name) - rank(b.name) || a.name.localeCompare(b.name),
     );
-    void Promise.all(sorted.map((f) => f.text())).then((texts) => {
-      clearTimeout(timer);
-      // Each file opens with its name, so the page can say what it merged;
-      // a "---" between them is how YAML separates documents.
-      textarea.value =
-        sorted.length === 1
-          ? (texts[0] ?? "")
-          : sorted
-              .map((f, i) => {
-                const text = (texts[i] ?? "").replace(/^---[ \t]*\r?\n/, "");
-                return `# ${f.name}\n${text.endsWith("\n") ? text : `${text}\n`}`;
-              })
-              .join("---\n");
-      source = sorted.length === 1 ? (sorted[0]?.name ?? null) : null;
-      void read(textarea.value, true);
-    });
+    void Promise.all(sorted.map((f) => f.text())).then(
+      (texts) => {
+        clearTimeout(timer);
+        // Each file opens with its name, so the page can say what it merged;
+        // a "---" between them is how YAML separates documents.
+        textarea.value =
+          sorted.length === 1
+            ? (texts[0] ?? "")
+            : sorted
+                .map((f, i) => {
+                  const text = (texts[i] ?? "").replace(/^---[ \t]*\r?\n/, "");
+                  return `# ${f.name}\n${text.endsWith("\n") ? text : `${text}\n`}`;
+                })
+                .join("---\n");
+        source = sorted.length === 1 ? (sorted[0]?.name ?? null) : null;
+        void read(textarea.value, true);
+      },
+      // A file the browser couldn't read from the disk.
+      () => trouble(COPY.wrong, true, false),
+    );
   },
   { multiple: true },
 );

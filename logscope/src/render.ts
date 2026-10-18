@@ -297,6 +297,15 @@ function filters(doc: Document, result: Result): HTMLFormElement {
   return form;
 }
 
+/** The widest count of the groups the lists can show, as text: the lists
+ * hold it, unseen, in their count column (logscope.css), so the main list
+ * and the noise list line their counts and names up with each other. */
+function widest(groups: Group[]): string {
+  let max = 0;
+  for (const g of groups) if (g.count > max) max = g.count;
+  return formatNumber(max);
+}
+
 export interface Answer {
   nodes: HTMLElement[];
   /** What the status line says when a dropped log is read. */
@@ -328,10 +337,12 @@ export function renderAnswer(
     );
     const noise = result.groups.filter((g) => isNoise(g, result.kind));
     const list = make("ol", "groups");
+    list.dataset["widest"] = widest([...problems, ...noise]);
     list.append(...problems.map((g) => row(doc, g, result, true)));
     nodes.push(list);
     if (noise.length) {
       const noiseList = make("ol", "groups");
+      noiseList.dataset["widest"] = list.dataset["widest"];
       noiseList.append(...noise.map((g) => row(doc, g, result, true)));
       nodes.push(make("p", "noise-head", copy.noise), noiseList);
     }
@@ -342,6 +353,8 @@ export function renderAnswer(
   // Filled by main.ts as the filters change.
   const list = make("ol", "groups");
   list.dataset["list"] = "main";
+  // Whatever the filters show, both lists keep one count column.
+  list.dataset["widest"] = widest(result.groups);
   const none = make("p", "no-match", copy.noMatch);
   none.hidden = true;
   const more = make("button", "more");
@@ -350,6 +363,7 @@ export function renderAnswer(
   const noiseHead = make("p", "noise-head", copy.noise);
   const noiseList = make("ol", "groups");
   noiseList.dataset["list"] = "noise";
+  noiseList.dataset["widest"] = list.dataset["widest"];
   nodes.push(list, none, more, noiseHead, noiseList);
 
   if (result.kind === "web" && result.clients.length) {
@@ -357,7 +371,7 @@ export function renderAnswer(
     section.setAttribute("aria-labelledby", "clients");
     const h4 = make("h4", "", copy.topClients);
     h4.id = "clients";
-    const ol = make("ol");
+    const ol = make("ol", "leaders");
     for (const [address, n] of result.clients) {
       const li = make("li");
       li.append(

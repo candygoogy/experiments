@@ -9,6 +9,15 @@
 // name, its BIOS and OS build, and each battery's name, maker and serial
 // number are never picked out, shown or kept.
 
+// Reports are tens or hundreds of kilobytes. The parse runs on the page's
+// own thread (DOMParser isn't there in a worker) and takes about 20 ms a
+// megabyte on a desktop, so 5 MB, far past any real report, still reads
+// in about a tenth of a second. A bigger file isn't read at all.
+export const MAX_BYTES = 5 * 1024 * 1024;
+
+/** A file too big to be a report: said so, and never read. */
+export const tooBig = (bytes: number) => bytes > MAX_BYTES;
+
 export interface Battery {
   /** Design capacity, mWh. */
   design: number | null;

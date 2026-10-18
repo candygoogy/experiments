@@ -2,7 +2,13 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, test } from "vitest";
-import { parseDuration, parseMwh, parseReport } from "../src/parse";
+import {
+  MAX_BYTES,
+  parseDuration,
+  parseMwh,
+  parseReport,
+  tooBig,
+} from "../src/parse";
 
 const fixture = (name: string) =>
   readFileSync(join(import.meta.dirname, "fixtures", name), "utf8");
@@ -172,5 +178,15 @@ describe("the product name", () => {
     const start = en.indexOf("<table");
     const end = en.indexOf("</table>", start) + "</table>".length;
     expect(product(en.slice(0, start) + en.slice(end))).toBeNull();
+  });
+});
+
+describe("tooBig", () => {
+  test("the cap is far past a real report, and a file over it isn't read", () => {
+    // The fixtures, made in the report's shape, are about 20 KB.
+    expect(tooBig(fixture("en.html").length)).toBe(false);
+    expect(tooBig(MAX_BYTES)).toBe(false);
+    expect(tooBig(MAX_BYTES + 1)).toBe(true);
+    expect(MAX_BYTES).toBe(5 * 1024 * 1024);
   });
 });

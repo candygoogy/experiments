@@ -148,3 +148,42 @@ html.theme-restore .themes :is(.pill, .ink) {
     transition: none;
   }
 }
+
+/* Forced colors (Windows Contrast themes) drop the track's and the pill's
+   fills, and draw a page-colored plate behind every label, over the pill.
+   Where the pill is is the setting, so the switch keeps its own drawing,
+   in system colors: a hairline track, and the pill and its labels in the
+   selected-item colors (as on candygoogy.dev's ThemeSwitch.astro). */
+@media (forced-colors: active) {
+  .themes {
+    forced-color-adjust: none;
+    background: Canvas;
+    outline: var(--rule) solid CanvasText;
+    outline-offset: calc(-1 * var(--rule));
+  }
+
+  .themes button,
+  .themes button:hover {
+    color: CanvasText;
+  }
+
+  .themes button:focus-visible {
+    outline-color: CanvasText;
+  }
+
+  .themes .pill {
+    background: Highlight;
+  }
+
+  .themes .ink {
+    color: HighlightText;
+  }
+
+  .themes .resolved {
+    background: CanvasText;
+  }
+
+  .themes .ink .resolved {
+    background: HighlightText;
+  }
+}

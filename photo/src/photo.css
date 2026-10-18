@@ -106,6 +106,13 @@
   max-width: var(--measure);
 }
 
+/* A value can be a long unbroken run (a URL, a serial), which breaks
+   anywhere rather than pushing the page sideways. */
+.lead,
+.line {
+  overflow-wrap: anywhere;
+}
+
 /* The first thing it gives away, the most telling, reads first. */
 .lead {
   font: var(--fw-d-bold) var(--fs-d-md) / var(--lh-tight) var(--ff-display);
@@ -142,29 +149,46 @@
   margin-top: var(--sp-5);
 }
 
+/* Each field a label, a dotted leader and the value at the right
+   (shared/base.css's .leaders). */
 .all dl {
-  display: grid;
   margin: var(--sp-2) 0 0;
   font-size: var(--fs-sm);
 }
 
 .all dl div {
-  display: grid;
-  grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
-  gap: var(--sp-4);
-  padding-block: var(--sp-2);
-  border-top: var(--rule) solid var(--line);
+  padding-block: var(--sp-1);
 }
 
 .all dt {
   color: var(--soft);
-  overflow-wrap: anywhere;
 }
 
 .all dd {
-  margin: 0;
   font-variant-numeric: tabular-nums;
-  overflow-wrap: anywhere;
+}
+
+/* The fields' names are long camelCase words ("DateTimeOriginal"), so
+   this list drops its leaders sooner than the shared 16.5rem: below
+   18.5rem a name would have to break mid-word to leave room for one.
+   The name and its leader are set a notch above shared/base.css's
+   .leaders > * > :first-child, however weak that rule is made. */
+@container leaders (width < 18.5rem) {
+  .all dl div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .all .leaders dt {
+    display: block;
+  }
+
+  .all .leaders dt::after {
+    display: none;
+  }
+
+  .all dd {
+    max-width: none;
+  }
 }
 
 /* The one action: an ink pill, the solid shape the theme switch uses
@@ -251,13 +275,6 @@
 /* The answer, under the photo's name (shared/work.css). */
 .answer {
   margin-top: var(--sp-5);
-}
-
-/* Phones: the label and the value share the width evenly. */
-@media (max-width: 40rem) {
-  .all dl div {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
 }
 
 /* The example (shared/work.css), a step smaller than an answer. */

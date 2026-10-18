@@ -1,6 +1,6 @@
 // Starts a new experiment from template/:
 //   node scripts/new.mjs <name> <port>
-// copies template/ to <name>/, renames it everywhere (the package, the
+// copies template/ to <name>/, fills in its placeholders (the package, the
 // Worker, the title, the ports: Vite on <port>, Wrangler on <port> + 10;
 // the tab then reads "<Title> – candygoogy", from shared/shell.ts),
 // adds it to the workspaces and installs. The reverse:
@@ -9,7 +9,7 @@
 
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { cp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { cp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const ROOT = join(import.meta.dirname, "..");
@@ -67,26 +67,48 @@ const title = name
   .split("-")
   .map((w, i) => (i === 0 ? w[0].toUpperCase() + w.slice(1) : w))
   .join(" ");
-const rename = (text) =>
-  text
-    .replaceAll("template", name)
-    .replaceAll("Template", title)
-    .replaceAll("4420", String(port + 10))
-    .replaceAll("4410", String(port));
+// The template's placeholders, file by file, written out in full so that
+// nothing else is touched (a <template> element, the word in a comment, a
+// number that happens to match a port). Each must be found: if one isn't,
+// the template has changed and this list needs to follow it.
+const PLACES = {
+  "package.json": [
+    ['"name": "@exp/template"', `"name": "@exp/${name}"`],
+    ["--port 4420 ", `--port ${port + 10} `],
+  ],
+  "wrangler.jsonc": [['"name": "exp-template"', `"name": "exp-${name}"`]],
+  "vite.config.ts": [
+    ['name: "template"', `name: "${name}"`],
+    ['title: "Template"', `title: "${title}"`],
+    ["port: 4410,", `port: ${port},`],
+  ],
+  "index.html": [["<h1>Template</h1>", `<h1>${title}</h1>`]],
+  "test/basics.spec.ts": [
+    ["const PORT = 4420;", `const PORT = ${port + 10};`],
+    ['serve("template", PORT)', `serve("${name}", PORT)`],
+  ],
+};
+// The template's spec also checks the shared page, once for every tool;
+// a new tool's copy stops where those checks start.
+const SHARED_CHECKS = "\n// The shared page (shared/):";
 
 await cp(TEMPLATE, join(ROOT, name), {
   recursive: true,
   filter: (src) => !SKIP.has(src.split(/[\\/]/).at(-1)),
 });
-for (const entry of await readdir(join(ROOT, name), {
-  recursive: true,
-  withFileTypes: true,
-})) {
-  if (!entry.isFile()) continue;
-  const file = join(entry.parentPath, entry.name);
-  const text = await readFile(file, "utf8");
-  const renamed = rename(text);
-  if (renamed !== text) await writeFile(file, renamed);
+for (const [path, swaps] of Object.entries(PLACES)) {
+  const file = join(ROOT, name, path);
+  let text = await readFile(file, "utf8");
+  for (const [from, to] of swaps) {
+    if (!text.includes(from)) fail(`template/${path} has no ${from}`);
+    text = text.replaceAll(from, to);
+  }
+  if (path === "test/basics.spec.ts") {
+    const cut = text.indexOf(SHARED_CHECKS);
+    if (cut === -1) fail(`template/${path} has no shared checks to leave out`);
+    text = text.slice(0, cut);
+  }
+  await writeFile(file, text);
 }
 
 const pkg = await readPkg();

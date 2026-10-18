@@ -25,6 +25,10 @@ export const copy = {
   cycles: "It has been through {n} charge cycles.",
   notAReport:
     "This doesn’t look like a battery report. Drop the battery-report.html file that powercfg saves.",
+  // A file over the size cap (parse.ts, MAX_BYTES), far past any real
+  // report.
+  tooBig:
+    "This file is too big to be a battery report. Drop the battery-report.html file that powercfg saves.",
   xml: "This is the XML version of the report. Run powercfg /batteryreport without /xml and drop the HTML file.",
   noBattery:
     "This report lists no battery. It was probably made on a desktop PC.",
@@ -55,8 +59,4 @@ export const copy = {
   oneAtATime: "One file at a time: showing {name}.",
 } as const;
 
-/** Puts values into a sentence: fill("{n} cycles", { n: 3 }). */
-export const fill = (text: string, values: Record<string, string | number>) =>
-  text.replace(/\{(\w+)\}/g, (all, key: string) =>
-    key in values ? String(values[key]) : all,
-  );
+export { fill } from "@exp/shared/copy";

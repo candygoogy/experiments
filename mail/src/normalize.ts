@@ -34,9 +34,13 @@ export function normalizeDomain(input: string): string | null {
 // for nothing: .localhost and .invalid must not be sent to DNS at all
 // (RFC 6761, 6.3 and 6.4); .test and .example never have real records
 // (RFC 2606); .local is for the local network (RFC 6762), .onion for Tor
-// (RFC 7686), .alt for names outside DNS (RFC 9476), and home.arpa for
-// home networks (RFC 8375). example.com, .net and .org are real names
-// with real records, so they can still be checked.
+// (RFC 7686), .alt for names outside DNS (RFC 9476), home.arpa for home
+// networks (RFC 8375), and .internal for private networks (ICANN, July
+// 2024). .lan, .corp and .home are names networks use privately (RFC 6762,
+// appendix G) and .localdomain is the one Linux gives a machine with no
+// domain; none has ever been in the root zone, and ICANN won't add .corp
+// or .home (February 2018, for that reason). example.com, .net and .org
+// are real names with real records, so they can still be checked.
 const RESERVED = [
   "localhost",
   "invalid",
@@ -46,6 +50,11 @@ const RESERVED = [
   "onion",
   "alt",
   "home.arpa",
+  "internal",
+  "lan",
+  "corp",
+  "home",
+  "localdomain",
 ];
 
 /** A name kept for tests, examples or local networks: never looked up. */
