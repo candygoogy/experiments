@@ -218,9 +218,6 @@
   --switch-on-bg: #18181b;
   --switch-on-ink: #f4f4f5;
   --band: #18181b;
-  /* The band's 1px edge: none in light (the slab carries itself), a
-     lighter line in dark, where the panel sits close to the page. */
-  --band-edge: #18181b;
   --band-ink: #f4f4f5;
   --band-soft: #a1a1aa;
   --band-line: #2e2e33;
@@ -253,7 +250,6 @@
     --switch-on-bg: #f4f4f5;
     --switch-on-ink: #121214;
     --band: #222228;
-    --band-edge: #34343b;
     --band-ink: #f4f4f5;
     --band-soft: #a1a1aa;
     --band-line: #34343b;
@@ -284,7 +280,6 @@
   --switch-on-bg: #f4f4f5;
   --switch-on-ink: #121214;
   --band: #222228;
-  --band-edge: #34343b;
   --band-ink: #f4f4f5;
   --band-soft: #a1a1aa;
   --band-line: #34343b;
