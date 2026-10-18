@@ -197,7 +197,7 @@
   --bg: #f4f4f5;
   --ink: #18181b;
   --soft: #52525b;
-  --line: #e4e4e7;
+  --line: #d9d9dc;
   --acc: #3651d4;
   --focus: var(--acc);
   /* The link marker's accent tint: link text on it stays >= 4.5:1, also
@@ -234,7 +234,7 @@
     --bg: #121214;
     --ink: #f4f4f5;
     --soft: #a1a1aa;
-    --line: #27272a;
+    --line: #2e2e32;
     --acc: #8ea2ff;
     --focus: var(--acc);
     --mark-mix: 18%;
@@ -264,7 +264,7 @@
   --bg: #121214;
   --ink: #f4f4f5;
   --soft: #a1a1aa;
-  --line: #27272a;
+  --line: #2e2e32;
   --acc: #8ea2ff;
   --focus: var(--acc);
   --mark-mix: 18%;
