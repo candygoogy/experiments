@@ -410,14 +410,33 @@ export async function layoutShift(
   ready: string,
 ): Promise<number> {
   await page.addInitScript(() => {
-    const w = window as unknown as { shift: number };
+    const w = window as unknown as { shift: number; moved: string[] };
     w.shift = 0;
+    w.moved = [];
+    // What moved, and from where to where, so a failure names it.
+    const rect = (r: DOMRectReadOnly) =>
+      `${Math.round(r.x)},${Math.round(r.y)} ${Math.round(r.width)}×${Math.round(r.height)}`;
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries() as unknown as {
         value: number;
         hadRecentInput: boolean;
+        sources: {
+          node: Node | null;
+          previousRect: DOMRectReadOnly;
+          currentRect: DOMRectReadOnly;
+        }[];
       }[]) {
-        if (!entry.hadRecentInput) w.shift += entry.value;
+        if (entry.hadRecentInput) continue;
+        w.shift += entry.value;
+        for (const s of entry.sources) {
+          const el = s.node instanceof Element ? s.node : s.node?.parentElement;
+          const name = el
+            ? `${el.localName}${el.className ? `.${String(el.className).split(" ").join(".")}` : ""}`
+            : "?";
+          w.moved.push(
+            `${name} ${rect(s.previousRect)} → ${rect(s.currentRect)}`,
+          );
+        }
       }
     }).observe({ type: "layout-shift", buffered: true });
   });
@@ -428,5 +447,11 @@ export async function layoutShift(
     () =>
       new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
   );
-  return page.evaluate(() => (window as unknown as { shift: number }).shift);
+  const { shift, moved } = await page.evaluate(() => {
+    const w = window as unknown as { shift: number; moved: string[] };
+    return { shift: w.shift, moved: w.moved };
+  });
+  if (shift > 0)
+    console.log(`layout shift ${shift} at ${url}:\n${moved.join("\n")}`);
+  return shift;
 }
