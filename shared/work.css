@@ -1,6 +1,6 @@
 /* The page every tool shares under its h1 and intro (shell.css): two
-   columns, each opening as a section does on the site (a dark rule,
-   --sp-7, then its label). The input is on the left. On the right is an
+   columns, each opening as a section does on the site (open space, then
+   its label; no rule above it). The input is on the left. On the right is an
    example answer, drawn by the page's own code, until the visitor's own
    answer takes its place. On phones there's one column, input first.
    Without JavaScript there's nothing to work with, so the .needs-js parts
@@ -62,11 +62,12 @@ html:not(.js) .needs-js {
   );
 }
 
-/* Each column opens on a dark rule, then its label. */
+/* Each column opens on its label, with no rule above it: the room above
+   the label is what sets the columns apart from the intro, and from each
+   other on phones. */
 .label {
   display: block;
   padding-top: var(--sp-7);
-  border-top: var(--rule) solid var(--ink);
   color: var(--ink);
   font: var(--fw-d-bold) var(--fs-d-sm) / var(--lh-tight) var(--ff-display);
   letter-spacing: var(--ls-d-sm);

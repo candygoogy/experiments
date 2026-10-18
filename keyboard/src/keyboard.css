@@ -1,8 +1,8 @@
 /* The keyboard check: the controls, the drawn board, and what it found.
    The board takes the full width; the page around it is the family's
    (shared/work.css): without JavaScript only the heading, the sentence
-   and the note show, and each column of the readout opens on a dark rule,
-   then its label. */
+   and the note show, and each column of the readout opens on its
+   label. */
 
 /* Controls: start (or, while testing, how to stop), start over, and the
    layout. */
@@ -330,8 +330,8 @@
 
 /* A touch-only device (a phone, a tablet without its keyboard) has no
    keys to test until a keyboard is connected. In the controls' place, the
-   page says so, opening on a dark rule with the answer first, as the
-   other tools' answers do; the board waits at rest below. The media
+   page says so, with the answer first and the same room above it as
+   above the other tools' answers; the board waits at rest below. The media
    queries match main.ts's touchOnly(), so this shows from the first
    paint, and a trackpad or mouse connected mid-visit brings the controls
    back. The first real key press does too (main.ts sets data-keyboard). */
@@ -339,7 +339,6 @@
   display: none;
   margin-top: var(--sp-7);
   padding-top: var(--sp-7);
-  border-top: var(--rule) solid var(--ink);
 }
 
 .phone-title {

@@ -23,17 +23,16 @@
   margin-top: 0;
 }
 
-/* The answer's column opens on its dark rule, under the PC's maker and
-   model, or, when the report doesn't name them, straight on the verdict
-   (the column's name is then for screen readers only). */
+/* The answer's column opens on the PC's maker and model, or, when the
+   report doesn't name them, straight on the verdict (the column's name is
+   then for screen readers only). Either way the same room sits above it
+   as above a label (shared/work.css). */
 .yours.unnamed {
   padding-top: var(--sp-7);
-  border-top: var(--rule) solid var(--ink);
 }
 
 .yours .label.visually-hidden {
   padding: 0;
-  border: 0;
 }
 
 .problem {

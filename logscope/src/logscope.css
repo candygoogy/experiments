@@ -86,7 +86,8 @@
 }
 
 /* Filters: levels as toggles (the theme switch's pill when on), the
-   source as a select, and a search field. */
+   source as a select, and a search field. Open space, with no rule,
+   sets them and the groups apart from the timeline above. */
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -94,7 +95,6 @@
   gap: var(--sp-4) var(--sp-6);
   margin-top: var(--sp-7);
   padding-top: var(--sp-5);
-  border-top: var(--rule) solid var(--ink);
 }
 
 .levels {
