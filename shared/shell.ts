@@ -60,14 +60,14 @@ export const FEATURED = [
     blurb: "What an installer did to your PC, in plain words",
   },
   {
+    href: `${SITE}/#eolietech`,
+    name: "Eolietech",
+    blurb: "Free file tools that run in your browser",
+  },
+  {
     href: `${SITE}/#notary`,
     name: "Notary",
     blurb: "Claude Code mods that check Claude’s work",
-  },
-  {
-    href: `${SITE}/#candygoogy-bot`,
-    name: "candygoogy-bot",
-    blurb: "Telegram bot that wakes and shuts down my PCs",
   },
 ] as const;
 
