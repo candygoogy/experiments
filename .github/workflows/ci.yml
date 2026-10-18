@@ -28,5 +28,35 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run build
-      - run: npx playwright install --with-deps chromium
+      # The browser is kept between runs, keyed by Playwright's version; the
+      # system libraries it needs are installed every time.
+      - id: playwright
+        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+      - id: browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - if: steps.browsers.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - if: steps.browsers.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
       - run: npm test
+
+  # Workers Builds deploys the deploy branch, not main, so a push goes live
+  # only once every check above has passed on it. A later push cancels an
+  # earlier run, and its own run then moves the branch past both commits.
+  release:
+    needs: check
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      # A plain push only fast-forwards: if deploy ever holds a commit main
+      # doesn't, this fails instead of overwriting it.
+      - run: git push origin HEAD:refs/heads/deploy
