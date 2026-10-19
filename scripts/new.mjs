@@ -41,11 +41,13 @@ const [first, second] = process.argv.slice(2);
 
 if (first === "--remove") {
   const name = second ?? "";
-  if (!/^[a-z][a-z0-9-]*$/.test(name) || KEEP.has(name)) {
-    fail(`can't remove "${name}"`);
+  const pkg = await readPkg();
+  // Only an experiment: a workspace, never shared/ or template/ (and so
+  // never scripts/, node_modules/ or anything else at the root).
+  if (!pkg.workspaces.includes(name) || KEEP.has(name)) {
+    fail(`can't remove "${name}": not an experiment`);
   }
   await rm(join(ROOT, name), { recursive: true, force: true });
-  const pkg = await readPkg();
   pkg.workspaces = pkg.workspaces.filter((w) => w !== name);
   await writePkg(pkg);
   install();
