@@ -4,7 +4,7 @@
 import { Window } from "happy-dom";
 import { describe, expect, test, vi } from "vitest";
 import { analyze, dmarcNames } from "../src/analyze";
-import { verdictUnchecked, VERDICT } from "../src/copy";
+import { verdictUnchecked, VERDICT, WORDS } from "../src/copy";
 import { DnsError, doh, type Resolve } from "../src/dns";
 import type { Report } from "../src/model";
 import { normalizeDomain } from "../src/normalize";
@@ -630,5 +630,31 @@ describe("an include or redirect whose name depends on the sender", () => {
       "redirect=%{d}._spf.example depends on who’s sending, so this page can’t tell who that part lets send.",
     );
     expect(overall(r)).not.toBe("unchecked");
+  });
+
+  test("an included record's redirect: the last word is still the record's own", async () => {
+    const zone = (b: string) =>
+      base({
+        [`${D} TXT`]: [
+          ["TXT", txt("v=spf1 include:a.example redirect=b.example")],
+        ],
+        "a.example TXT": [
+          ["TXT", txt("v=spf1 ip4:192.0.2.1 redirect=%{d}.x.example")],
+        ],
+        "b.example TXT": [["TXT", txt(b)]],
+      });
+    const r = await report(stub(zone("v=spf1 ip4:192.0.2.2 -all")).resolve);
+    expect(r.spf).toMatchObject({
+      all: "-",
+      allFrom: "b.example",
+      macros: ["redirect=%{d}.x.example"],
+      redirectMacro: false,
+    });
+    expect(row(r, "spf").says).toBe(WORDS.spfAll["-"]);
+    // With no last word at the end of the redirect, there's none: known,
+    // not left unknown for the included record's macro.
+    const none = await report(stub(zone("v=spf1 ip4:192.0.2.2")).resolve);
+    expect(none.spf).toMatchObject({ all: null, redirectMacro: false });
+    expect(row(none, "spf").says).toBe(WORDS.spfAll.none);
   });
 });

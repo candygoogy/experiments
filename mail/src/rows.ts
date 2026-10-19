@@ -112,10 +112,7 @@ export function rows(r: Report): Row[] {
     const redirectUnknown =
       all === null &&
       spfTerms(spf.record).redirect !== null &&
-      (atLeast ||
-        spf.loop ||
-        spf.emptyRedirect !== null ||
-        spf.macros.some((t) => t.startsWith("redirect=")));
+      (atLeast || spf.loop || spf.emptyRedirect !== null || spf.redirectMacro);
     // A record with a mistake of its own says nothing receivers act on, so
     // its last word isn't offered as if it held.
     const ownMistake = spf.syntax !== null && spf.syntax.from === null;

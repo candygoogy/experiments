@@ -83,6 +83,7 @@ interface Count {
   unchecked: string[];
   uncheckedExists: string[];
   macros: string[];
+  redirectMacro: boolean;
   loop: boolean;
   all: All;
   allFrom: string | null;
@@ -186,6 +187,7 @@ export async function analyze(
       unchecked: [],
       uncheckedExists: [],
       macros: [],
+      redirectMacro: false,
       loop: false,
       all: terms.all,
       allFrom: null,
@@ -239,6 +241,7 @@ export async function analyze(
       out.syntax ??= sub.syntax;
       out.manyAt ??= sub.manyAt;
       if (redirect) {
+        out.redirectMacro = sub.redirectMacro;
         out.all = sub.all;
         // Only the record that actually said it.
         out.allFrom = sub.all === null ? null : (sub.allFrom ?? name);
@@ -321,6 +324,7 @@ export async function analyze(
     // A redirect to a name with a macro in it isn't looked up either.
     if (terms.redirect?.includes("%")) {
       out.macros.push(`redirect=${terms.redirect}`);
+      out.redirectMacro = true;
       out.senders = true;
     } else if (terms.redirect !== null) {
       const sub = await follow(terms.redirect, true);
@@ -365,6 +369,7 @@ export async function analyze(
         unchecked: [...new Set(c.unchecked)],
         uncheckedExists: [...new Set(c.uncheckedExists)],
         macros: [...new Set(c.macros)],
+        redirectMacro: c.redirectMacro,
         loop: c.loop,
         emptyRedirect: c.emptyRedirect,
         emptyInclude: c.emptyInclude,

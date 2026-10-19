@@ -65,6 +65,7 @@ describe("a whole domain", () => {
         unchecked: [],
         uncheckedExists: [],
         macros: [],
+        redirectMacro: false,
         loop: false,
         emptyRedirect: null,
         emptyInclude: null,
