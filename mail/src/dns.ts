@@ -35,8 +35,15 @@ interface DohJson {
   AD?: boolean;
   // The answer was cut short: what's there may not be all of it.
   TC?: boolean;
-  Answer?: { type?: number; data?: string }[];
+  Answer?: ({ type?: number; data?: string } | null)[];
 }
+
+const shaped = (body: unknown): body is DohJson & { Status: number } =>
+  typeof body === "object" &&
+  body !== null &&
+  typeof (body as DohJson).Status === "number" &&
+  ((body as DohJson).Answer === undefined ||
+    Array.isArray((body as DohJson).Answer));
 
 export function doh(
   fetcher: typeof fetch = (...args) => fetch(...args),
@@ -86,15 +93,18 @@ export function doh(
       signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
     }).catch(failed);
     if (!response.ok) throw new DnsError(`HTTP ${response.status}`);
-    const body = (await response.json().catch(failed)) as DohJson;
-    const status = body.Status ?? -1;
+    const body: unknown = await response.json().catch(failed);
+    // Valid JSON in another shape is a resolver failing too, not a fault
+    // in this code.
+    if (!shaped(body)) throw new DnsError("not a DNS answer");
+    const status = body.Status;
     if (status !== 0 && status !== 3) throw new DnsError(`status ${status}`);
     if (body.TC === true) throw new DnsError("truncated");
     return {
       status,
       ad: body.AD === true,
       records: (body.Answer ?? []).flatMap((a) =>
-        typeof a.type === "number" && typeof a.data === "string"
+        typeof a?.type === "number" && typeof a.data === "string"
           ? [{ type: a.type, data: a.data }]
           : [],
       ),

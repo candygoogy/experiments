@@ -176,6 +176,22 @@ describe("DNS over HTTPS", () => {
     expect(calls).toBe(1);
   });
 
+  test("a reply in another shape is a DnsError, not a fault", async () => {
+    for (const body of [null, { Status: 0, Answer: {} }, { Status: "0" }]) {
+      const resolve = doh(async () => json(body));
+      await expect(resolve("odd.example", "TXT")).rejects.toBeInstanceOf(
+        DnsError,
+      );
+    }
+    // An answer that isn't a record is left out.
+    const resolve = doh(async () =>
+      json({ Status: 0, Answer: [null, { type: 16, data: '"v=spf1 -all"' }] }),
+    );
+    expect((await resolve("odd.example", "TXT")).records).toEqual([
+      { type: 16, data: '"v=spf1 -all"' },
+    ]);
+  });
+
   test("SERVFAIL is an error, not an answer", async () => {
     const resolve = doh(async () => json({ Status: 2, AD: false }));
     await expect(resolve("broken.example", "MX")).rejects.toBeInstanceOf(
