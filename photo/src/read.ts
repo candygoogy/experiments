@@ -119,8 +119,20 @@ function jpegBlocks(b: Uint8Array): Blocks {
   return out;
 }
 
-/** Inflates zlib data, or null when it's broken or grows past 8 MB. */
-async function inflate(data: Uint8Array): Promise<Uint8Array | null> {
+/** The most one compressed text chunk may inflate to. */
+const CHUNK_LIMIT = 8 << 20;
+/** The most a PNG's compressed text may inflate to all together, so
+ * thousands of small chunks can't fill the tab's memory either. */
+const TEXT_LIMIT = 32 << 20;
+
+/** Inflates zlib data, or null when it's broken, grows past 8 MB, or
+ * grows past what the file has left to inflate (`allowance`, which it
+ * draws down: once that has run out, nothing more is inflated). */
+async function inflate(
+  data: Uint8Array,
+  allowance: { left: number },
+): Promise<Uint8Array | null> {
+  if (allowance.left < 0) return null;
   const parts: Uint8Array[] = [];
   let total = 0;
   try {
@@ -132,7 +144,8 @@ async function inflate(data: Uint8Array): Promise<Uint8Array | null> {
       const { done, value } = await reader.read();
       if (done) break;
       total += value.length;
-      if (total > 8 << 20) {
+      allowance.left -= value.length;
+      if (total > CHUNK_LIMIT || allowance.left < 0) {
         await reader.cancel();
         return null;
       }
@@ -167,7 +180,7 @@ function iptcResource(iim: Uint8Array): Uint8Array {
   return join([head, iim, new Uint8Array(iim.length % 2)]);
 }
 
-/** Compressed text that can't be read: broken, or past the size limit. */
+/** Compressed text that can't be read: broken, or past a size limit. */
 const UNREADABLE = "unreadable";
 
 /** One text chunk's name and value, compressed or not; null when it isn't
@@ -175,12 +188,14 @@ const UNREADABLE = "unreadable";
 async function pngText(
   type: string,
   data: Uint8Array,
+  allowance: { left: number },
 ): Promise<[string, Uint8Array] | null | typeof UNREADABLE> {
   const zero = data.indexOf(0);
   if (zero < 0) return null;
   const name = latin1(data.subarray(0, zero));
   let rest = data.subarray(zero + 1);
-  if (type === "zTXt") return wrap(name, await inflate(rest.subarray(1)));
+  if (type === "zTXt")
+    return wrap(name, await inflate(rest.subarray(1), allowance));
   if (type === "iTXt") {
     const compressed = rest[0] === 1;
     rest = rest.subarray(2);
@@ -190,7 +205,7 @@ async function pngText(
       if (end < 0) return null;
       rest = rest.subarray(end + 1);
     }
-    return wrap(name, compressed ? await inflate(rest) : rest);
+    return wrap(name, compressed ? await inflate(rest, allowance) : rest);
   }
   return [name, rest];
 }
@@ -198,9 +213,15 @@ async function pngText(
 const wrap = (name: string, value: Uint8Array | null) =>
   value ? ([name, value] as [string, Uint8Array]) : UNREADABLE;
 
-/** A PNG's blocks: its Exif chunk, and what its text chunks hold. */
-async function pngBlocks(b: Uint8Array): Promise<Blocks> {
+/** A PNG's blocks: its Exif chunk, and what its text chunks hold. Its
+ * compressed text inflates to `limit` bytes at most, all together: past
+ * it, the rest is unreadable. */
+export async function pngBlocks(
+  b: Uint8Array,
+  limit = TEXT_LIMIT,
+): Promise<Blocks> {
   const out = empty();
+  const allowance = { left: limit };
   for (const c of pngChunks(b).list) {
     const data = b.subarray(c.data, c.end - 4);
     if (c.type === "eXIf" || c.type === "exIf") {
@@ -208,7 +229,7 @@ async function pngBlocks(b: Uint8Array): Promise<Blocks> {
       continue;
     }
     if (c.type !== "tEXt" && c.type !== "zTXt" && c.type !== "iTXt") continue;
-    const found = await pngText(c.type, data);
+    const found = await pngText(c.type, data, allowance);
     if (found === UNREADABLE) out.unreadable = true;
     if (!found || found === UNREADABLE) continue;
     const [name, value] = found;
