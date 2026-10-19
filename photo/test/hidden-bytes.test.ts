@@ -651,4 +651,33 @@ describe("HEIC", () => {
     expect(kept.length).toBe(inside.length);
     expect(await pixels(kept)).toEqual(await pixels(base));
   });
+
+  test("a JPEG picture inside, cut off in a comment after its scan, loses the comment", async () => {
+    const base = await jpeg();
+    // The picture without its end marker, then a comment (COM, or an Exif
+    // APP1) whose length runs past the end of the item.
+    const picture = base.subarray(0, -2);
+    for (const marker of [0xfe, 0xe1]) {
+      const cut = segment(marker, ascii("LEAK-CUT-OFF 51.5007N")).slice(0, -4);
+      const inside = [...picture, ...cut];
+      const file = build(
+        [
+          { id: 1, type: "hvc1", payload: PICTURE },
+          { id: 2, type: "jpeg", payload: inside },
+        ],
+        { refs: [box("thmb", u16(2), u16(1), u16(1))] },
+      );
+      expect(leaks(file)).toBe(true);
+      const out = stripHeic(file, 1);
+      expect(leaks(out)).toBe(false);
+      const kept = bytesOf(out, 2);
+      expect(kept.length).toBe(inside.length);
+      // The picture's data is all still there, byte for byte; the cut
+      // comment is fill.
+      expect(kept.subarray(0, picture.length)).toEqual(picture);
+      expect(Array.from(kept.subarray(picture.length))).toEqual(
+        cut.map(() => 0xff),
+      );
+    }
+  });
 });

@@ -294,8 +294,9 @@ export function stripJpeg(b: Uint8Array, orientation: number): Uint8Array {
  * file (a HEIC's JPEG item): each segment a clean copy would drop keeps
  * its marker and length but holds only zeros; JFIF loses its thumbnail,
  * Adobe's segment its flags, the profile its words (icc.ts); bytes between
- * segments become fill (0xFF), and whatever follows the end, zeros. A file
- * that isn't a JPEG with a picture comes back as zeros. */
+ * segments, and a segment cut off by the file's end, become fill (0xFF),
+ * and whatever follows the end marker, zeros. A file that isn't a JPEG
+ * with a picture comes back as zeros. */
 export function cleanJpegInPlace(b: Uint8Array): Uint8Array {
   const out = new Uint8Array(b.length);
   let parsed: ReturnType<typeof segments>;
@@ -319,6 +320,12 @@ export function cleanJpegInPlace(b: Uint8Array): Uint8Array {
     const eoi = b.indexOf(EOI, reach);
     out.fill(0xff, reach, eoi);
     out.fill(0, eoi + 1);
+  } else {
+    // Cut short: what's after the last whole segment is a segment cut off
+    // (a comment, Exif, words of any kind), a marker's first bytes, or
+    // stray bytes. It becomes fill too. None of it is picture: a scan's
+    // data runs up to the next marker, or to the end, inside its segment.
+    out.fill(0xff, reach);
   }
   list.forEach((s, n) => {
     if (isIcc(b, s)) return;
