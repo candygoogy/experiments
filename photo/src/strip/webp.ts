@@ -97,14 +97,16 @@ function frame(b: Uint8Array, c: Chunk): Uint8Array {
 
 export function stripWebp(b: Uint8Array, orientation = 1): Uint8Array {
   const list = chunks(b, 12, declaredEnd(b));
-  if (!list.some((c) => c.type === "VP8 " || c.type === "VP8L")) {
-    if (!list.some((c) => c.type === "ANMF")) {
-      throw new Error("The WebP has no picture.");
-    }
-  }
   const header = list[0]?.type === "VP8X" ? list[0] : undefined;
   const flags = header ? (b[header.body] ?? 0) : 0;
   const animated = (flags & ANIMATION) !== 0;
+  // Frames count only in a file flagged animated; otherwise the picture
+  // is the VP8 or VP8L at the top.
+  if (!list.some((c) => c.type === "VP8 " || c.type === "VP8L")) {
+    if (!animated || !list.some((c) => c.type === "ANMF")) {
+      throw new Error("The WebP has no picture.");
+    }
+  }
   // A turn can only be carried where there's a VP8X header to flag it.
   const turn = isTurned(orientation) && header !== undefined;
   const iccChunk = flags & ICC_FLAG && list.find((c) => c.type === "ICCP");

@@ -332,6 +332,33 @@ describe("WebP", () => {
     expect(first && out[first.body + 15]).toBe(0);
     expect((await sharp(out, { animated: true }).metadata()).pages).toBe(2);
   });
+
+  test("frames in a file not flagged animated aren't a picture", async () => {
+    const picture = Array.from((await still()).subarray(12));
+    // Place, size, timing and flags, then the picture.
+    const head = [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      WIDTH - 1,
+      0,
+      0,
+      HEIGHT - 1,
+      0,
+      0,
+      100,
+      0,
+      0,
+      0,
+    ];
+    const file = new Uint8Array(
+      riff([...vp8x(0x00), ...webpChunk("ANMF", [...head, ...picture])]),
+    );
+    expect(() => clean(file, "webp", 1)).toThrow("The WebP has no picture.");
+  });
 });
 
 describe("HEIC", () => {
