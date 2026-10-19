@@ -188,6 +188,37 @@ test("a chosen file too", async ({ page }) => {
   await expect(page.locator(".pane.yours .svc")).toHaveCount(2);
 });
 
+test("a file still being read never replaces one chosen after it", async ({
+  page,
+}) => {
+  // The first file's text takes a while to arrive, as a big one's does.
+  await page.addInitScript(() => {
+    const text = File.prototype.text;
+    File.prototype.text = function (this: File) {
+      const read = text.call(this);
+      return this.name === "slow.yaml"
+        ? read.then((t) => new Promise((r) => setTimeout(() => r(t), 500)))
+        : read;
+    };
+  });
+  await page.goto(BASE);
+  const input = page.locator(".drop input");
+  await input.setInputFiles({
+    name: "slow.yaml",
+    mimeType: "application/yaml",
+    buffer: Buffer.from("services:\n  slow:\n    image: nginx\n"),
+  });
+  await input.setInputFiles({
+    name: "compose.yaml",
+    mimeType: "application/yaml",
+    buffer: Buffer.from(FILE),
+  });
+  await expect(page.locator(".pane.yours .svc")).toHaveCount(2);
+  await page.waitForTimeout(800);
+  await expect(page.locator(".pane.yours .svc")).toHaveCount(2);
+  await expect(page.locator("textarea")).toHaveValue(FILE);
+});
+
 test("broken YAML names its line; the last map stays", async ({ page }) => {
   await page.goto(BASE);
   const broken =

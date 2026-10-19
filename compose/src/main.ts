@@ -146,7 +146,11 @@ async function read(text: string, now: boolean) {
 }
 
 let timer = 0;
+// Each drop, and each edit, takes over from a drop whose files are still
+// being read: the newest wins, as it does for read().
+let drop = 0;
 textarea.addEventListener("input", (event) => {
+  drop++;
   clearTimeout(timer);
   clearTimeout(announce);
   source = null;
@@ -172,6 +176,7 @@ initDropZone(
   input,
   (files) => {
     if (!files.length) return;
+    const mine = ++drop;
     if (files.reduce((n, f) => n + f.size, 0) > MAX_BYTES) {
       showProblem(COPY.tooBig, false);
       say(COPY.tooBig);
@@ -182,6 +187,7 @@ initDropZone(
     );
     void Promise.all(sorted.map((f) => f.text())).then(
       (texts) => {
+        if (mine !== drop) return;
         clearTimeout(timer);
         // Each file opens with its name, so the page can say what it merged;
         // a "---" between them is how YAML separates documents.
@@ -198,7 +204,9 @@ initDropZone(
         void read(textarea.value, true);
       },
       // A file the browser couldn't read from the disk.
-      () => trouble(COPY.wrong, true, false),
+      () => {
+        if (mine === drop) trouble(COPY.wrong, true, false);
+      },
     );
   },
   { multiple: true },
