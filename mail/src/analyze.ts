@@ -83,7 +83,7 @@ interface Count {
   unchecked: string[];
   uncheckedExists: string[];
   macros: string[];
-  redirectMacro: boolean;
+  redirectUnknown: boolean;
   loop: boolean;
   all: All;
   allFrom: string | null;
@@ -187,7 +187,7 @@ export async function analyze(
       unchecked: [],
       uncheckedExists: [],
       macros: [],
-      redirectMacro: false,
+      redirectUnknown: false,
       loop: false,
       all: terms.all,
       allFrom: null,
@@ -210,12 +210,14 @@ export async function analyze(
       const key = name.toLowerCase();
       if (path.includes(key)) {
         out.loop = true;
+        if (redirect) out.redirectUnknown = true;
         return null;
       }
       if (total > COUNT_UP_TO) return null;
       const answer = await ask(name, "TXT");
       if (!answer) {
         out.unchecked.push(name);
+        if (redirect) out.redirectUnknown = true;
         return "unchecked";
       }
       const found = texts(answer).filter(isSpf);
@@ -224,8 +226,10 @@ export async function analyze(
       // treat the record as broken (RFC 7208, 5.2 and 6.1). That's an
       // answer, unlike a lookup that failed.
       if (inner === undefined) {
-        if (redirect) out.emptyRedirect = name;
-        else out.emptyInclude ??= name;
+        if (redirect) {
+          out.emptyRedirect = name;
+          out.redirectUnknown = true;
+        } else out.emptyInclude ??= name;
         return null;
       }
       // More than one is broken as well (4.5); the first is still read.
@@ -241,7 +245,7 @@ export async function analyze(
       out.syntax ??= sub.syntax;
       out.manyAt ??= sub.manyAt;
       if (redirect) {
-        out.redirectMacro = sub.redirectMacro;
+        out.redirectUnknown = sub.redirectUnknown;
         out.all = sub.all;
         // Only the record that actually said it.
         out.allFrom = sub.all === null ? null : (sub.allFrom ?? name);
@@ -324,7 +328,7 @@ export async function analyze(
     // A redirect to a name with a macro in it isn't looked up either.
     if (terms.redirect?.includes("%")) {
       out.macros.push(`redirect=${terms.redirect}`);
-      out.redirectMacro = true;
+      out.redirectUnknown = true;
       out.senders = true;
     } else if (terms.redirect !== null) {
       const sub = await follow(terms.redirect, true);
@@ -369,7 +373,7 @@ export async function analyze(
         unchecked: [...new Set(c.unchecked)],
         uncheckedExists: [...new Set(c.uncheckedExists)],
         macros: [...new Set(c.macros)],
-        redirectMacro: c.redirectMacro,
+        redirectUnknown: c.redirectUnknown,
         loop: c.loop,
         emptyRedirect: c.emptyRedirect,
         emptyInclude: c.emptyInclude,

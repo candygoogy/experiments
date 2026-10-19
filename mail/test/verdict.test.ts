@@ -25,7 +25,7 @@ const one = (s: Partial<Extract<Spf, { kind: "one" }>> = {}): Spf => ({
   unchecked: [],
   uncheckedExists: [],
   macros: [],
-  redirectMacro: false,
+  redirectUnknown: false,
   loop: false,
   emptyRedirect: null,
   emptyInclude: null,

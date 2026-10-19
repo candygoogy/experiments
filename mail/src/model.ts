@@ -54,11 +54,12 @@ export type Spf =
       // the name depends on the sender, so it isn't looked up (the lookup
       // still counts), and who it lets send is unknown.
       macros: string[];
-      // Its own redirect, or one that redirect leads to, names a name with
-      // a macro in it: the last word depends on the sender. A macro in a
-      // record it includes doesn't count; that record's redirect isn't this
-      // one's last word.
-      redirectMacro: boolean;
+      // Its own redirect, or one that redirect leads to, didn't answer,
+      // loops, leads to a name with no SPF record, or names a name with a
+      // macro in it: the last word is unknown. The same in a record it
+      // includes doesn't count; that record's redirect isn't this one's
+      // last word.
+      redirectUnknown: boolean;
       // It pulls itself in again: receivers treat that as broken.
       loop: boolean;
       // A redirect (its own, or one it pulls in) leads to a name with no

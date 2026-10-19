@@ -108,11 +108,13 @@ export function rows(r: Report): Row[] {
     const atLeast = spf.unchecked.length > 0;
     const over = spf.lookups > MAX_LOOKUPS;
     // A redirect that didn't answer, loops, leads nowhere, or depends on
-    // the sender leaves the last word unknown, not missing.
+    // the sender leaves the last word unknown, not missing. Only the
+    // record's own redirect, and those it leads to: a record it includes
+    // failing that way is a row of its own, not this record's last word.
     const redirectUnknown =
       all === null &&
       spfTerms(spf.record).redirect !== null &&
-      (atLeast || spf.loop || spf.emptyRedirect !== null || spf.redirectMacro);
+      spf.redirectUnknown;
     // A record with a mistake of its own says nothing receivers act on, so
     // its last word isn't offered as if it held.
     const ownMistake = spf.syntax !== null && spf.syntax.from === null;

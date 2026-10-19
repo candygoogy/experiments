@@ -648,13 +648,33 @@ describe("an include or redirect whose name depends on the sender", () => {
       all: "-",
       allFrom: "b.example",
       macros: ["redirect=%{d}.x.example"],
-      redirectMacro: false,
+      redirectUnknown: false,
     });
     expect(row(r, "spf").says).toBe(WORDS.spfAll["-"]);
     // With no last word at the end of the redirect, there's none: known,
     // not left unknown for the included record's macro.
     const none = await report(stub(zone("v=spf1 ip4:192.0.2.2")).resolve);
-    expect(none.spf).toMatchObject({ all: null, redirectMacro: false });
+    expect(none.spf).toMatchObject({ all: null, redirectUnknown: false });
     expect(row(none, "spf").says).toBe(WORDS.spfAll.none);
+  });
+
+  test("an include that didn't answer: the redirect's last word still holds", async () => {
+    const zone = base({
+      [`${D} TXT`]: [
+        ["TXT", txt("v=spf1 include:a.example redirect=b.example")],
+      ],
+      "b.example TXT": [["TXT", txt("v=spf1 ip4:192.0.2.2")]],
+    });
+    const r = await report(failing(zone, ["a.example TXT"]));
+    expect(r.spf).toMatchObject({
+      all: null,
+      unchecked: ["a.example"],
+      redirectUnknown: false,
+    });
+    // The include that didn't answer keeps its own line, and the last word
+    // is there beside it.
+    const spf = row(r, "spf");
+    expect(spf.says).toBe(WORDS.spfUncheckedPart(["a.example"], 2));
+    expect(spf.details).toContain(WORDS.spfAll.none);
   });
 });
