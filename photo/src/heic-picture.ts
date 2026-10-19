@@ -12,9 +12,11 @@ import {
   itemBytes,
   itemTypes,
   locate,
+  properties,
   Reader,
   type Box,
   type Item,
+  type Property,
 } from "./heif";
 
 /** A turn (anticlockwise, in degrees) or a flip, applied in order. */
@@ -54,48 +56,6 @@ export interface Pictures {
 // Past these, a "photo" is a crafted file: no preview is drawn.
 const MAX_TILES = 1024;
 const MAX_SIDE = 65_535;
-
-interface Property {
-  type: string;
-  box: Box;
-}
-
-/** iprp's properties (ipco), and which ones each item has (ipma). */
-function properties(r: Reader, iprp: Box): Map<number, Property[]> {
-  const inside = r.boxes(iprp.body, iprp.end);
-  const ipco = find(inside, "ipco");
-  const out = new Map<number, Property[]>();
-  if (!ipco) return out;
-  const all = r.boxes(ipco.body, ipco.end);
-  for (const ipma of inside.filter((x) => x.type === "ipma")) {
-    const end = ipma.end;
-    const version = r.uint(ipma.body, 1, end);
-    const wide = (r.uint(ipma.body + 3, 1, end) & 1) === 1;
-    const count = r.uint(ipma.body + 4, 4, end);
-    let at = ipma.body + 8;
-    const idSize = version < 1 ? 2 : 4;
-    // Each entry takes at least its id and its count.
-    if (count * (idSize + 1) > end - at) {
-      throw new Error("The HEIC's property list runs past its box.");
-    }
-    for (let n = 0; n < count; n++) {
-      const id = r.uint(at, idSize, end);
-      at += idSize;
-      const links = r.uint(at, 1, end);
-      at += 1;
-      const list: Property[] = [];
-      for (let k = 0; k < links; k++) {
-        const value = r.uint(at, wide ? 2 : 1, end);
-        at += wide ? 2 : 1;
-        const index = value & (wide ? 0x7fff : 0x7f);
-        const box = all[index - 1];
-        if (box) list.push({ type: box.type, box });
-      }
-      out.set(id, [...(out.get(id) ?? []), ...list]);
-    }
-  }
-  return out;
-}
 
 /** Every reference of one kind: from an item to a list of items. */
 function references(r: Reader, iref: Box | undefined, type: string) {

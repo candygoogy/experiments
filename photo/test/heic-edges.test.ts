@@ -1,8 +1,15 @@
 // HEIC files crafted to reach the corners: Exif about a helper picture,
-// details stored inside another item, boxes whose counts ask for more than
+// helpers kept and left out, details stored inside another item, boxes whose counts ask for more than
 // they hold, and metadata too big for one JPEG segment.
 import { describe, expect, test } from "vitest";
-import { CantClean, heifMeta } from "../src/heif";
+import {
+  CantClean,
+  heifLayout,
+  heifMeta,
+  itemBytes,
+  Reader,
+  find,
+} from "../src/heif";
 import { readMeta } from "../src/read";
 import { stripHeic, stripWebp } from "../src/strip/index";
 import { sentences, summarize } from "../src/summary";
@@ -15,6 +22,7 @@ import {
   exifPayload,
   FTYP,
   full,
+  GAIN_MAP,
   heic,
   HELPER,
   PICTURES,
@@ -75,6 +83,111 @@ describe("Exif about a helper picture", () => {
       `It names a person: ${MARKER}.`,
     );
     expect(has(stripHeic(withXmp, 1), MARKER)).toBe(false);
+  });
+});
+
+describe("helper pictures", () => {
+  // The photo (1), its gain map (2) and thumbnail (3), a depth map (4), a
+  // portrait matte (5), XMP about the matte (6), an alpha map under each
+  // of its names (7, 8), and a type that only starts like one (9).
+  const file = heic(
+    [
+      ...PICTURES,
+      { id: 3, type: "hvc1", payload: bytes("THMB") },
+      {
+        id: 4,
+        type: "hvc1",
+        payload: bytes("LEAK-DEPTH"),
+        aux: "urn:mpeg:hevc:2015:auxid:2",
+      },
+      {
+        id: 5,
+        type: "hvc1",
+        payload: bytes("LEAK-MATTE"),
+        aux: "urn:com:apple:photo:2018:aux:portraiteffectsmatte",
+      },
+      { id: 6, type: "xmp", payload: xmpPacket(MARKER) },
+      {
+        id: 7,
+        type: "hvc1",
+        payload: bytes("ALPHA1"),
+        aux: "urn:mpeg:hevc:2015:auxid:1",
+      },
+      {
+        id: 8,
+        type: "hvc1",
+        payload: bytes("ALPHA2"),
+        aux: "urn:mpeg:mpegB:cicp:systems:auxiliary:alpha",
+      },
+      {
+        id: 9,
+        type: "hvc1",
+        payload: bytes("LEAK-AUX10"),
+        aux: "urn:mpeg:hevc:2015:auxid:10",
+      },
+    ],
+    [
+      HELPER,
+      box("thmb", u16(3), u16(1), u16(1)),
+      box("auxl", u16(4), u16(1), u16(1)),
+      box("auxl", u16(5), u16(1), u16(1)),
+      box("cdsc", u16(6), u16(1), u16(5)),
+      box("auxl", u16(7), u16(1), u16(1)),
+      box("auxl", u16(8), u16(1), u16(1)),
+      box("auxl", u16(9), u16(1), u16(1)),
+    ],
+  );
+  const ids = (items: { id: number }[]) => items.map((x) => x.id).sort();
+  /** Each item's hidden flag, from its entry in iinf. */
+  const hidden = (b: Uint8Array) => {
+    const r = new Reader(b);
+    const iinf = find(heifLayout(b).inside, "iinf");
+    if (!iinf) throw new Error("no iinf");
+    return r
+      .boxes(iinf.body + 6, iinf.end)
+      .filter((entry) => (b[entry.body + 3] ?? 0) & 1)
+      .map((entry) => r.uint(entry.body + 4, 2));
+  };
+
+  test("the gain map, the thumbnail and alpha are kept; depth and matte go", () => {
+    const layout = heifLayout(file);
+    expect(ids(layout.pictures)).toEqual([1, 2, 3, 7, 8]);
+    expect(ids(layout.leftOut)).toEqual([4, 5, 9]);
+
+    const out = stripHeic(file, 1);
+    expect(out.length).toBe(file.length);
+    expect(has(out, "LEAK")).toBe(false);
+    expect(has(out, MARKER)).toBe(false);
+    const after = heifLayout(out);
+    const bytesOf = (id: number) => {
+      const item = after.items.find((x) => x.id === id);
+      if (!item) throw new Error(`no item ${id}`);
+      return Array.from(itemBytes(out, item));
+    };
+    expect(bytesOf(2)).toEqual(PICTURES[1]?.payload);
+    expect(bytesOf(3)).toEqual(bytes("THMB"));
+    expect(bytesOf(4)).toEqual(Array(10).fill(0));
+    expect(bytesOf(5)).toEqual(Array(10).fill(0));
+    expect(bytesOf(7)).toEqual(bytes("ALPHA1"));
+    expect(bytesOf(8)).toEqual(bytes("ALPHA2"));
+    expect(bytesOf(9)).toEqual(Array(10).fill(0));
+    // Nothing points from the photo to what's gone, or from the XMP about
+    // it: those references are "free" now. The items are still listed,
+    // hidden, so every entry, location and property still adds up.
+    expect(after.references.map((x) => [x.box.type, x.from])).toEqual([
+      ["auxl", 2],
+      ["thmb", 3],
+      ["free", 4],
+      ["free", 5],
+      ["free", 6],
+      ["auxl", 7],
+      ["auxl", 8],
+      ["free", 9],
+    ]);
+    expect(hidden(file)).toEqual([]);
+    expect(hidden(out)).toEqual([4, 5, 9]);
+    expect(ids(after.pictures)).toEqual([1, 2, 3, 7, 8]);
+    expect(has(out, `${GAIN_MAP}\0`)).toBe(true);
   });
 });
 

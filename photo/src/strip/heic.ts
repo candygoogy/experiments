@@ -18,7 +18,12 @@
 // reference's location, the colour profile's words (icc.ts) and whatever
 // follows a colour property's fields, a helper's type unless it's a known
 // one, and the file type's unknown brands and trailing bytes. A JPEG the
-// picture is drawn from is cleaned in place (jpeg.ts).
+// picture is drawn from is cleaned in place (jpeg.ts). A picture left out
+// (a helper other than the gain map or an alpha map, such as a depth map
+// or a matte, or a picture nothing leads to) keeps its entry, location
+// and properties, so the file still adds up, but its bytes are blanked,
+// its entry is marked hidden, and the references from it, or only to such
+// pictures, become "free".
 //
 // Each Exif item keeps its offset (and "Exif\0\0", if the writer put it
 // before the TIFF header) and then holds an empty TIFF, or one with only
@@ -209,6 +214,14 @@ function blankAround(
   if (at < to) out.fill(0, at, to);
 }
 
+/** An item entry's item id. */
+function entryId(out: Uint8Array, box: Box): number {
+  const idSize = (out[box.body] ?? 0) === 3 ? 4 : 2;
+  let id = 0;
+  for (let i = 0; i < idSize; i++) id = id * 256 + (out[box.body + 4 + i] ?? 0);
+  return id;
+}
+
 /** An item entry's words: its name (and, for older entries and mime and
  * uri items, its content type, encoding or uri type) become spaces of the
  * same length, and whatever follows them, zeros. XMP keeps a content type
@@ -216,8 +229,7 @@ function blankAround(
 function blankEntry(out: Uint8Array, box: Box, xmp: Set<number>) {
   const version = out[box.body] ?? 0;
   const idSize = version === 3 ? 4 : 2;
-  let id = 0;
-  for (let i = 0; i < idSize; i++) id = id * 256 + (out[box.body + 4 + i] ?? 0);
+  const id = entryId(out, box);
   let at = box.body + 4 + idSize + 2;
   let type = "";
   if (version >= 2) {
@@ -312,6 +324,7 @@ export function stripHeic(b: Uint8Array, orientation = 1): Uint8Array {
     else free(out, box);
   }
   const xmpIds = new Set([...xmp, ...layout.helperXmp].map((x) => x.id));
+  const leftOut = new Set(layout.leftOut.map((x) => x.id));
   for (const box of inside) {
     if (!META_BOXES.has(box.type)) free(out, box);
     else if (box.type === "idat") blankAround(out, box.body, box.end, kept);
@@ -321,7 +334,27 @@ export function stripHeic(b: Uint8Array, orientation = 1): Uint8Array {
     else if (box.type === "iinf") {
       const countSize = (out[box.body] ?? 0) === 0 ? 2 : 4;
       for (const entry of r.boxes(box.body + 4 + countSize, box.end)) {
-        if (entry.type === "infe") blankEntry(out, entry, xmpIds);
+        if (entry.type !== "infe") continue;
+        blankEntry(out, entry, xmpIds);
+        // A picture left out is marked hidden (the entry's flags), so no
+        // reader shows it as a picture of its own.
+        if (leftOut.has(entryId(out, entry))) {
+          out[entry.body + 3] = (out[entry.body + 3] ?? 0) | 1;
+        }
+      }
+    } else if (box.type === "iref") {
+      // A reference from a picture left out (a depth map's or a matte's
+      // auxl, to the photo), or only to such pictures, stops being one:
+      // its type becomes "free", which readers skip. Its ids stay, so a
+      // reader that reads it anyway finds items that are there.
+      for (const ref of layout.references) {
+        const { from, to } = ref;
+        if (
+          leftOut.has(from) ||
+          (to.length && to.every((t) => leftOut.has(t)))
+        ) {
+          out.set([0x66, 0x72, 0x65, 0x65], ref.box.start + 4); // "free"
+        }
       }
     } else if (box.type === "iprp") {
       for (const part of r.boxes(box.body, box.end)) {

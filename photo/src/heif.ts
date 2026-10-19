@@ -12,9 +12,12 @@
 //
 // The picture is what a reader draws: the primary item, the pictures it's
 // made from (a grid's tiles), its alternatives (an HDR tone map), and its
-// thumbnails and helpers (a gain map, an alpha or depth map), each of a
-// type that holds a picture. Anything else, even a picture item nothing
-// leads to, is metadata to a clean copy (strip/heic.ts).
+// thumbnails and the helpers that change how it looks (an HDR gain map,
+// an alpha map: told apart by their auxC type), each of a type that holds
+// a picture. Any other helper (a depth map, Apple's portrait and
+// segmentation mattes) is left out, and so is a picture item nothing
+// leads to: metadata to a clean copy (strip/heic.ts).
+import { startsWith } from "@exp/shared/bytes";
 import { gainMapPacket } from "./gain-map.ts";
 //
 // Every read stays inside its own box, and every count is checked against
@@ -246,6 +249,48 @@ export function locate(
   }
 }
 
+export interface Property {
+  type: string;
+  box: Box;
+}
+
+/** iprp's properties (ipco), and which ones each item has (ipma). */
+export function properties(r: Reader, iprp: Box): Map<number, Property[]> {
+  const inside = r.boxes(iprp.body, iprp.end);
+  const ipco = find(inside, "ipco");
+  const out = new Map<number, Property[]>();
+  if (!ipco) return out;
+  const all = r.boxes(ipco.body, ipco.end);
+  for (const ipma of inside.filter((x) => x.type === "ipma")) {
+    const end = ipma.end;
+    const version = r.uint(ipma.body, 1, end);
+    const wide = (r.uint(ipma.body + 3, 1, end) & 1) === 1;
+    const count = r.uint(ipma.body + 4, 4, end);
+    let at = ipma.body + 8;
+    const idSize = version < 1 ? 2 : 4;
+    // Each entry takes at least its id and its count.
+    if (count * (idSize + 1) > end - at) {
+      throw new Error("The HEIC's property list runs past its box.");
+    }
+    for (let n = 0; n < count; n++) {
+      const id = r.uint(at, idSize, end);
+      at += idSize;
+      const links = r.uint(at, 1, end);
+      at += 1;
+      const list: Property[] = [];
+      for (let k = 0; k < links; k++) {
+        const value = r.uint(at, wide ? 2 : 1, end);
+        at += wide ? 2 : 1;
+        const index = value & (wide ? 0x7fff : 0x7f);
+        const box = all[index - 1];
+        if (box) list.push({ type: box.type, box });
+      }
+      out.set(id, [...(out.get(id) ?? []), ...list]);
+    }
+  }
+  return out;
+}
+
 /** Whether a metadata item's bytes are also another item's (the picture's,
  * say): blanking them would change that item. */
 function overlaps(all: Item[], metadata: Set<Item>): boolean {
@@ -270,16 +315,25 @@ function overlaps(all: Item[], metadata: Set<Item>): boolean {
   return false;
 }
 
+/** One reference in iref: its box, and from which item to which. */
+export interface Reference {
+  box: Box;
+  from: number;
+  to: number[];
+}
+
 /** Which items describe which pictures, which pictures are helpers, and
  * how pictures are linked: what each is made from (a grid's tiles), and
- * which are thumbnails or helpers of which. */
+ * which are thumbnails or helpers of which. And every reference. */
 function links(r: Reader, iref: Box | undefined) {
   const describes = new Map<number, number[]>();
   const helpers = new Set<number>();
   const parts = new Map<number, number[]>();
-  /** Thumbnails and helpers: [the item, the pictures it belongs to]. */
-  const belongs: [number, number[]][] = [];
-  if (!iref) return { describes, helpers, parts, belongs };
+  /** Thumbnails and helpers: [the item, the pictures it belongs to, which
+   * of the two it is]. */
+  const belongs: [number, number[], "thmb" | "auxl"][] = [];
+  const references: Reference[] = [];
+  if (!iref) return { describes, helpers, parts, belongs, references };
   const wide = r.uint(iref.body, 1, iref.end) === 1;
   const idSize = wide ? 4 : 2;
   for (const ref of r.boxes(iref.body + 4, iref.end)) {
@@ -296,11 +350,14 @@ function links(r: Reader, iref: Box | undefined) {
     if (ref.type === "cdsc")
       describes.set(from, [...(describes.get(from) ?? []), ...to]);
     if (ref.type === "auxl") helpers.add(from);
-    if (ref.type === "auxl" || ref.type === "thmb") belongs.push([from, to]);
+    if (ref.type === "auxl" || ref.type === "thmb") {
+      belongs.push([from, to, ref.type]);
+    }
     if (ref.type === "dimg")
       parts.set(from, [...(parts.get(from) ?? []), ...to]);
+    references.push({ box: ref, from, to });
   }
-  return { describes, helpers, parts, belongs };
+  return { describes, helpers, parts, belongs, references };
 }
 
 /** The alternatives groups in grpl: pictures a reader may draw instead of
@@ -362,6 +419,11 @@ export interface HeifLayout extends HeifMeta {
   pictures: Item[];
   /** XMP about a helper picture that says only how to draw it. */
   helperXmp: Item[];
+  /** Items of a picture's type that aren't the picture: a helper left
+   * out, or a picture nothing leads to. */
+  leftOut: Item[];
+  /** Every reference in iref. */
+  references: Reference[];
 }
 
 // Item types that hold a picture, or say how to put one together.
@@ -383,6 +445,17 @@ const PICTURES = new Set([
   "mski",
 ]);
 
+// The helper pictures kept, by their type (auxC), each because it changes
+// how the photo looks: Apple's HDR gain map (on an HDR screen), and an
+// alpha map (where the photo is see-through), under either of its names.
+// Any other helper (a depth map, Apple's mattes of a portrait's subject
+// and of hair, skin, teeth, glasses and sky) is left out.
+const KEPT_HELPERS = [
+  "urn:com:apple:photo:2020:aux:hdrgainmap",
+  "urn:mpeg:hevc:2015:auxid:1",
+  "urn:mpeg:mpegB:cicp:systems:auxiliary:alpha",
+];
+
 /** The file's structure: its boxes, its items, which of them are the
  * picture and which its metadata. Throws when the structure can't be
  * followed, and CantClean when the metadata is stored inside another item
@@ -398,12 +471,33 @@ export function heifLayout(b: Uint8Array): HeifLayout {
   const iloc = find(inside, "iloc");
   const items = iinf ? itemTypes(r, iinf) : new Map<number, Item>();
   if (iloc) locate(r, iloc, find(inside, "idat"), items);
-  const { describes, helpers, parts, belongs } = links(r, find(inside, "iref"));
+  const { describes, helpers, parts, belongs, references } = links(
+    r,
+    find(inside, "iref"),
+  );
   const groups = alternatives(r, find(inside, "grpl"));
   const all = [...items.values()];
 
+  // Whether a helper is one that's kept, from its auxC property. The
+  // properties are read only when a helper asks.
+  const iprp = find(inside, "iprp");
+  let props: Map<number, Property[]> | undefined;
+  const isKeptHelper = (id: number) => {
+    props ??= iprp ? properties(r, iprp) : new Map<number, Property[]>();
+    const auxC = props.get(id)?.find((p) => p.type === "auxC")?.box;
+    if (!auxC) return false;
+    // A full box: version and flags, then the type, up to a zero (or the
+    // box's end, as strip/heic.ts reads it), then any subtype.
+    const start = auxC.body + 4;
+    let stop = r.b.indexOf(0, start);
+    if (stop < 0 || stop > auxC.end) stop = auxC.end;
+    return KEPT_HELPERS.some(
+      (type) => stop - start === type.length && startsWith(r.b, start, type),
+    );
+  };
+
   // The picture: the primary item, then whatever a kept picture is made
-  // from, drawn instead of, or has as its thumbnail or helper. Only items
+  // from, drawn instead of, or has as its thumbnail or kept helper. Only items
   // of a picture's type: a text item named as a part isn't drawn.
   const pitm = find(inside, "pitm");
   let primary: Item | undefined;
@@ -425,7 +519,9 @@ export function heifLayout(b: Uint8Array): HeifLayout {
     const id = item.id;
     for (const part of parts.get(id) ?? []) add(part);
     for (const group of groups) if (group.includes(id)) group.forEach(add);
-    for (const [from, to] of belongs) if (to.includes(id)) add(from);
+    for (const [from, to, type] of belongs) {
+      if (to.includes(id) && (type === "thmb" || isKeptHelper(from))) add(from);
+    }
   }
 
   // XMP about helper pictures only is the helpers' own business, when the
@@ -473,6 +569,8 @@ export function heifLayout(b: Uint8Array): HeifLayout {
     primary,
     pictures: [...keep],
     helperXmp,
+    leftOut: all.filter((x) => PICTURES.has(x.type) && !keep.has(x)),
+    references,
     exif: exif.filter(located),
     xmp: xmp.filter(located),
   };
