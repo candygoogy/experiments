@@ -106,8 +106,9 @@ export function maskPrefix(text: string): number | null {
 
 /** The smallest block holding every range given. */
 export function supernet(ranges: Range4[]): Range4 {
-  const lo = Math.min(...ranges.map((r) => r.start));
-  const hi = Math.max(...ranges.map(end));
+  // Reduces rather than spreads, which overflow the stack on a long list.
+  const lo = ranges.reduce((n, r) => Math.min(n, r.start), Infinity);
+  const hi = ranges.reduce((n, r) => Math.max(n, end(r)), -Infinity);
   let prefix = 32;
   while (prefix > 0 && end(block(lo, prefix)) < hi) prefix--;
   return block(lo, prefix);

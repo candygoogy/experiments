@@ -144,6 +144,11 @@ describe("blocks", () => {
     );
   });
 
+  test("a very long list doesn't overflow the stack", () => {
+    const many = Array.from({ length: 300_000 }, () => R("10.0.0.0/24"));
+    expect(cidr(supernet([...many, R("10.0.3.0/24")]))).toBe("10.0.0.0/22");
+  });
+
   test("the largest aligned free block in a stretch", () => {
     const n = (t: string) => parseV4(t) ?? -1;
     expect(

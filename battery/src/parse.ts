@@ -141,7 +141,8 @@ function isBatteries(table: HTMLTableElement): boolean {
  * spacer row or a missing cycle row changes nothing. */
 function readBatteries(table: HTMLTableElement): Battery[] {
   const rows = bodyRows(table);
-  const columns = Math.max(...rows.map((row) => row.cells.length)) - 1;
+  // A reduce rather than a spread, as in chart.ts.
+  const columns = rows.reduce((n, row) => Math.max(n, row.cells.length), 0) - 1;
   const batteries: Battery[] = [];
   for (let c = 1; c <= columns; c++) {
     const capacityRows = rows.filter((row) => MWH.test(text(row.cells[c])));
