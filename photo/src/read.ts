@@ -7,13 +7,13 @@
 // can say where each value came from. No block has to fit in one JPEG
 // segment (64 KB): a large one is read in full.
 import { ascii, startsWith } from "@exp/shared/bytes";
-import type { parse } from "exifr";
 import type { PhotoType } from "./detect.ts";
+import { readJobs, type Answer, type Job, type Meta } from "./exif.ts";
 import { exifTiff, heifMeta, itemBytes } from "./heif.ts";
 import { join, segments } from "./strip/jpeg.ts";
 import { chunks as pngChunks } from "./strip/png.ts";
 
-export type Meta = Record<string, unknown>;
+export type { Meta };
 
 /** Where a value came from, in the order "Show everything" lists them. */
 export type Block = "exif" | "gps" | "xmp" | "iptc" | "text";
@@ -25,25 +25,9 @@ export interface Read {
   groups: [Block, Meta][];
 }
 
-const OPTIONS = {
-  tiff: true,
-  exif: true,
-  gps: true,
-  xmp: true,
-  iptc: true,
-  icc: false,
-  jfif: false,
-  ihdr: false,
-  interop: false,
-  makerNote: false,
-  userComment: true,
-  multiSegment: true,
-  mergeOutput: false,
-  // Values as the file stores them: dates as written, orientation as a
-  // number, coordinates as degrees, minutes and seconds.
-  reviveValues: false,
-  translateValues: false,
-} satisfies Parameters<typeof parse>[1];
+/** Hands a photo's blocks to exifr, and gives back what it made of each,
+ * in order. */
+export type Runner = (jobs: Job[]) => Promise<Answer[]>;
 
 /** exifr's readers. In the browser it's a module with named exports; in
  * Node (the page's build) it can come as CommonJS, everything on its
@@ -55,6 +39,92 @@ async function exifr() {
     sidecar: m.sidecar ?? m.default.sidecar,
   };
 }
+
+/** exifr on this thread, where there's no worker. */
+const direct: Runner = async (jobs) => readJobs(await exifr(), jobs);
+
+/** How long exifr may take over one photo's blocks. */
+const LIMIT = 10_000;
+
+/** The parts of a Worker the runner below uses. */
+export interface ExifWorker {
+  onmessage: ((event: MessageEvent<Answer[]>) => void) | null;
+  onmessageerror: ((event: MessageEvent) => void) | null;
+  onerror: ((event: ErrorEvent) => void) | null;
+  postMessage(jobs: Job[], transfer: Transferable[]): void;
+  terminate(): void;
+}
+
+/** exifr in a worker from `start`, one photo at a time, the same worker
+ * for each. A worker still busy after `limit` ms is stopped, and that
+ * photo's blocks count as unreadable, as when exifr gives up on them; the
+ * next photo starts a new one. A worker that never started (its file gone,
+ * replaced by a newer version of the page) fails the photo, as exifr not
+ * loading does. */
+export function exifWorker(start: () => ExifWorker, limit = LIMIT): Runner {
+  let worker: ExifWorker | null = null;
+  let queue: Promise<unknown> = Promise.resolve();
+  const ask = (jobs: Job[]) =>
+    new Promise<Answer[]>((resolve, reject) => {
+      const mine = (worker ??= start());
+      const done = (stop: boolean) => {
+        clearTimeout(timer);
+        mine.onmessage = mine.onmessageerror = mine.onerror = null;
+        if (!stop) return;
+        mine.terminate();
+        if (worker === mine) worker = null;
+      };
+      const none = () => jobs.map(() => null);
+      const timer = setTimeout(() => {
+        done(true);
+        resolve(none());
+      }, limit);
+      mine.onmessage = (event) => {
+        done(false);
+        resolve(event.data);
+      };
+      mine.onmessageerror = () => {
+        done(true);
+        resolve(none());
+      };
+      mine.onerror = (event) => {
+        done(true);
+        // An error from the worker's code comes with its message; a
+        // worker that never started gives a bare event.
+        if (event instanceof ErrorEvent) resolve(none());
+        else reject(new Error("The photo's details can't be read."));
+      };
+      // Each block copied out of the photo, whose bytes the clean copy
+      // still needs, and the copy handed over.
+      const sent = jobs.map(({ kind, bytes }) => ({
+        kind,
+        bytes: bytes.slice(),
+      }));
+      mine.postMessage(
+        sent,
+        sent.map(({ bytes }) => bytes.buffer),
+      );
+    });
+  return (jobs) => {
+    const answers = queue.then(() => ask(jobs));
+    queue = answers.catch(() => undefined);
+    return answers;
+  };
+}
+
+let shared: Runner | undefined;
+
+/** exifr in a worker where the page has one, started for the first photo
+ * with blocks to read; on this thread where it hasn't. */
+const runner = (): Runner =>
+  typeof Worker === "undefined"
+    ? direct
+    : (shared ??= exifWorker(
+        () =>
+          new Worker(new URL("./exif-worker.ts", import.meta.url), {
+            type: "module",
+          }),
+      ));
 
 /** The metadata blocks found in a photo. */
 interface Blocks {
@@ -323,7 +393,10 @@ const isObject = (v: unknown): v is Meta =>
 
 /** Each block read on its own, kept by where it came from, and put
  * together for the summary: the first value of a name wins. */
-async function readBlocks(blocks: Blocks): Promise<Read | undefined> {
+async function readBlocks(
+  blocks: Blocks,
+  run: Runner,
+): Promise<Read | undefined> {
   const { tiff, xmp, irb, text } = blocks;
   const groups = new Map<Block, Meta>(BLOCKS.map((g) => [g, {}]));
   const add = (block: Block, fields: Meta) => {
@@ -333,58 +406,52 @@ async function readBlocks(blocks: Blocks): Promise<Read | undefined> {
     }
   };
   let failed = blocks.unreadable === true;
-  const fail = () => {
-    failed = true;
-    return undefined;
-  };
-  if (tiff.length || xmp.length || irb.length) {
-    const { parse, sidecar } = await exifr();
-    const read = async (block: Uint8Array, options: object) => {
-      const out = (await parse(block, options).catch(fail)) as Meta | undefined;
-      if (Array.isArray(out?.["errors"]) && out["errors"].length) {
-        failed = true;
-      }
-      return out ?? {};
-    };
-    for (const block of tiff) {
-      const out = await read(block, OPTIONS);
-      for (const part of ["ifd0", "exif"]) {
-        const fields = out[part];
-        if (isObject(fields)) {
-          textFields(fields);
-          add("exif", fields);
-        }
-      }
-      // exifr hands the comment over on its own, as bytes.
-      if (out["userComment"] !== undefined) {
-        const comment = { UserComment: out["userComment"] };
-        textFields(comment);
-        add("exif", comment);
-      }
-      if (isObject(out["gps"])) add("gps", out["gps"]);
-    }
-    for (const block of irb) {
-      // Read as the JPEG segment it would be in.
-      const head = new TextEncoder().encode(PHOTOSHOP);
-      const length = head.length + block.length + 2;
-      if (length > 0xffff) continue;
-      const jpeg = join([
-        new Uint8Array([0xff, 0xd8, 0xff, 0xed, length >> 8, length & 0xff]),
-        head,
-        block,
-        new Uint8Array([0xff, 0xd9]),
-      ]);
-      const out = await read(jpeg, { ...OPTIONS, tiff: false, xmp: false });
-      if (isObject(out["iptc"])) add("iptc", out["iptc"]);
-    }
-    for (const block of xmp) {
+  const jobs: Job[] = tiff.map((bytes) => ({ kind: "tiff", bytes }));
+  for (const block of irb) {
+    // Read as the JPEG segment it would be in.
+    const head = new TextEncoder().encode(PHOTOSHOP);
+    const length = head.length + block.length + 2;
+    if (length > 0xffff) continue;
+    const jpeg = join([
+      new Uint8Array([0xff, 0xd8, 0xff, 0xed, length >> 8, length & 0xff]),
+      head,
+      block,
+      new Uint8Array([0xff, 0xd9]),
+    ]);
+    jobs.push({ kind: "iptc", bytes: jpeg });
+  }
+  for (const bytes of xmp) jobs.push({ kind: "xmp", bytes });
+  const answers = jobs.length ? await run(jobs) : [];
+  for (const [i, { kind }] of jobs.entries()) {
+    const answer = answers[i];
+    if (!answer) failed = true;
+    const out = answer ?? {};
+    if (kind === "xmp") {
       // XMP alone comes back grouped by namespace: one group here.
-      const out = (await sidecar(block, OPTIONS, "xmp").catch(fail)) as
-        Meta | undefined;
-      for (const [ns, fields] of Object.entries(out ?? {})) {
+      for (const [ns, fields] of Object.entries(out)) {
         if (ns !== "xmlns" && isObject(fields)) add("xmp", fields);
       }
+      continue;
     }
+    if (Array.isArray(out["errors"]) && out["errors"].length) failed = true;
+    if (kind === "iptc") {
+      if (isObject(out["iptc"])) add("iptc", out["iptc"]);
+      continue;
+    }
+    for (const part of ["ifd0", "exif"]) {
+      const fields = out[part];
+      if (isObject(fields)) {
+        textFields(fields);
+        add("exif", fields);
+      }
+    }
+    // exifr hands the comment over on its own, as bytes.
+    if (out["userComment"] !== undefined) {
+      const comment = { UserComment: out["userComment"] };
+      textFields(comment);
+      add("exif", comment);
+    }
+    if (isObject(out["gps"])) add("gps", out["gps"]);
   }
   // Text can repeat a name (a JPEG's comments): each value is kept.
   const plain = groups.get("text") ?? {};
@@ -415,11 +482,12 @@ async function readBlocks(blocks: Blocks): Promise<Read | undefined> {
 export async function readPhoto(
   bytes: Uint8Array,
   type: PhotoType,
+  run: Runner = runner(),
 ): Promise<Read | undefined> {
-  if (type === "jpeg") return readBlocks(jpegBlocks(bytes));
-  if (type === "png") return readBlocks(await pngBlocks(bytes));
-  if (type === "webp") return readBlocks(webpBlocks(bytes));
-  return readBlocks(heicBlocks(bytes));
+  if (type === "jpeg") return readBlocks(jpegBlocks(bytes), run);
+  if (type === "png") return readBlocks(await pngBlocks(bytes), run);
+  if (type === "webp") return readBlocks(webpBlocks(bytes), run);
+  return readBlocks(heicBlocks(bytes), run);
 }
 
 /** The photo's metadata, every block together. */

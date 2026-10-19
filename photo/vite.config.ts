@@ -10,5 +10,10 @@ export default mergeConfig(
     description: copy.intro,
     port: 4413,
   }),
-  { plugins: [photoExample()] },
+  {
+    plugins: [photoExample()],
+    // exifr's worker is one file of its own, loaded from this origin (the
+    // page's CSP allows no other).
+    worker: { format: "es" },
+  },
 );
