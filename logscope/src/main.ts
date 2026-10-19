@@ -175,7 +175,10 @@ function read(file: File, skipped: File[]) {
   // A reader that answers at all has its file: a later deploy's may reload
   // the page again.
   mine.addEventListener("message", settle, { once: true });
+  // A reader a newer file has replaced is done: whatever it still says
+  // never draws over the newer file's answer.
   mine.addEventListener("message", (event: MessageEvent<FromWorker>) => {
+    if (worker !== mine) return;
     const message = event.data;
     if (message.type === "progress") {
       const pct = message.total
@@ -185,7 +188,7 @@ function read(file: File, skipped: File[]) {
       return;
     }
     mine.terminate();
-    if (worker === mine) worker = null;
+    worker = null;
     if (message.type === "problem") {
       problem(
         message.reason === "not-a-log" ? [copy.notALog] : [copy.unreadable],
@@ -204,7 +207,8 @@ function read(file: File, skipped: File[]) {
   });
   mine.addEventListener("error", (event) => {
     mine.terminate();
-    if (worker === mine) worker = null;
+    if (worker !== mine) return;
+    worker = null;
     // An error from the reader's code comes with its message; a reader
     // that never started gives a bare event: its file is most likely gone,
     // replaced by a newer version of the page since this one opened, so
