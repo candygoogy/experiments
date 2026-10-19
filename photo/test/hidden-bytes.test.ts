@@ -7,7 +7,7 @@ import sharp from "sharp";
 import { describe, expect, test } from "vitest";
 import { heifLayout, itemBytes } from "../src/heif";
 import { clean, stripHeic } from "../src/strip/index";
-import { segments } from "../src/strip/jpeg";
+import { cleanJpegInPlace, segments } from "../src/strip/jpeg";
 import { chunks as pngChunks } from "../src/strip/png";
 import { chunks as webpChunks } from "../src/strip/webp";
 import { box, bytes, exifPayload, ARTIST, FTYP, full, u16, u32 } from "./craft";
@@ -83,6 +83,22 @@ describe("JPEG", () => {
       ...base.subarray(at),
     ]);
     await same(file, clean(file, "jpeg", 1));
+  });
+
+  test("cleaned in place, a stray 0xD9 before the end leaves the end", async () => {
+    // After the last scan: a comment, a stray 0xD9 a decoder skips, the end.
+    const base = await jpeg();
+    const file = new Uint8Array([
+      ...base.subarray(0, -2),
+      ...segment(0xfe, ascii("LEAK")),
+      0xd9,
+      0xff,
+      0xd9,
+    ]);
+    const out = cleanJpegInPlace(file);
+    expect(out.length).toBe(file.length);
+    expect(Array.from(out.subarray(-2))).toEqual([0xff, 0xd9]);
+    await same(file, out);
   });
 });
 

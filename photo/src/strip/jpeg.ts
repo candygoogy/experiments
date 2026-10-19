@@ -309,9 +309,11 @@ export function cleanJpegInPlace(b: Uint8Array): Uint8Array {
     reach = s.end;
   }
   if (ended) {
-    // Fill up to the end marker (only fill bytes come before it), then
-    // nothing after it.
-    const eoi = b.indexOf(EOI, reach);
+    // Fill up to the end marker (only fill and stray bytes come before
+    // it), then nothing after it. The marker is the pair FF D9: a stray
+    // 0xD9 on its own isn't it.
+    let eoi = reach + 1;
+    while (eoi < b.length && (b[eoi - 1] !== 0xff || b[eoi] !== EOI)) eoi++;
     out.fill(0xff, reach, eoi);
     out.fill(0, eoi + 1);
   } else {
