@@ -19,6 +19,12 @@ describe("TXT values", () => {
     expect(txtValue('"say \\"hi\\""')).toBe('say "hi"');
     expect(txtValue("bare")).toBe("bare");
   });
+
+  test("a backslash and three digits is that byte (RFC 1035, 5.1)", () => {
+    expect(txtValue('"v=DMARC1\\059 p=reject"')).toBe("v=DMARC1; p=reject");
+    // An escaped backslash before digits leaves the digits as they are.
+    expect(txtValue('"a\\\\059"')).toBe("a\\059");
+  });
 });
 
 describe("MX", () => {

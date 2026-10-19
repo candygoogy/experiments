@@ -5,10 +5,14 @@
 // something that works.
 import type { All, DkimKey, Dmarc, Mx, Policy } from "./model.ts";
 
-/** A TXT record's value: DoH JSON quotes it, and splits long ones. */
+/** A TXT record's value: DoH JSON quotes it, and splits long ones. A
+ * backslash and three digits is a byte by its number ("\059" is ";"); a
+ * backslash before anything else keeps that as it is (RFC 1035, 5.1). */
 export function txtValue(data: string): string {
   const parts = [...data.matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((m) =>
-    (m[1] ?? "").replace(/\\(.)/g, "$1"),
+    (m[1] ?? "").replace(/\\(\d{3}|.)/g, (_, c: string) =>
+      c.length === 3 ? String.fromCharCode(Number(c)) : c,
+    ),
   );
   return parts.length ? parts.join("") : data;
 }
