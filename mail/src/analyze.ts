@@ -82,6 +82,7 @@ interface Count {
   lookups: number;
   unchecked: string[];
   uncheckedExists: string[];
+  macros: string[];
   loop: boolean;
   all: All;
   allFrom: string | null;
@@ -189,6 +190,7 @@ export async function analyze(
       lookups: terms.lookups,
       unchecked: [],
       uncheckedExists: [],
+      macros: [],
       loop: false,
       all: terms.all,
       allFrom: null,
@@ -235,6 +237,7 @@ export async function analyze(
       out.lookups += sub.lookups;
       out.unchecked.push(...sub.unchecked);
       out.uncheckedExists.push(...sub.uncheckedExists);
+      out.macros.push(...sub.macros);
       out.loop ||= sub.loop;
       out.emptyRedirect ??= sub.emptyRedirect;
       out.emptyInclude ??= sub.emptyInclude;
@@ -256,6 +259,15 @@ export async function analyze(
       const open = { v4: out.v4 === null, v6: out.v6 === null };
       const reached = open.v4 || open.v6;
       if (m.name === "include") {
+        // A name with a macro in it is built for each sender (RFC 7208,
+        // 7), so there's no one record to look up. It still costs its
+        // lookup, and, unknown, it may name senders.
+        if (m.target?.includes("%")) {
+          if (!reached) continue;
+          out.macros.push(m.text);
+          out.senders ||= m.qualifier === "+";
+          continue;
+        }
         // Followed even when nothing reaches it: it still costs lookups.
         const sub = m.target === null ? null : await follow(m.target, false);
         if (!reached) continue;
@@ -311,7 +323,11 @@ export async function analyze(
         }
       }
     }
-    if (terms.redirect !== null) {
+    // A redirect to a name with a macro in it isn't looked up either.
+    if (terms.redirect?.includes("%")) {
+      out.macros.push(`redirect=${terms.redirect}`);
+      out.senders = true;
+    } else if (terms.redirect !== null) {
       const sub = await follow(terms.redirect, true);
       if (sub === "unchecked") out.senders = true;
       else if (sub !== null) {
@@ -353,6 +369,7 @@ export async function analyze(
         lookups: c.lookups,
         unchecked: [...new Set(c.unchecked)],
         uncheckedExists: [...new Set(c.uncheckedExists)],
+        macros: [...new Set(c.macros)],
         loop: c.loop,
         emptyRedirect: c.emptyRedirect,
         emptyInclude: c.emptyInclude,

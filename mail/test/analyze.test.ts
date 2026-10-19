@@ -64,6 +64,7 @@ describe("a whole domain", () => {
         lookups: 3,
         unchecked: [],
         uncheckedExists: [],
+        macros: [],
         loop: false,
         emptyRedirect: null,
         emptyInclude: null,

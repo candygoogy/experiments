@@ -584,3 +584,51 @@ describe("an include with no SPF record is broken, not unchecked", () => {
     expect(verdictLine(slow)).toBe(verdictUnchecked(["spfPart"]));
   });
 });
+
+describe("an include or redirect whose name depends on the sender", () => {
+  // Valimail's, as published.
+  const VALIMAIL = "include:%{i}._ip.%{h}._ehlo.%{d}._spf.vali.email";
+
+  test("isn't looked up, still costs its lookup, and isn't broken", async () => {
+    const { resolve, asked } = stub(
+      base({ [`${D} TXT`]: [["TXT", txt(`v=spf1 ${VALIMAIL} ~all`)]] }),
+    );
+    const r = await report(resolve);
+    expect(asked.some((q) => q.includes("%"))).toBe(false);
+    expect(r.spf).toMatchObject({
+      lookups: 1,
+      unchecked: [],
+      emptyInclude: null,
+      macros: [VALIMAIL],
+      senders: true,
+    });
+    const spf = row(r, "spf");
+    expect(spf.level).toBe("good");
+    expect(spf.details).toContain(
+      `${VALIMAIL} depends on who’s sending, so this page can’t tell who that part lets send.`,
+    );
+    expect(overall(r)).toBe("protected");
+    expect(verdictLine(r)).toBe(VERDICT.protected);
+  });
+
+  test("a redirect: its last word is unknown, not missing", async () => {
+    const { resolve, asked } = stub(
+      base({
+        [`${D} TXT`]: [["TXT", txt("v=spf1 redirect=%{d}._spf.example")]],
+      }),
+    );
+    const r = await report(resolve);
+    expect(asked.some((q) => q.includes("%"))).toBe(false);
+    expect(r.spf).toMatchObject({
+      lookups: 1,
+      emptyRedirect: null,
+      macros: ["redirect=%{d}._spf.example"],
+    });
+    const spf = row(r, "spf");
+    expect(spf.level).toBe("info");
+    expect(spf.says).toBe(
+      "redirect=%{d}._spf.example depends on who’s sending, so this page can’t tell who that part lets send.",
+    );
+    expect(overall(r)).not.toBe("unchecked");
+  });
+});

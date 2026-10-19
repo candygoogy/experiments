@@ -163,6 +163,8 @@ export const WORDS = {
     `Couldn’t check ${list(names)}, so it takes at least ${n} of ${MAX_LOOKUPS} DNS lookups, maybe more.`,
   spfUncheckedExists: (names: string[]) =>
     `Couldn’t check ${list(names)}, so this page can’t tell who it lets send.`,
+  spfMacro: (name: string) =>
+    `${name} depends on who’s sending, so this page can’t tell who that part lets send.`,
   spfLookups: (n: number, atLeast = false) =>
     `${atLeast ? "At least " : ""}${n} of ${MAX_LOOKUPS} DNS lookups.`,
   spfAllFrom: (name: string) =>

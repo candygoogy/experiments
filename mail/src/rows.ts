@@ -107,12 +107,15 @@ export function rows(r: Report): Row[] {
     const all = spf.all;
     const atLeast = spf.unchecked.length > 0;
     const over = spf.lookups > MAX_LOOKUPS;
-    // A redirect that didn't answer, loops, or leads nowhere leaves the
-    // last word unknown, not missing.
+    // A redirect that didn't answer, loops, leads nowhere, or depends on
+    // the sender leaves the last word unknown, not missing.
     const redirectUnknown =
       all === null &&
       spfTerms(spf.record).redirect !== null &&
-      (atLeast || spf.loop || spf.emptyRedirect !== null);
+      (atLeast ||
+        spf.loop ||
+        spf.emptyRedirect !== null ||
+        spf.macros.some((t) => t.startsWith("redirect=")));
     // A record with a mistake of its own says nothing receivers act on, so
     // its last word isn't offered as if it held.
     const ownMistake = spf.syntax !== null && spf.syntax.from === null;
@@ -138,6 +141,10 @@ export function rows(r: Report): Row[] {
                     says: W.spfAll[all ?? "none"],
                   },
                 ];
+    // A part that depends on the sender is a note, neither good nor bad.
+    // Beside a last word it sits with the facts, so the row keeps its
+    // level; without one it's the row's sentence.
+    const macros = spf.macros.map(W.spfMacro);
     out.push(
       row(
         "spf",
@@ -193,6 +200,9 @@ export function rows(r: Report): Row[] {
                 },
               ]
             : []),
+          ...(lastWord.length
+            ? []
+            : macros.map((says) => ({ level: "info" as const, says }))),
           ...(spf.wide !== null && spf.open === null
             ? [{ level: "weak" as const, says: W.spfWide(spf.wide) }]
             : []),
@@ -201,6 +211,7 @@ export function rows(r: Report): Row[] {
         [
           ...dkimOnly,
           ...(spf.allFrom ? [W.spfAllFrom(spf.allFrom)] : []),
+          ...(lastWord.length ? macros : []),
           ...(!over && !atLeast ? [W.spfLookups(spf.lookups)] : []),
           spf.record,
         ],

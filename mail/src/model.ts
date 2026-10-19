@@ -50,6 +50,10 @@ export type Spf =
       // Some exists terms' names didn't answer: whether they let anyone
       // send is unknown (the lookup count isn't).
       uncheckedExists: string[];
+      // Includes and redirects to a name with a macro in it, as written:
+      // the name depends on the sender, so it isn't looked up (the lookup
+      // still counts), and who it lets send is unknown.
+      macros: string[];
       // It pulls itself in again: receivers treat that as broken.
       loop: boolean;
       // A redirect (its own, or one it pulls in) leads to a name with no
