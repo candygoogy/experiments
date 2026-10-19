@@ -30,19 +30,21 @@ export function crc32(bytes: Uint8Array, crc = 0): number {
   return ~c >>> 0;
 }
 
-/** Each name once: a second "a.jpg" becomes "a (2).jpg". */
+/** Each name once: a second "a.jpg" becomes "a (2).jpg". Names that differ
+ * only in case count as the same, as they do on Windows and macOS, where
+ * one would overwrite the other when unzipped; each keeps its own case. */
 export function uniqueNames(names: string[]): string[] {
   const taken = new Set<string>();
   return names.map((wanted) => {
     let name = wanted;
     const dot = wanted.lastIndexOf(".");
-    for (let n = 2; taken.has(name); n++) {
+    for (let n = 2; taken.has(name.toLowerCase()); n++) {
       name =
         dot > 0
           ? `${wanted.slice(0, dot)} (${n})${wanted.slice(dot)}`
           : `${wanted} (${n})`;
     }
-    taken.add(name);
+    taken.add(name.toLowerCase());
     return name;
   });
 }

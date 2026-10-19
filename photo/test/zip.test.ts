@@ -24,6 +24,14 @@ test("each name once: a second one is numbered before its extension", () => {
   ]);
 });
 
+test("names that differ only in case count as the same, each in its own case", () => {
+  expect(uniqueNames(["IMG_1.JPG", "img_1.jpg", "Img_1 (2).jpg"])).toEqual([
+    "IMG_1.JPG",
+    "img_1 (2).jpg",
+    "Img_1 (2) (2).jpg",
+  ]);
+});
+
 test("the archive opens to the same files, stored as they are", async () => {
   const big = new Uint8Array(3 * 1024 * 1024 + 5).map((_, i) => i * 7);
   const files = [
