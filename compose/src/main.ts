@@ -8,7 +8,7 @@ import "@exp/shared/work.css";
 import "./compose.css";
 import { initDropZone } from "@exp/shared/dropzone";
 import { initHeader } from "@exp/shared/header";
-import { missingModule } from "@exp/shared/stale";
+import { missingModule, settle } from "@exp/shared/stale";
 import type { Result } from "./answer";
 import { COPY } from "./copy";
 import { MAX_BYTES, tooBig } from "./size";
@@ -114,6 +114,7 @@ async function read(text: string, now: boolean) {
   let answer: typeof import("./answer").answer;
   try {
     ({ answer } = await import("./answer"));
+    settle();
   } catch (error) {
     if (mine === run) {
       trouble(missingModule(error) ? COPY.changed : COPY.wrong, now, false);

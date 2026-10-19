@@ -9,7 +9,7 @@ import "@exp/shared/work.css";
 import "./photo.css";
 import { initDropZone } from "@exp/shared/dropzone";
 import { initHeader } from "@exp/shared/header";
-import { reloadIfGone } from "@exp/shared/stale";
+import { reloadIfGone, settle } from "@exp/shared/stale";
 
 initHeader();
 
@@ -20,13 +20,20 @@ const example = document.querySelector<HTMLElement>("[data-example]");
 // The reader and the cleaner (answer.ts) load once a file is on its way:
 // when the pointer, a finger, the keyboard's focus or a dragged file
 // reaches the page's drop zone, so they're usually here before the drop.
-// A load that fails is forgotten, so the next drop asks for it again.
+// A load that fails is forgotten, so the next drop asks for it again; one
+// that works lets a later deploy's missing file reload the page again.
 let work: Promise<typeof import("./answer")> | undefined;
 const load = () =>
-  (work ??= import("./answer").catch((error: unknown) => {
-    work = undefined;
-    throw error;
-  }));
+  (work ??= import("./answer").then(
+    (module) => {
+      settle();
+      return module;
+    },
+    (error: unknown) => {
+      work = undefined;
+      throw error;
+    },
+  ));
 // An early load that fails is tried again by the drop, which says so if
 // it fails too.
 const preload = () => void load().catch(() => undefined);

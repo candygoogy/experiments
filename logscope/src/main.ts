@@ -9,7 +9,7 @@ import "./logscope.css";
 import { arrive } from "@exp/shared/arrive";
 import { initDropZone } from "@exp/shared/dropzone";
 import { initHeader } from "@exp/shared/header";
-import { reloadOnce } from "@exp/shared/stale";
+import { reloadOnce, settle } from "@exp/shared/stale";
 import { copy, fill } from "./copy.ts";
 import { canonical } from "./known.ts";
 import type { Group, Level, Result } from "./model.ts";
@@ -172,6 +172,9 @@ function read(file: File, skipped: File[]) {
     type: "module",
   });
   worker = mine;
+  // A reader that answers at all has its file: a later deploy's may reload
+  // the page again.
+  mine.addEventListener("message", settle, { once: true });
   mine.addEventListener("message", (event: MessageEvent<FromWorker>) => {
     const message = event.data;
     if (message.type === "progress") {

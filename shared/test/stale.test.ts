@@ -1,5 +1,11 @@
-import { expect, test } from "vitest";
-import { missingModule } from "../stale";
+// @vitest-environment happy-dom
+import { afterEach, expect, test, vi } from "vitest";
+import { missingModule, reloadOnce, settle } from "../stale";
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  sessionStorage.clear();
+});
 
 test("a missing module file is known in every engine, and nothing else is", () => {
   const url = "https://photo.candygoogy.dev/assets/answer-Ab12_x.js";
@@ -17,4 +23,17 @@ test("a missing module file is known in every engine, and nothing else is", () =
   ]) {
     expect(missingModule(error), error.message).toBe(false);
   }
+});
+
+test("the page reloads once, and again only once its code has loaded since", () => {
+  const reload = vi.fn();
+  vi.stubGlobal("location", { reload });
+  expect(reloadOnce()).toBe(true);
+  // The reload didn't help: never again, so it can't loop.
+  expect(reloadOnce()).toBe(false);
+  expect(reload).toHaveBeenCalledTimes(1);
+  // It did, and a later deploy takes another file away.
+  settle();
+  expect(reloadOnce()).toBe(true);
+  expect(reload).toHaveBeenCalledTimes(2);
 });
