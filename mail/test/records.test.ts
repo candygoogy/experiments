@@ -25,6 +25,13 @@ describe("TXT values", () => {
     // An escaped backslash before digits leaves the digits as they are.
     expect(txtValue('"a\\\\059"')).toBe("a\\059");
   });
+
+  test("bytes read as UTF-8; a number past 255 stays as written", () => {
+    expect(txtValue('"n=caf\\195\\169"')).toBe("n=café");
+    // Split between two strings, the character is still one.
+    expect(txtValue('"caf\\195" "\\169"')).toBe("café");
+    expect(txtValue('"a\\300b"')).toBe("a\\300b");
+  });
 });
 
 describe("MX", () => {

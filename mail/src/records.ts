@@ -7,14 +7,32 @@ import type { All, DkimKey, Dmarc, Mx, Policy } from "./model.ts";
 
 /** A TXT record's value: DoH JSON quotes it, and splits long ones. A
  * backslash and three digits is a byte by its number ("\059" is ";"); a
- * backslash before anything else keeps that as it is (RFC 1035, 5.1). */
+ * backslash before anything else keeps that as it is (RFC 1035, 5.1).
+ * Bytes next to each other read as UTF-8 ("caf\195\169" is "café"), even
+ * across a split; a number past 255 is no byte, so it stays as written. */
 export function txtValue(data: string): string {
-  const parts = [...data.matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((m) =>
-    (m[1] ?? "").replace(/\\(\d{3}|.)/g, (_, c: string) =>
-      c.length === 3 ? String.fromCharCode(Number(c)) : c,
-    ),
-  );
-  return parts.length ? parts.join("") : data;
+  const parts = [...data.matchAll(/"((?:[^"\\]|\\.)*)"/g)];
+  if (!parts.length) return data;
+  const utf8 = new TextDecoder();
+  let out = "";
+  let bytes: number[] = [];
+  const flush = () => {
+    if (bytes.length) out += utf8.decode(new Uint8Array(bytes));
+    bytes = [];
+  };
+  for (const part of parts) {
+    for (const [text, c] of (part[1] ?? "").matchAll(/\\(\d{3}|.)|[^\\]+/g)) {
+      const byte = c?.length === 3 ? Number(c) : null;
+      if (byte !== null && byte <= 255) {
+        bytes.push(byte);
+        continue;
+      }
+      flush();
+      out += byte === null ? (c ?? text) : text;
+    }
+  }
+  flush();
+  return out;
 }
 
 export function mxOf(data: string[]): Mx {
