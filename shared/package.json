@@ -10,6 +10,7 @@
     "./arrive": "./arrive.ts",
     "./copy": "./copy.ts",
     "./stale": "./stale.ts",
+    "./bytes": "./bytes.ts",
     "./*.css": "./*.css"
   }
 }

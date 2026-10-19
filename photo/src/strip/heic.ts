@@ -27,6 +27,7 @@
 // breaks one. A file whose details are stored inside another item, or
 // that's a sequence (moov), isn't cleaned at all; nor is one that names no
 // main picture, or names one item twice.
+import { startsWith } from "@exp/shared/bytes";
 import {
   CantClean,
   exifTiff,
@@ -39,12 +40,7 @@ import {
 } from "../heif";
 import { gainMapPacket } from "../gain-map";
 import { cleanIcc } from "../icc";
-import {
-  cleanJpegInPlace,
-  isTurned,
-  orientationTiff,
-  startsWith,
-} from "./jpeg";
+import { cleanJpegInPlace, isTurned, orientationTiff } from "./jpeg";
 
 // prettier-ignore
 const EMPTY_TIFF = new Uint8Array([

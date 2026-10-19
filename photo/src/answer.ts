@@ -10,7 +10,7 @@ import { make as makeIn, noPreview, photoRow } from "./render";
 import { clean } from "./strip/index";
 import { details, sentences, summarize, type Detail } from "./summary";
 import { turnOf } from "./turn";
-import { zip } from "./zip";
+import { breathe, zip } from "./zip";
 
 const zone = document.querySelector<HTMLLabelElement>(".drop");
 const status = document.querySelector<HTMLElement>("[data-status]");
@@ -55,9 +55,6 @@ const make = <K extends keyof HTMLElementTagNameMap>(
   className: string,
   text?: string,
 ) => makeIn(document, tag, className, text);
-
-/** Lets the page draw and answer between photos. */
-const breathe = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 /** "IMG_0042.jpeg" → "IMG_0042-clean.jpeg"; the extension follows what
  * the file really is, so a PNG named .jpg comes back as .png. */

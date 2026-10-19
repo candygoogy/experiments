@@ -6,10 +6,11 @@
 // has any of these, then reads each block on its own, so "Show everything"
 // can say where each value came from. No block has to fit in one JPEG
 // segment (64 KB): a large one is read in full.
+import { startsWith } from "@exp/shared/bytes";
 import type { parse } from "exifr";
 import type { PhotoType } from "./detect.ts";
 import { exifTiff, heifMeta, itemBytes } from "./heif.ts";
-import { join, segments, startsWith } from "./strip/jpeg.ts";
+import { join, segments } from "./strip/jpeg.ts";
 import { chunks as pngChunks } from "./strip/png.ts";
 
 export type Meta = Record<string, unknown>;

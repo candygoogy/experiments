@@ -14,6 +14,7 @@
 // this list doesn't name. A photo turned by its Exif gets a minimal Exif
 // back that holds only that turn. A JPEG cut short keeps what's there of
 // its picture and gets its end marker back.
+import { startsWith } from "@exp/shared/bytes";
 import { cleanIcc } from "../icc.ts";
 
 const SOI = 0xd8;
@@ -38,13 +39,6 @@ const TABLES = new Set([
 const ICC = "ICC_PROFILE\0";
 /** The most profile one APP2 segment holds, after its 14-byte header. */
 const ICC_PIECE = 65_519;
-
-export const startsWith = (b: Uint8Array, at: number, text: string) => {
-  for (let i = 0; i < text.length; i++) {
-    if (b[at + i] !== text.charCodeAt(i)) return false;
-  }
-  return true;
-};
 
 export interface Segment {
   marker: number;
@@ -359,17 +353,4 @@ export function join(parts: Uint8Array[]): Uint8Array {
     at += part.length;
   }
   return out;
-}
-
-const CRC_TABLE = Array.from({ length: 256 }, (_, n) => {
-  let c = n;
-  for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-  return c >>> 0;
-});
-
-/** The CRC-32 a PNG chunk ends with. */
-export function crc32(bytes: Uint8Array): number {
-  let c = 0xffffffff;
-  for (const byte of bytes) c = (CRC_TABLE[(c ^ byte) & 0xff] ?? 0) ^ (c >>> 8);
-  return (c ^ 0xffffffff) >>> 0;
 }

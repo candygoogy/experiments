@@ -14,9 +14,10 @@
 //
 // In each, the turn is the Orientation entry of the first IFD, one SHORT,
 // 1 to 8; anything else counts as upright.
+import { startsWith } from "@exp/shared/bytes";
 import type { PhotoType } from "./detect";
 import { exifTiff, heifLayout, itemBytes } from "./heif";
-import { segments, startsWith } from "./strip/jpeg";
+import { segments } from "./strip/jpeg";
 import { chunks as pngChunks } from "./strip/png";
 import { chunks as webpChunks, declaredEnd } from "./strip/webp";
 

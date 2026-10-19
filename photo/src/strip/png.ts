@@ -18,7 +18,8 @@
 // its end chunk back.
 import { Unzlib, zlibSync } from "fflate";
 import { cleanIcc } from "../icc.ts";
-import { crc32, isTurned, join, orientationTiff } from "./jpeg.ts";
+import { crc32 } from "../zip.ts";
+import { isTurned, join, orientationTiff } from "./jpeg.ts";
 
 const KEEP = new Set([
   "IHDR",

@@ -13,6 +13,7 @@
 // The file is read a chunk at a time. Nothing in it is trusted: every
 // read is bounds-checked, nesting is capped, and an event that doesn't
 // make sense is skipped, never guessed at.
+import { startsWith } from "@exp/shared/bytes";
 
 /** The size of a chunk. */
 export const EVTX_CHUNK = 0x10000;
@@ -37,10 +38,6 @@ const MAX_VALUES = 4096;
 // running out of it takes a few milliseconds.
 const MAX_WORK = 1 << 21;
 
-const startsWith = (bytes: Uint8Array, magic: string) =>
-  bytes.length >= magic.length &&
-  [...magic].every((c, i) => bytes[i] === c.charCodeAt(0));
-
 /** Where the first chunk starts, from the file's header. */
 export function evtxStart(header: Uint8Array): number {
   const size =
@@ -51,7 +48,7 @@ export function evtxStart(header: Uint8Array): number {
 
 /** Whether a block of the file is a chunk of events. Space Windows set
  * aside for the log but hasn't used yet is zeros. */
-export const isChunk = (bytes: Uint8Array) => startsWith(bytes, "ElfChnk\0");
+export const isChunk = (bytes: Uint8Array) => startsWith(bytes, 0, "ElfChnk\0");
 
 /** One substitution value: its type and where its bytes are. */
 interface Value {

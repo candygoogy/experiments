@@ -4,7 +4,7 @@
 // Every value that mustn't survive a clean copy contains LEAK, so a test
 // can look for that one word.
 import { deflateSync } from "node:zlib";
-import { crc32 } from "../src/strip/jpeg";
+import { crc32 } from "../src/zip";
 
 export const LEAK = "LEAK";
 export const ascii = (s: string) => [...s].map((c) => c.charCodeAt(0) & 0xff);
