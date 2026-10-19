@@ -16,6 +16,8 @@ const ROOT = join(import.meta.dirname, "..");
 const TEMPLATE = join(ROOT, "template");
 const SKIP = new Set(["node_modules", "dist", ".wrangler", "test-results"]);
 const KEEP = new Set(["shared", "template"]);
+// An experiment's name, and so its folder: never a path.
+const NAME = /^[a-z][a-z0-9-]*$/;
 
 const fail = (message) => {
   console.error(`new: ${message}`);
@@ -42,9 +44,10 @@ const [first, second] = process.argv.slice(2);
 if (first === "--remove") {
   const name = second ?? "";
   const pkg = await readPkg();
-  // Only an experiment: a workspace, never shared/ or template/ (and so
-  // never scripts/, node_modules/ or anything else at the root).
-  if (!pkg.workspaces.includes(name) || KEEP.has(name)) {
+  // Only an experiment: a plain name that's a workspace, never shared/ or
+  // template/ (and so never scripts/, node_modules/, anything else at the
+  // root or a workspace entry that points outside it).
+  if (!NAME.test(name) || !pkg.workspaces.includes(name) || KEEP.has(name)) {
     fail(`can't remove "${name}": not an experiment`);
   }
   await rm(join(ROOT, name), { recursive: true, force: true });
@@ -57,7 +60,7 @@ if (first === "--remove") {
 
 const name = first ?? "";
 const port = Number(second);
-if (!/^[a-z][a-z0-9-]*$/.test(name)) {
+if (!NAME.test(name)) {
   fail("usage: node scripts/new.mjs <name> <port> (name: a-z, 0-9, -)");
 }
 if (!Number.isInteger(port) || port < 1024 || port > 65525) {
