@@ -189,6 +189,32 @@ describe("helper pictures", () => {
     expect(ids(after.pictures)).toEqual([1, 2, 3, 7, 8]);
     expect(has(out, `${GAIN_MAP}\0`)).toBe(true);
   });
+
+  test("a property list that runs past its box: Exif still read, helper left out", async () => {
+    const broken = heic(
+      [
+        ...PICTURES,
+        { id: 3, type: "Exif", payload: exifPayload([[ARTIST, MARKER]]) },
+      ],
+      [HELPER],
+    );
+    // ipma's entry count, after its version and flags, asks for far more
+    // entries than the box holds.
+    const ipma = Buffer.from(broken).indexOf("ipma");
+    broken.set(u32(0xffffff), ipma + 4 + 4);
+
+    const layout = heifLayout(broken);
+    expect(ids(layout.pictures)).toEqual([1]);
+    expect(ids(layout.leftOut)).toEqual([2]);
+    expect(sentences(summarize(await readMeta(broken, "heic")))).toContain(
+      `It names a person: ${MARKER}.`,
+    );
+    const out = stripHeic(broken, 1);
+    expect(has(out, MARKER)).toBe(false);
+    expect(
+      Buffer.from(out).includes(Buffer.from([0x66, 0x66, 0x66, 0x66])),
+    ).toBe(false);
+  });
 });
 
 describe("details stored inside another item (iloc method 2)", () => {

@@ -479,11 +479,20 @@ export function heifLayout(b: Uint8Array): HeifLayout {
   const all = [...items.values()];
 
   // Whether a helper is one that's kept, from its auxC property. The
-  // properties are read only when a helper asks.
+  // properties are read only when a helper asks. When they can't be read,
+  // no helper is kept: the photo's details still read, and a clean copy
+  // leaves the helpers out.
   const iprp = find(inside, "iprp");
   let props: Map<number, Property[]> | undefined;
+  const readProps = () => {
+    try {
+      return iprp ? properties(r, iprp) : new Map<number, Property[]>();
+    } catch {
+      return new Map<number, Property[]>();
+    }
+  };
   const isKeptHelper = (id: number) => {
-    props ??= iprp ? properties(r, iprp) : new Map<number, Property[]>();
+    props ??= readProps();
     const auxC = props.get(id)?.find((p) => p.type === "auxC")?.box;
     if (!auxC) return false;
     // A full box: version and flags, then the type, up to a zero (or the
