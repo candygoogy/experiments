@@ -415,7 +415,8 @@ test("a DMARC lookup that fails: couldn't check, never can be faked", async ({
 // On a phone the footer keeps "Source" and "MIT" together on the first
 // line, with the privacy line under them. The link's 44px target reaches
 // 22px from its middle, so it needs about 10px clear below its line to stay
-// off the privacy text.
+// off the privacy text. The privacy line is a link too (to how to check
+// it), and the two links' targets never overlap.
 test("on a phone the footer puts Source and MIT on one line, the privacy line under them", async ({
   browser,
 }) => {
@@ -430,7 +431,7 @@ test("on a phone the footer puts Source and MIT on one line, the privacy line un
     if (!b) throw new Error(`${selector} has no box`);
     return b;
   };
-  const link = await box("a");
+  const link = await box(".inner > a");
   const privacy = await box(".privacy");
   const license = await box("span");
   expect(
@@ -446,6 +447,11 @@ test("on a phone the footer puts Source and MIT on one line, the privacy line un
     link.y + link.height + 10,
     "the link's target clear of the privacy text",
   ).toBeLessThanOrEqual(privacy.y);
+  const proof = await box(".privacy a");
+  expect(
+    link.y + link.height / 2 + 22,
+    "Source's target clear of the privacy link's",
+  ).toBeLessThanOrEqual(proof.y + proof.height / 2 - 22);
   await context.close();
 });
 

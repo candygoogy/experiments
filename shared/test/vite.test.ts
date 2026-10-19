@@ -73,6 +73,12 @@ describe("shellHtml", () => {
     expect(footer).toContain(line);
     expect(footer).not.toContain("Nothing you drop here");
   });
+
+  test("footer's privacy line links to how to check it", () => {
+    expect(shellHtml({ ...min, source }).footer).toContain(
+      '<p class="privacy"><a href="https://candygoogy.dev/colophon#privacy">Runs in your browser.',
+    );
+  });
 });
 
 describe("defineExperiment build", () => {

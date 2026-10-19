@@ -2,7 +2,7 @@
 // theme metas, the pre-paint theme script), the header (a skip link, the
 // wordmark back to candygoogy.dev, Experiments, the theme switch; on
 // phones, Menu and its menu, as on the site) and the footer (the privacy
-// line, the source, the license). Built into index.html by
+// line, linked to how to check it, the source, the license). Built into index.html by
 // defineExperiment() in vite.ts; styled by shell.css, run by header.ts.
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -31,6 +31,9 @@ export interface ShellOptions extends ExperimentOptions {
 export const SITE = "https://candygoogy.dev";
 /** What follows an experiment's name in its <title>, as on the site. */
 export const TITLE_END = " – candygoogy";
+/** Where the footer's privacy line links: how to check it, on the site's
+ * colophon (its Privacy row covers every tool, mail's DNS lookup too). */
+export const PRIVACY_PROOF = `${SITE}/colophon#privacy`;
 /** The footer's privacy line unless an experiment gives its own. */
 export const PRIVACY =
   "Runs in your browser. Nothing you drop here is uploaded.";
@@ -199,7 +202,7 @@ export function shellHtml(o: ShellOptions): {
     `</header>`;
   const footer =
     `<footer class="foot wrap"><div class="inner">` +
-    `<p class="privacy">${escape(o.privacy ?? PRIVACY)}</p>` +
+    `<p class="privacy"><a href="${PRIVACY_PROOF}">${escape(o.privacy ?? PRIVACY)}</a></p>` +
     `<a href="${escape(o.source)}">Source</a>` +
     `<span>MIT</span>` +
     `</div></footer>`;
