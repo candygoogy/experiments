@@ -9,6 +9,7 @@ import "./logscope.css";
 import { arrive } from "@exp/shared/arrive";
 import { initDropZone } from "@exp/shared/dropzone";
 import { initHeader } from "@exp/shared/header";
+import { reloadOnce } from "@exp/shared/stale";
 import { copy, fill } from "./copy.ts";
 import { canonical } from "./known.ts";
 import type { Group, Level, Result } from "./model.ts";
@@ -198,9 +199,15 @@ function read(file: File, skipped: File[]) {
       problem([copy.unreadable]);
     }
   });
-  mine.addEventListener("error", () => {
+  mine.addEventListener("error", (event) => {
     mine.terminate();
-    problem([copy.unreadable]);
+    if (worker === mine) worker = null;
+    // An error from the reader's code comes with its message; a reader
+    // that never started gives a bare event: its file is most likely gone,
+    // replaced by a newer version of the page since this one opened, so
+    // the page reloads once for the current files (shared/stale.ts).
+    if (event instanceof ErrorEvent) problem([copy.unreadable]);
+    else if (!reloadOnce()) problem([copy.wrong]);
   });
   mine.postMessage(file);
 }

@@ -12,13 +12,15 @@ export const missingModule = (error: unknown): boolean =>
   MISSING.test(String(error));
 
 /** Reloads the page for a missing module file; true when it does. */
-export function reloadIfGone(error: unknown): boolean {
+export const reloadIfGone = (error: unknown): boolean =>
+  missingModule(error) && reloadOnce();
+
+/** Reloads the page for its current files, if it hasn't this session and
+ * isn't offline; true when it does. For a file known to be gone that
+ * gives no error to read (a worker's script). */
+export function reloadOnce(): boolean {
   try {
-    if (
-      missingModule(error) &&
-      navigator.onLine &&
-      !sessionStorage.getItem("stale-reload")
-    ) {
+    if (navigator.onLine && !sessionStorage.getItem("stale-reload")) {
       sessionStorage.setItem("stale-reload", "1");
       location.reload();
       return true;

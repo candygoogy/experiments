@@ -382,6 +382,31 @@ test("not a log", async ({ page }) => {
   await expect(page.locator(".answer .problem")).toHaveText(copy.notALog);
 });
 
+test("a reader that doesn't start: the page reloads once for the current one, then says so, and the next drop tries again", async ({
+  page,
+}) => {
+  let fail = true;
+  await page.route("**/assets/worker-*.js", (route) =>
+    fail ? route.fulfill({ status: 404 }) : route.continue(),
+  );
+  await page.goto(BASE);
+  // The first failure reloads the page.
+  await Promise.all([
+    page.waitForEvent("load"),
+    page.setInputFiles(".drop input", fixture("not-a-log.txt")),
+  ]);
+  expect(
+    await page.evaluate(() => sessionStorage.getItem("stale-reload")),
+  ).toBe("1");
+  // After that, it's said, without blaming the file.
+  await page.setInputFiles(".drop input", fixture("not-a-log.txt"));
+  await expect(page.locator(".answer .problem")).toHaveText(copy.wrong);
+  // Once the file is there again, the next drop reads.
+  fail = false;
+  await page.setInputFiles(".drop input", fixture("not-a-log.txt"));
+  await expect(page.locator(".answer .problem")).toHaveText(copy.notALog);
+});
+
 test(
   "a 50 MB log: progress, a verdict, and the page never stalls",
   { tag: "@perf" },

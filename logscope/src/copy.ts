@@ -132,6 +132,9 @@ export const copy = {
   notALog:
     "This doesn’t look like a log this page reads: Event Viewer’s .evtx, CSV, text or XML, syslog, or a web server’s access or error log.",
   unreadable: "This file couldn’t be read.",
+  // The reader didn't start: the network, or a newer version of the page
+  // since this one opened (it reloads once for that first).
+  wrong: "Something went wrong while reading. Try again.",
   empty: "This log has no events.",
 
   // Web: what a status says, and paths bots look for.
