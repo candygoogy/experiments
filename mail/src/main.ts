@@ -7,6 +7,7 @@ import "@exp/shared/work.css";
 import "./mail.css";
 import { arrive } from "@exp/shared/arrive";
 import { initHeader } from "@exp/shared/header";
+import { missingModule } from "@exp/shared/stale";
 import { COPY } from "./copy";
 import { normalizeDomain, reservedName } from "./normalize";
 
@@ -101,11 +102,15 @@ form.addEventListener("submit", (event) => {
       live.textContent = COPY.ready(domain, result.verdict);
     })
     // The check's code didn't load, or something else broke: say so
-    // calmly. The button stays as it was, ready for another try.
-    .catch(() => {
+    // calmly. The button stays as it was, ready for another try. A missing
+    // file means a newer version of the page took its place
+    // (shared/stale.ts): only a reload helps, and the page says so rather
+    // than reloading itself.
+    .catch((error: unknown) => {
       if (mine !== run) return;
-      later(COPY.wrong);
-      live.textContent = COPY.wrong;
+      const text = missingModule(error) ? COPY.changed : COPY.wrong;
+      later(text);
+      live.textContent = text;
       stale();
     });
 });

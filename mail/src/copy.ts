@@ -38,6 +38,11 @@ export const COPY = {
   missing: (domain: string) => `${domain} doesn’t exist in DNS.`,
   // Anything else that goes wrong (the page's code didn't load, say).
   wrong: "Something went wrong while checking. Try again.",
+  // The check's code is gone: a newer version of the page replaced it
+  // since this one opened. The page doesn't reload itself; nothing typed
+  // here would survive it.
+  changed:
+    "This page has changed since it opened. Reload it, then check the domain again.",
   // Read out once a domain is checked.
   ready: (domain: string, verdict: string) => `${domain}: ${verdict}`,
   // Over the last answer, dimmed, once a newer check fails.

@@ -463,6 +463,33 @@ test("the check's code fails to load: one calm line, and the button works again"
   await page.route("**/assets/check-*.js", (route) =>
     route.abort("internetdisconnected"),
   );
+  let loads = 0;
+  page.on("load", () => loads++);
+  await ask(page, "shop.example.net");
+  await expect(page.locator("#problem")).toHaveText(
+    "This page has changed since it opened. Reload it, then check the domain again.",
+  );
+  await expect(page.locator(".live")).toHaveText(
+    "This page has changed since it opened. Reload it, then check the domain again.",
+  );
+  expect(loads).toBe(0);
+  const check = page.getByRole("button", { name: "Check" });
+  await expect(check).toBeEnabled();
+  // Once the code can load, the same button checks the domain.
+  await page.unroute("**/assets/check-*.js");
+  await check.click();
+  await expect(page.locator(".pane.yours .verdict")).toBeVisible();
+});
+
+test("the check's code loads but breaks: one calm line", async ({ page }) => {
+  await fakeDns(page, SHOP);
+  await page.route("**/assets/check-*.js", (route) =>
+    route.fulfill({
+      contentType: "text/javascript",
+      body: 'throw new Error("broke");',
+    }),
+  );
+  await page.goto(BASE);
   await ask(page, "shop.example.net");
   await expect(page.locator("#problem")).toHaveText(
     "Something went wrong while checking. Try again.",
@@ -470,10 +497,4 @@ test("the check's code fails to load: one calm line, and the button works again"
   await expect(page.locator(".live")).toHaveText(
     "Something went wrong while checking. Try again.",
   );
-  const check = page.getByRole("button", { name: "Check" });
-  await expect(check).toBeEnabled();
-  // Once the code can load, the same button checks the domain.
-  await page.unroute("**/assets/check-*.js");
-  await check.click();
-  await expect(page.locator(".pane.yours .verdict")).toBeVisible();
 });
