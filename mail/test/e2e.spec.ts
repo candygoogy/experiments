@@ -438,6 +438,26 @@ test("the check's code is gone: it says to reload, never reloads itself, and the
   await expect(page.locator(".pane.yours .verdict")).toBeVisible();
 });
 
+test("offline, the check's code can't load: try again, never reload", async ({
+  page,
+  context,
+}) => {
+  await fakeDns(page, SHOP);
+  await page.goto(BASE);
+  await context.setOffline(true);
+  await ask(page, "shop.example.net");
+  await expect(page.locator("#problem")).toHaveText(
+    "Something went wrong while checking. Try again.",
+  );
+  await expect(page.locator(".live")).toHaveText(
+    "Something went wrong while checking. Try again.",
+  );
+  // Back online, the same button checks the domain.
+  await context.setOffline(false);
+  await page.getByRole("button", { name: "Check" }).click();
+  await expect(page.locator(".pane.yours .verdict")).toBeVisible();
+});
+
 test("the check's code loads but breaks: one calm line", async ({ page }) => {
   await fakeDns(page, SHOP);
   await page.route("**/assets/check-*.js", (route) =>

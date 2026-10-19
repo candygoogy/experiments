@@ -103,12 +103,14 @@ form.addEventListener("submit", (event) => {
     })
     // The check's code didn't load, or something else broke: say so
     // calmly. The button stays as it was, ready for another try. A missing
-    // file means a newer version of the page took its place
+    // file, while online, means a newer version of the page took its place
     // (shared/stale.ts): only a reload helps, and the page says so rather
-    // than reloading itself.
+    // than reloading itself. Offline, the same error means the network
+    // dropped, and a reload would lose the page: trying again is the way.
     .catch((error: unknown) => {
       if (mine !== run) return;
-      const text = missingModule(error) ? COPY.changed : COPY.wrong;
+      const text =
+        missingModule(error) && navigator.onLine ? COPY.changed : COPY.wrong;
       later(text);
       live.textContent = text;
       stale();
