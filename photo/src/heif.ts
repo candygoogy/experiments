@@ -17,7 +17,7 @@
 // a picture. Any other helper (a depth map, Apple's portrait and
 // segmentation mattes) is left out, and so is a picture item nothing
 // leads to: metadata to a clean copy (strip/heic.ts).
-import { startsWith } from "@exp/shared/bytes";
+import { ascii, startsWith } from "@exp/shared/bytes";
 import { gainMapPacket } from "./gain-map.ts";
 //
 // Every read stays inside its own box, and every count is checked against
@@ -59,9 +59,6 @@ export interface Box {
   body: number;
   end: number;
 }
-
-const ascii = (b: Uint8Array, from: number, to: number) =>
-  String.fromCharCode(...b.subarray(from, to));
 
 export class Reader {
   readonly view: DataView;

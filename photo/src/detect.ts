@@ -1,10 +1,9 @@
 // What a file is, from its first bytes. The name and the type the browser
 // reports are never trusted: a PNG renamed to .jpg is still a PNG.
 
-export type PhotoType = "jpeg" | "png" | "webp" | "heic";
+import { ascii } from "@exp/shared/bytes";
 
-const ascii = (b: Uint8Array, from: number, to: number) =>
-  String.fromCharCode(...b.subarray(from, to));
+export type PhotoType = "jpeg" | "png" | "webp" | "heic";
 
 const PNG = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 // A file whose main brand is AVIF's isn't HEIC. Otherwise one of HEVC's

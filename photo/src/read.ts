@@ -6,7 +6,7 @@
 // has any of these, then reads each block on its own, so "Show everything"
 // can say where each value came from. No block has to fit in one JPEG
 // segment (64 KB): a large one is read in full.
-import { startsWith } from "@exp/shared/bytes";
+import { ascii, startsWith } from "@exp/shared/bytes";
 import type { parse } from "exifr";
 import type { PhotoType } from "./detect.ts";
 import { exifTiff, heifMeta, itemBytes } from "./heif.ts";
@@ -72,15 +72,8 @@ interface Blocks {
 
 const empty = (): Blocks => ({ tiff: [], xmp: [], irb: [], text: [] });
 
-/** Bytes as Latin-1 text, a piece at a time: one call with every byte as
- * an argument overflows the stack past about 120,000 of them. */
-function latin1(b: Uint8Array): string {
-  let out = "";
-  for (let at = 0; at < b.length; at += 8192) {
-    out += String.fromCharCode(...b.subarray(at, at + 8192));
-  }
-  return out;
-}
+/** Bytes as Latin-1 text. */
+const latin1 = (b: Uint8Array) => ascii(b);
 const utf8 = (b: Uint8Array) => new TextDecoder().decode(b);
 const EXIF = "Exif\0\0";
 const XMP = "http://ns.adobe.com/xap/1.0/\0";

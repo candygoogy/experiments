@@ -32,7 +32,7 @@
 // breaks one. A file whose details are stored inside another item, or
 // that's a sequence (moov), isn't cleaned at all; nor is one that names no
 // main picture, or names one item twice.
-import { startsWith } from "@exp/shared/bytes";
+import { ascii, startsWith } from "@exp/shared/bytes";
 import {
   CantClean,
   exifTiff,
@@ -159,9 +159,6 @@ const XMP_TYPE = "application/rdf+xml";
 // A colour property's own fields, after its type: primaries, transfer,
 // matrix (2 bytes each) and full range (1).
 const NCLX_FIELDS = 7;
-
-const ascii = (b: Uint8Array, from: number, to: number) =>
-  String.fromCharCode(...b.subarray(from, to));
 
 /** A box becomes an empty "free" box of the same size. */
 function free(out: Uint8Array, box: Box) {

@@ -8,3 +8,15 @@ export const startsWith = (b: Uint8Array, at: number, text: string) => {
   }
   return true;
 };
+
+/** The bytes from `from` to `to`, a character a byte (Latin-1), a piece
+ * at a time: one call with every byte as an argument overflows the stack
+ * past about 120,000 of them. */
+export function ascii(b: Uint8Array, from = 0, to = b.length): string {
+  let out = "";
+  const end = Math.min(to, b.length);
+  for (let at = from; at < end; at += 8192) {
+    out += String.fromCharCode(...b.subarray(at, Math.min(end, at + 8192)));
+  }
+  return out;
+}
