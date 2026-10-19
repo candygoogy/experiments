@@ -2,7 +2,7 @@
 // starts it, and stops it when a photo takes too long). Gets one photo's
 // blocks at a time and answers with what exifr made of each.
 import { parse, sidecar } from "exifr";
-import { readJobs, type Answer, type Job } from "./exif.ts";
+import { READY, readJobs, type Answer, type Job } from "./exif.ts";
 
 /** exifr's errors as text, so the answer can go back to the page. */
 function plain(answer: Answer): Answer {
@@ -18,3 +18,6 @@ addEventListener("message", (event: MessageEvent<Job[]>) => {
     // An answer that can't be sent: none of the blocks could be read.
     .catch(() => postMessage(jobs.map(() => null)));
 });
+
+// Here, and exifr with it: the page's clock for the blocks starts now.
+postMessage(READY);

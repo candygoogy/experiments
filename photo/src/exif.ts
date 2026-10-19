@@ -18,6 +18,9 @@ export interface Job {
  * it gave up on it. */
 export type Answer = Meta | null;
 
+/** What the worker says once it has started, exifr with it. */
+export const READY = "ready";
+
 /** exifr's readers. */
 export interface Exifr {
   parse: typeof parse;

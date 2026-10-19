@@ -7,8 +7,9 @@
 // can say where each value came from. No block has to fit in one JPEG
 // segment (64 KB): a large one is read in full.
 import { ascii, startsWith } from "@exp/shared/bytes";
+import { reloadOnce, settle } from "@exp/shared/stale";
 import type { PhotoType } from "./detect.ts";
-import { readJobs, type Answer, type Job, type Meta } from "./exif.ts";
+import { READY, readJobs, type Answer, type Job, type Meta } from "./exif.ts";
 import { exifTiff, heifMeta, itemBytes } from "./heif.ts";
 import { join, segments } from "./strip/jpeg.ts";
 import { chunks as pngChunks } from "./strip/png.ts";
@@ -45,10 +46,12 @@ const direct: Runner = async (jobs) => readJobs(await exifr(), jobs);
 
 /** How long exifr may take over one photo's blocks. */
 const LIMIT = 10_000;
+/** How long a new worker may take to arrive and start, on a slow line. */
+const START_LIMIT = 30_000;
 
 /** The parts of a Worker the runner below uses. */
 export interface ExifWorker {
-  onmessage: ((event: MessageEvent<Answer[]>) => void) | null;
+  onmessage: ((event: MessageEvent<Answer[] | typeof READY>) => void) | null;
   onmessageerror: ((event: MessageEvent) => void) | null;
   onerror: ((event: ErrorEvent) => void) | null;
   postMessage(jobs: Job[], transfer: Transferable[]): void;
@@ -58,15 +61,22 @@ export interface ExifWorker {
 /** exifr in a worker from `start`, one photo at a time, the same worker
  * for each. A worker still busy after `limit` ms is stopped, and that
  * photo's blocks count as unreadable, as when exifr gives up on them; the
- * next photo starts a new one. A worker that never started (its file gone,
- * replaced by a newer version of the page) fails the photo, as exifr not
- * loading does. */
-export function exifWorker(start: () => ExifWorker, limit = LIMIT): Runner {
+ * next photo starts a new one. The clock starts once the worker is ready:
+ * one that isn't within `startLimit` ms is stopped the same way. One whose
+ * file is gone, replaced by a newer version of the page, reloads the page
+ * once for the current files (shared/stale.ts), or fails the photo. */
+export function exifWorker(
+  start: () => ExifWorker,
+  limit = LIMIT,
+  startLimit = START_LIMIT,
+): Runner {
   let worker: ExifWorker | null = null;
   let queue: Promise<unknown> = Promise.resolve();
   const ask = (jobs: Job[]) =>
     new Promise<Answer[]>((resolve, reject) => {
+      const fresh = !worker;
       const mine = (worker ??= start());
+      let timer: ReturnType<typeof setTimeout> | undefined;
       const done = (stop: boolean) => {
         clearTimeout(timer);
         mine.onmessage = mine.onmessageerror = mine.onerror = null;
@@ -75,13 +85,36 @@ export function exifWorker(start: () => ExifWorker, limit = LIMIT): Runner {
         if (worker === mine) worker = null;
       };
       const none = () => jobs.map(() => null);
-      const timer = setTimeout(() => {
-        done(true);
-        resolve(none());
-      }, limit);
+      const time = (ms: number) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          done(true);
+          resolve(none());
+        }, ms);
+      };
+      // Each block copied out of the photo, whose bytes the clean copy
+      // still needs, and the copy handed over.
+      const send = () => {
+        const sent = jobs.map(({ kind, bytes }) => ({
+          kind,
+          bytes: bytes.slice(),
+        }));
+        time(limit);
+        mine.postMessage(
+          sent,
+          sent.map(({ bytes }) => bytes.buffer),
+        );
+      };
       mine.onmessage = (event) => {
-        done(false);
-        resolve(event.data);
+        if (event.data !== READY) {
+          done(false);
+          resolve(event.data);
+          return;
+        }
+        // A worker that started has its file: a later deploy's may
+        // reload the page again.
+        settle();
+        send();
       };
       mine.onmessageerror = () => {
         done(true);
@@ -90,20 +123,16 @@ export function exifWorker(start: () => ExifWorker, limit = LIMIT): Runner {
       mine.onerror = (event) => {
         done(true);
         // An error from the worker's code comes with its message; a
-        // worker that never started gives a bare event.
+        // worker that never started gives a bare event: its file is most
+        // likely gone, and the page reloads once for the current files,
+        // leaving this photo to the reload.
         if (event instanceof ErrorEvent) resolve(none());
-        else reject(new Error("The photo's details can't be read."));
+        else if (!reloadOnce()) {
+          reject(new Error("The photo's details can't be read."));
+        }
       };
-      // Each block copied out of the photo, whose bytes the clean copy
-      // still needs, and the copy handed over.
-      const sent = jobs.map(({ kind, bytes }) => ({
-        kind,
-        bytes: bytes.slice(),
-      }));
-      mine.postMessage(
-        sent,
-        sent.map(({ bytes }) => bytes.buffer),
-      );
+      if (fresh) time(startLimit);
+      else send();
     });
   return (jobs) => {
     const answers = queue.then(() => ask(jobs));
