@@ -24,9 +24,7 @@ export async function check(
     if ("missing" in report) return { problem: COPY.missing(domain) };
     return renderReport(document, report);
   } catch (error) {
-    if (error instanceof DnsError || error instanceof TypeError) {
-      return { problem: COPY.noAnswer };
-    }
+    if (error instanceof DnsError) return { problem: COPY.noAnswer };
     throw error;
   }
 }

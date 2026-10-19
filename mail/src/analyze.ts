@@ -116,12 +116,7 @@ export async function analyze(
     let answer = asked.get(key);
     if (!answer) {
       answer = resolve(name, type, signal).catch((error: unknown) => {
-        if (
-          error instanceof DnsError ||
-          error instanceof TypeError ||
-          signal?.aborted
-        )
-          return null;
+        if (error instanceof DnsError || signal?.aborted) return null;
         throw error;
       });
       asked.set(key, answer);

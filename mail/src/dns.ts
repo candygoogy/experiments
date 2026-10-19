@@ -74,12 +74,19 @@ export function doh(
   ): Promise<DnsAnswer> => {
     const url = `${ENDPOINT}?name=${encodeURIComponent(name)}&type=${type}`;
     const timeout = AbortSignal.timeout(timeoutMs);
+    // fetch fails with a TypeError when the network does, and with the
+    // timeout's error once the 5 seconds are up: the resolver didn't
+    // answer. Called off, the abort passes on as it is.
+    const failed = (error: unknown): never => {
+      if (signal?.aborted) throw error;
+      throw new DnsError(String(error));
+    };
     const response = await fetcher(url, {
       headers: { accept: "application/dns-json" },
       signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
-    });
+    }).catch(failed);
     if (!response.ok) throw new DnsError(`HTTP ${response.status}`);
-    const body = (await response.json()) as DohJson;
+    const body = (await response.json().catch(failed)) as DohJson;
     const status = body.Status ?? -1;
     if (status !== 0 && status !== 3) throw new DnsError(`status ${status}`);
     if (body.TC === true) throw new DnsError("truncated");
@@ -107,7 +114,8 @@ export function doh(
           last = error;
         }
       }
-      throw last instanceof DnsError ? last : new DnsError(String(last));
+      // Anything but a DnsError is a fault in this code, not the DNS's.
+      throw last;
     } finally {
       free();
     }

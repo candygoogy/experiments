@@ -174,6 +174,15 @@ describe("a whole domain", () => {
         : stub({}).resolve(name, type);
     await expect(analyze(D, both)).rejects.toBeInstanceOf(DnsError);
   });
+
+  test("a fault in the code isn't taken for the DNS not answering", async () => {
+    const { resolve } = stub({});
+    const faulty: Resolve = (name, type) =>
+      name.startsWith("_dmarc.")
+        ? Promise.reject(new TypeError("x is undefined"))
+        : resolve(name, type);
+    await expect(analyze(D, faulty)).rejects.toBeInstanceOf(TypeError);
+  });
 });
 
 describe("SPF lookups, counted through include and redirect", () => {

@@ -86,6 +86,13 @@ describe("DNS over HTTPS", () => {
     expect(calls).toBe(2);
   });
 
+  test("the network failing (fetch's TypeError) is a DnsError", async () => {
+    const offline = doh(async () => {
+      throw new TypeError("Failed to fetch");
+    });
+    await expect(offline("a.example", "TXT")).rejects.toBeInstanceOf(DnsError);
+  });
+
   test("a question that hangs times out", async () => {
     const hang = doh(
       (_input, init) =>
