@@ -184,11 +184,30 @@ function readProduct(table: HTMLTableElement | undefined): string | null {
 
 /** The report without its styles and scripts. Only its tables are read,
  * and the browser holds the parsed copy to the page's own CSP, logging an
- * error for every inline style it declines there. */
-const withoutStyles = (html: string) =>
-  html
-    .replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, "")
-    .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "");
+ * error for every inline style it declines there. Read in one pass, so a
+ * file of unclosed tags can't hold up the page: a tag that's never closed
+ * takes the rest of the file with it, as it would in the browser. */
+export function withoutStyles(html: string): string {
+  const open = /<(style|script)\b/gi;
+  const close = { style: /<\/style\s*>/gi, script: /<\/script\s*>/gi };
+  let kept = "";
+  let from = 0;
+  for (let tag = open.exec(html); tag; tag = open.exec(html)) {
+    kept += html.slice(from, tag.index);
+    const end = tag[1]?.toLowerCase() === "style" ? close.style : close.script;
+    const opened = html.indexOf(">", open.lastIndex);
+    end.lastIndex = opened + 1;
+    if (opened === -1 || !end.exec(html)) {
+      from = html.length;
+      break;
+    }
+    from = open.lastIndex = end.lastIndex;
+  }
+  return (kept + html.slice(from)).replace(
+    /\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi,
+    "",
+  );
+}
 
 export function parseReport(source: string): ParseResult {
   // trimStart() also drops a byte order mark.

@@ -8,6 +8,7 @@ import {
   parseMwh,
   parseReport,
   tooBig,
+  withoutStyles,
 } from "../src/parse";
 
 const fixture = (name: string) =>
@@ -188,5 +189,38 @@ describe("tooBig", () => {
     expect(tooBig(MAX_BYTES)).toBe(false);
     expect(tooBig(MAX_BYTES + 1)).toBe(true);
     expect(MAX_BYTES).toBe(5 * 1024 * 1024);
+  });
+});
+
+describe("withoutStyles", () => {
+  // As it was written before it was read in one pass.
+  const before = (html: string) =>
+    html
+      .replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, "")
+      .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "");
+
+  test("leaves a report as it always did", () => {
+    const en = fixture("en.html");
+    const mixed = en.replace(
+      "<table",
+      `<SCRIPT type="module">a("</style>")</Script >
+       <style media="print">td { color: red }</STYLE>
+       <scripts></scripts><p style='x'>kept</p><table`,
+    );
+    for (const html of [en, fixture("it.html"), mixed]) {
+      expect(withoutStyles(html)).toBe(before(html));
+    }
+    expect(withoutStyles(mixed)).not.toMatch(/<script\b|<style\b|color: red/i);
+  });
+
+  test("a file of unclosed tags is read at once", () => {
+    for (const html of [
+      "<p>kept</p>" + "<script>x".repeat(20_000),
+      "<p>kept</p>" + "<style ".repeat(20_000),
+    ]) {
+      const started = performance.now();
+      expect(withoutStyles(html)).toBe("<p>kept</p>");
+      expect(performance.now() - started).toBeLessThan(200);
+    }
   });
 });
