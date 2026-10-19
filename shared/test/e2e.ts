@@ -431,6 +431,64 @@ export async function checkBasics(
     await context.close();
   }
 
+  // (l) Phones: the footer's privacy line on top, then "Source" and "MIT"
+  // together on one line under it, in the markup's order, so Tab goes the
+  // way the page reads. Source's target stays clear of the privacy text,
+  // and of the claim's target above it. A target is the link's text box,
+  // or 44px centred on it where the text is shorter, so a claim wrapped
+  // onto three lines is measured from its real top and bottom.
+  for (const width of [320, 390]) {
+    const context = await browser.newContext({
+      viewport: { width, height: 844 },
+    });
+    const p = await context.newPage();
+    await p.goto(base);
+    const foot = p.locator("footer.foot");
+    const box = async (selector: string) => {
+      const b = await foot.locator(selector).boundingBox();
+      if (!b) throw new Error(`${selector} has no box`);
+      return b;
+    };
+    const target = (b: { y: number; height: number }) => {
+      const middle = b.y + b.height / 2;
+      return {
+        top: Math.min(b.y, middle - 22),
+        bottom: Math.max(b.y + b.height, middle + 22),
+      };
+    };
+    const at = `footer ${width}`;
+    expect(
+      await foot
+        .locator(".inner > *")
+        .evaluateAll((all) => all.map((el) => el.localName)),
+      `${at}: privacy, Source, MIT in the markup`,
+    ).toEqual(["p", "a", "span"]);
+    const privacy = await box(".privacy");
+    const claim = await box(".privacy a");
+    const link = await box(".inner > a");
+    const license = await box(".inner > span");
+    expect(
+      Math.abs(link.y + link.height / 2 - (license.y + license.height / 2)),
+      `${at}: Source and MIT on one line`,
+    ).toBeLessThanOrEqual(2);
+    expect(license.x, `${at}: MIT after Source`).toBeGreaterThan(
+      link.x + link.width,
+    );
+    expect(
+      privacy.y + privacy.height,
+      `${at}: the privacy line above both`,
+    ).toBeLessThanOrEqual(Math.min(link.y, license.y));
+    expect(
+      target(link).top,
+      `${at}: Source's target clear of the privacy text`,
+    ).toBeGreaterThanOrEqual(privacy.y + privacy.height);
+    expect(
+      target(claim).bottom,
+      `${at}: the claim's target clear of Source's`,
+    ).toBeLessThanOrEqual(target(link).top);
+    await context.close();
+  }
+
   // (i) Without JavaScript: the heading, and a plain word that the tool
   // needs it.
   {

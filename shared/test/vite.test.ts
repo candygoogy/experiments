@@ -61,22 +61,28 @@ describe("shellHtml", () => {
     );
   });
 
-  test("footer has the default privacy line", () => {
+  // Only the claim links to how to check it, as on the site.
+  const proof = '<a href="https://candygoogy.dev/colophon#privacy">';
+
+  test("footer has the default privacy line, its claim linked", () => {
     expect(shellHtml({ ...min, source }).footer).toContain(
-      "Runs in your browser. Nothing you drop here is uploaded.",
+      `<p class="privacy">Runs in your browser. ${proof}Nothing you drop here is uploaded.</a></p>`,
     );
   });
 
-  test("footer has the experiment's own privacy line when given", () => {
+  test("footer has the experiment's own privacy line when given, its claim linked", () => {
     const line = "Runs in your browser. Nothing you type here leaves it.";
     const footer = shellHtml({ ...min, source, privacy: line }).footer;
-    expect(footer).toContain(line);
+    expect(footer).toContain(
+      `<p class="privacy">Runs in your browser. ${proof}Nothing you type here leaves it.</a></p>`,
+    );
     expect(footer).not.toContain("Nothing you drop here");
   });
 
-  test("footer's privacy line links to how to check it", () => {
-    expect(shellHtml({ ...min, source }).footer).toContain(
-      '<p class="privacy"><a href="https://candygoogy.dev/colophon#privacy">Runs in your browser.',
+  test("a privacy line of one sentence is linked whole, escaped", () => {
+    const line = "Nothing <here> & nothing sent.";
+    expect(shellHtml({ ...min, source, privacy: line }).footer).toContain(
+      `<p class="privacy">${proof}Nothing &lt;here&gt; &amp; nothing sent.</a></p>`,
     );
   });
 });
@@ -143,8 +149,6 @@ describe("defineExperiment build", () => {
     expect(html).not.toContain("<!-- shell:");
     expect(html).toContain("<title>Fixture – candygoogy</title>");
     expect(html).toContain('class="top');
-    expect(html).toContain(
-      "Runs in your browser. Nothing you drop here is uploaded.",
-    );
+    expect(html).toContain('<p class="privacy">Runs in your browser. <a ');
   });
 });

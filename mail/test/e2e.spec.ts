@@ -412,50 +412,7 @@ test("a DMARC lookup that fails: couldn't check, never can be faked", async ({
   expect(errors).toEqual([]);
 });
 
-// On a phone the footer keeps "Source" and "MIT" together on the first
-// line, with the privacy line under them. The link's 44px target reaches
-// 22px from its middle, so it needs about 10px clear below its line to stay
-// off the privacy text. The privacy line is a link too (to how to check
-// it), and the two links' targets never overlap.
-test("on a phone the footer puts Source and MIT on one line, the privacy line under them", async ({
-  browser,
-}) => {
-  const context = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-  });
-  const page = await context.newPage();
-  await page.goto(BASE);
-  const foot = page.locator("footer.foot");
-  const box = async (selector: string) => {
-    const b = await foot.locator(selector).boundingBox();
-    if (!b) throw new Error(`${selector} has no box`);
-    return b;
-  };
-  const link = await box(".inner > a");
-  const privacy = await box(".privacy");
-  const license = await box("span");
-  expect(
-    Math.abs(link.y + link.height / 2 - (license.y + license.height / 2)),
-    "Source and MIT on one line",
-  ).toBeLessThanOrEqual(2);
-  expect(license.x, "MIT after Source").toBeGreaterThan(link.x + link.width);
-  expect(
-    Math.max(link.y + link.height, license.y + license.height),
-    "both above the privacy line",
-  ).toBeLessThan(privacy.y);
-  expect(
-    link.y + link.height + 10,
-    "the link's target clear of the privacy text",
-  ).toBeLessThanOrEqual(privacy.y);
-  const proof = await box(".privacy a");
-  expect(
-    link.y + link.height / 2 + 22,
-    "Source's target clear of the privacy link's",
-  ).toBeLessThanOrEqual(proof.y + proof.height / 2 - 22);
-  await context.close();
-});
-
-test("the check's code fails to load: one calm line, and the button works again", async ({
+test("the check's code is gone: it says to reload, never reloads itself, and the button works again", async ({
   page,
 }) => {
   await fakeDns(page, SHOP);

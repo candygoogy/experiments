@@ -678,17 +678,16 @@ noscript p {
   translate: -50% -50%;
 }
 
-/* Phones: the link and the license together on the first line, then the
-   privacy line on its own full row under them. Only the order changes, so
-   the markup reads the same as on a desktop. The 24px row gap keeps the
-   link's 44px target about 12px clear of the privacy text. */
+/* Phones: the privacy line on its own full row, then the link and the
+   license together under it. That's the markup's order, so Tab goes the
+   way the page reads. The 24px row gap keeps the link's 44px target clear
+   of the privacy text and of its claim's target. */
 @media (max-width: 32.5rem) {
   .foot .inner {
     row-gap: var(--sp-5);
   }
 
   .foot .privacy {
-    order: 1;
     flex: 0 0 100%;
   }
 }
