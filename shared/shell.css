@@ -681,10 +681,12 @@ noscript p {
 /* Phones: the privacy line on its own full row, then the link and the
    license together under it. That's the markup's order, so Tab goes the
    way the page reads. The 24px row gap keeps the link's 44px target clear
-   of the privacy text and of its claim's target. */
+   of the privacy text and of its claim's target. The band keeps
+   24px above and below, not 32px, as the site's footer does on a phone. */
 @media (max-width: 32.5rem) {
   .foot .inner {
     row-gap: var(--sp-5);
+    padding-block: var(--sp-5);
   }
 
   .foot .privacy {
