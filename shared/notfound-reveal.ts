@@ -10,7 +10,16 @@
 //   .rv-mask     its child rises out of the clip, settling from a slight
 //                skew
 //   data-i       order within a group (when the whole group arrives at once)
-//   data-d       extra delay for a whole group, in ms (as --d, notfound.css)
+//   data-d       extra delay for a whole group, in ms (as --d, notfound.css),
+//                counted from the earliest group that arrives with it
+//
+// Each element arrives as its own top crosses its line (see line, below).
+// A group delay counts from the earliest one in the batch, so blocks
+// arriving together keep their order and a lone late arrival starts at
+// once. Once scrolling has stopped for 500ms, whatever is still waiting in
+// the window arrives anyway, and whatever a fast scroll carried past,
+// above the window, is marked as arrived unplayed (it never rises from
+// below on the way back up).
 //
 // Content never depends on this script. Hidden start states apply only
 // under html.motion-ready, which is set after everything already on screen
@@ -23,6 +32,9 @@ import { EASE, inView, phone, RISE, STAGGER_MS } from "./notfound-motion.ts";
 export default function initReveal() {
   const root = document.documentElement;
   const BLOCKS = ".rv, .rv-mask";
+  // A block still at its start state, risen RISE() below where it rests
+  // (notfound.css; a mask's own box never moves, only its child).
+  const LOW = ".nf .rv:not(.is-in)";
   // Headings and large text come into focus as they rise; small text, and
   // many elements at once, never blur (it costs too much in Safari).
   const SOFT = "h1, h2, h3, .nf-lede";
@@ -63,6 +75,20 @@ export default function initReveal() {
 
   const order = (a: Element, b: Element) =>
     a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+
+  // Where an element's box will rest: the observer sees a waiting block,
+  // and everything inside one, lower by the rise still ahead of it.
+  const resting = (el: Element) => {
+    const r = el.getBoundingClientRect();
+    let lift = 0;
+    if (root.classList.contains("motion-ready")) {
+      const step = RISE();
+      for (let a: Element | null = el; a; a = a.parentElement) {
+        if (a.matches(LOW)) lift += step;
+      }
+    }
+    return { top: r.top - lift, bottom: r.bottom - lift };
+  };
 
   // Already shown by something else: nothing to play.
   const settled = (el: Element) => el.classList.contains("is-in");
@@ -107,17 +133,20 @@ export default function initReveal() {
     el.classList.add("is-in");
   }
 
-  // Plays a batch of blocks that arrived together. Siblings rise 80ms
-  // apart: by their --i when the whole group arrived at once, otherwise in
-  // the order they arrived (a group split across two arrivals doesn't wait
-  // for the half that's already on screen).
-  function blocks(batch: HTMLElement[]) {
+  // Plays a batch of blocks that arrived together, each group from
+  // start(el). Siblings rise 80ms apart: by their --i when the whole group
+  // arrived at once, otherwise in the order they arrived (a group split
+  // across two arrivals doesn't wait for the half that's already on
+  // screen). The steps count from the batch's first, so a block arriving
+  // alone never waits for a turn.
+  function blocks(batch: HTMLElement[], start: (el: HTMLElement) => number) {
     const groups = new Map<Element | null, HTMLElement[]>();
     for (const el of batch) {
       const group = groups.get(el.parentElement) ?? [];
       group.push(el);
       groups.set(el.parentElement, group);
     }
+    const steps = new Map<HTMLElement, number>();
     for (const [parent, group] of groups) {
       const siblings = parent
         ? [...parent.children].filter((c) => c.matches(BLOCKS))
@@ -126,9 +155,12 @@ export default function initReveal() {
         group.length === siblings.length &&
         group.every((el) => el.dataset["i"] !== undefined);
       group.forEach((el, n) => {
-        const i = indexed ? Number(el.dataset["i"]) || 0 : n;
-        reveal(el, groupDelay(el) + i * STAGGER_MS);
+        steps.set(el, indexed ? Number(el.dataset["i"]) || 0 : n);
       });
+    }
+    const first = Math.min(...steps.values());
+    for (const [el, i] of steps) {
+      reveal(el, start(el) + (i - first) * STAGGER_MS);
     }
   }
 
@@ -138,10 +170,15 @@ export default function initReveal() {
     el.classList.add("is-in");
   }
 
-  // Everything that arrived in one go, in reading order.
+  // Everything that arrived in one go, in reading order, its group delays
+  // counted from the earliest.
   function play(batch: Element[]) {
-    const sorted = [...new Set(batch)].sort(order) as HTMLElement[];
-    blocks(sorted.filter((el) => !settled(el)));
+    const sorted = [...new Set(batch)]
+      .filter((el) => !settled(el))
+      .sort(order) as HTMLElement[];
+    const delays = new Map(sorted.map((el) => [el, groupDelay(el)]));
+    const first = Math.min(...delays.values());
+    blocks(sorted, (el) => (delays.get(el) ?? first) - first);
   }
 
   const motion = !calm.matches;
@@ -185,7 +222,84 @@ export default function initReveal() {
       { margin },
     );
     watching.set(el, stop);
+    listen();
   };
+
+  const unwatch = (el: Element) => {
+    watching.get(el)?.();
+    watching.delete(el);
+  };
+
+  // A resize (a phone or tablet turned, a window resized) moves things with
+  // no scroll, and the observer misses some of them. So on a resize,
+  // whatever a load at the new size would have shown arrives now, measured
+  // as on load; the rest are watched again if the lines changed. Once a
+  // frame at most, and only until everything has arrived.
+  let narrow = phone();
+  let sizing = 0;
+  function resized() {
+    if (!watching.size) return quiet();
+    if (sizing) return;
+    sizing = requestAnimationFrame(() => {
+      sizing = 0;
+      const turned = phone() !== narrow;
+      narrow = phone();
+      for (const el of [...watching.keys()]) {
+        const below = el.getBoundingClientRect().top >= line(el) * innerHeight;
+        if (below && !turned) continue;
+        unwatch(el);
+        if (below) watch(el);
+        else arrive(el);
+      }
+      if (!watching.size) quiet();
+    });
+  }
+
+  // At rest (no scroll for 500ms, and once 500ms after the start),
+  // whatever is still waiting and would rest in the window arrives: the
+  // last few pixels of a page, a block left just under its line, a
+  // find-in-page jump. Whatever a fast scroll or a scrollbar drag carried
+  // past, above the window, is marked as arrived unplayed. A scroll only
+  // notes the time; the check runs in the timer.
+  let moved = performance.now();
+  let still = 0;
+  const settle = () => {
+    const wait = moved + 500 - performance.now();
+    if (wait > 0) {
+      still = window.setTimeout(settle, wait);
+      return;
+    }
+    still = 0;
+    for (const el of [...watching.keys()]) {
+      const box = resting(el);
+      if (box.bottom <= 0) {
+        unwatch(el);
+        arrived(el);
+      } else if (box.top < innerHeight - 8) {
+        unwatch(el);
+        arrive(el);
+      }
+    }
+    if (!watching.size) quiet();
+  };
+  function scrolled() {
+    moved = performance.now();
+    if (!still) still = window.setTimeout(settle, 500);
+  }
+
+  // Both listeners stay only while something is waiting.
+  let listening = false;
+  function listen() {
+    if (listening) return;
+    listening = true;
+    addEventListener("resize", resized, { passive: true });
+    addEventListener("scroll", scrolled, { passive: true });
+  }
+  function quiet() {
+    listening = false;
+    removeEventListener("resize", resized);
+    removeEventListener("scroll", scrolled);
+  }
 
   const all = [...document.querySelectorAll<HTMLElement>(BLOCKS)];
 
@@ -200,36 +314,7 @@ export default function initReveal() {
     else arrived(el);
   }
   if (motion) root.classList.add("motion-ready");
-
-  // A resize (a phone or tablet turned, a window resized) moves things with
-  // no scroll, and the observer misses some of them. So on a resize,
-  // whatever a load at the new size would have shown arrives now, measured
-  // as on load; the rest are watched again if the lines changed. Once a
-  // frame at most, and only until everything has arrived.
-  let narrow = phone();
-  let sizing = 0;
-  const resized = () => {
-    if (!watching.size) {
-      removeEventListener("resize", resized);
-      return;
-    }
-    if (sizing) return;
-    sizing = requestAnimationFrame(() => {
-      sizing = 0;
-      const turned = phone() !== narrow;
-      narrow = phone();
-      for (const [el, stop] of [...watching]) {
-        const below = el.getBoundingClientRect().top >= line(el) * innerHeight;
-        if (below && !turned) continue;
-        stop();
-        watching.delete(el);
-        if (below) watch(el);
-        else arrive(el);
-      }
-      if (!watching.size) removeEventListener("resize", resized);
-    });
-  };
-  if (watching.size) addEventListener("resize", resized, { passive: true });
+  if (watching.size) scrolled();
 
   // At the end of the page (the footer's bottom edge in the window),
   // whatever is in the window and still waiting arrives: on a tall window,
@@ -242,10 +327,9 @@ export default function initReveal() {
     const check = () => {
       frame = 0;
       if (end.getBoundingClientRect().bottom > innerHeight + 1) return;
-      for (const [el, stop] of watching) {
+      for (const el of [...watching.keys()]) {
         if (el.getBoundingClientRect().top >= innerHeight) continue;
-        stop();
-        watching.delete(el);
+        unwatch(el);
         arrive(el);
       }
     };
@@ -272,8 +356,7 @@ export default function initReveal() {
     if (!(e.target instanceof Node)) return;
     for (const el of all) {
       if (!el.contains(e.target)) continue;
-      watching.get(el)?.();
-      watching.delete(el);
+      unwatch(el);
       arrived(el);
       for (const a of moving) {
         const target = (a.effect as KeyframeEffect | null)?.target;
