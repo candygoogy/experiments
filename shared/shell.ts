@@ -219,3 +219,147 @@ export function shellHtml(o: ShellOptions): {
     `</div></footer>`;
   return { head, header, footer };
 }
+
+/** The 404's words, as on candygoogy.dev's 404. */
+export const NOT_FOUND_TITLE = "Page not found";
+export const NOT_FOUND_LEDE =
+  "There’s nothing at this address. It may have moved, or the link has a typo.";
+
+// The route trace's hops, as on the site's 404: drawn once, in hairlines;
+// with JS they're checked in turn (notfound-trace.ts).
+const HOP_ICONS = {
+  laptop:
+    `<rect x="4" y="5" width="16" height="11" rx="1.5" />` +
+    `<path d="M2 19h20" />`,
+  globe:
+    `<circle cx="12" cy="12" r="8.5" />` +
+    `<path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.1 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.1-3.6-8.5s1.2-6.2 3.6-8.5Z" />`,
+  page:
+    `<path d="M6.5 3.5h7.5l4 4v13h-11.5Z" />` +
+    `<path d="M14 3.5v4h4M9.5 13h5M9.5 16.5h3" />`,
+};
+
+// Every state a hop can show, stacked in one cell as wide as the hop's
+// settled word (data-settled), so the settled status sits centred under its
+// icon and nothing moves when it changes (as on the site).
+const HOP_STATES = {
+  // Its dots are separate, so they can appear in turn while the hop is
+  // being checked.
+  checking: `Checking<span class="nf-dots"><span>.</span><span>.</span><span>.</span></span>`,
+  ok: "Working",
+  missing: "Not found",
+  restarting: "Restarting…",
+};
+
+/** dist/404.html, served by Cloudflare for any path with no file: the
+ * shell (the same head script, so the CSP's hash holds), then the site's
+ * 404 (404.astro) in the tool's words, with its route trace. Linked to
+ * the tool's built stylesheets, the 404's own and its script (the
+ * header's, as on a tool page, and the 404's motion: notfound.ts), and
+ * the fonts preloaded, as the build finds them. Without JS it's the
+ * finished state. */
+export function notFoundHtml(
+  o: ShellOptions,
+  assets: { css: string[]; fonts: string[]; script?: string | undefined },
+): string {
+  const parts = shellHtml({
+    ...o,
+    title: NOT_FOUND_TITLE,
+    description: "There’s nothing at this address.",
+  });
+  // The tool's canonical address is its home, not this page.
+  const head = parts.head.replace(/<link rel="canonical"[^>]*>\s*/, "");
+  const fonts = assets.fonts.map(
+    (f) =>
+      `<link rel="preload" href="/${escape(f)}" as="font" type="font/woff2" crossorigin />`,
+  );
+  const css = assets.css.map(
+    (f) => `<link rel="stylesheet" crossorigin href="/${escape(f)}" />`,
+  );
+  const script = assets.script
+    ? [
+        `<script type="module" crossorigin src="/${escape(assets.script)}"></script>`,
+      ]
+    : [];
+  const hops = [
+    { label: "You", ok: true, icon: HOP_ICONS.laptop },
+    // The site, as on candygoogy.dev's 404: the tool is one of its
+    // subdomains, and the address bar and the way back already name it.
+    { label: "candygoogy.dev", ok: true, icon: HOP_ICONS.globe },
+    { label: "This page", ok: false, icon: HOP_ICONS.page },
+  ]
+    .map((hop, i) => {
+      const state = hop.ok ? "ok" : "missing";
+      const states = Object.entries(HOP_STATES)
+        .map(
+          ([key, text]) =>
+            `<span data-is="${key}"${key === state ? " data-settled" : ""}>${text}</span>`,
+        )
+        .join("");
+      return (
+        `<li class="nf-hop" data-hop="${i + 1}"><span class="nf-node">` +
+        `<span class="nf-glyph" aria-hidden="true">` +
+        `<svg viewBox="0 0 24 24" width="28" height="28">${hop.icon}</svg></span>` +
+        `<span class="nf-num" aria-hidden="true">0${i + 1}</span>` +
+        `<span class="nf-label">${hop.label}</span>` +
+        `<span class="visually-hidden">, </span>` +
+        `<span class="nf-status" data-state="${state}">` +
+        `<span class="nf-dot" aria-hidden="true"></span>` +
+        `<span class="nf-states" aria-hidden="true">${states}</span>` +
+        `<span class="visually-hidden" data-sr>${HOP_STATES[state]}</span>` +
+        `</span>` +
+        // The path under "This page", filled in by the script; its line is
+        // kept even when empty, as on the site, so nothing moves.
+        (hop.ok ? "" : `<span class="nf-path" data-path></span>`) +
+        `</span></li>`
+      );
+    })
+    .join("");
+  const trace =
+    `<div class="nf-trace" data-trace>` +
+    `<span class="nf-tick nf-tl" aria-hidden="true"></span>` +
+    `<span class="nf-tick nf-tr" aria-hidden="true"></span>` +
+    `<span class="nf-tick nf-bl" aria-hidden="true"></span>` +
+    `<span class="nf-tick nf-br" aria-hidden="true"></span>` +
+    // The request's time and path, as on the site, come from the script.
+    `<p class="nf-panel-head"><span>Route check</span><span data-time-value></span></p>` +
+    `<div class="nf-panel-body"><ol class="nf-hops">${hops}</ol>` +
+    `<p class="nf-egg-line" aria-live="polite" data-egg-line></p></div>` +
+    `<dl class="nf-meta leaders"><div><dt>Status</dt><dd>404</dd></div>` +
+    `<div hidden data-meta-path><dt>Path</dt><dd data-path-value></dd></div></dl>` +
+    `</div>`;
+  // The "404" types in digit by digit, each in its own clip (notfound.css).
+  const code = [..."404"]
+    .map(
+      (ch, i) => `<span class="nf-l" data-i="${i}"><span>${ch}</span></span>`,
+    )
+    .join("");
+  return [
+    `<!doctype html>`,
+    `<html lang="en">`,
+    `  <head>`,
+    `    <meta charset="utf-8" />`,
+    `    <meta name="viewport" content="width=device-width, initial-scale=1" />`,
+    `    <meta name="robots" content="noindex" />`,
+    `    ${head}`,
+    ...[...script, ...css, ...fonts].map((l) => `    ${l}`),
+    `  </head>`,
+    `  <body class="nf-page">`,
+    `    ${parts.header}`,
+    `    <main id="tool" class="wrap">`,
+    `      <section class="nf" aria-labelledby="nf-title">`,
+    `        <div class="nf-lost">`,
+    `          <p class="nf-code" aria-hidden="true">${code}</p>`,
+    `          <h1 id="nf-title"><span class="rv-mask" data-d="260"><span>${NOT_FOUND_TITLE}</span></span></h1>`,
+    `          <p class="nf-lede rv" data-d="380">${escape(NOT_FOUND_LEDE)}</p>`,
+    `          <p class="nf-back rv" data-d="500"><a href="/">Back to ${escape(o.title)}</a></p>`,
+    `        </div>`,
+    `        ${trace}`,
+    `      </section>`,
+    `    </main>`,
+    `    ${parts.footer}`,
+    `  </body>`,
+    `</html>`,
+    ``,
+  ].join("\n");
+}

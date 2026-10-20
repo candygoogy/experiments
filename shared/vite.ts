@@ -11,6 +11,7 @@ import type { Plugin, UserConfig } from "vite";
 import { thirdPartyNotices } from "./licenses.ts";
 import {
   escape,
+  notFoundHtml,
   shellHtml,
   themeScript,
   type ExperimentOptions,
@@ -25,6 +26,16 @@ const FONTS = ["Newsreader-Display.woff2", "SchibstedGrotesk.woff2"];
 const FONTS_DIR = fileURLToPath(new URL("./fonts/", import.meta.url));
 // Files every experiment serves as they are (the icons).
 const PUBLIC_DIR = fileURLToPath(new URL("./public/", import.meta.url));
+// The 404's script and styles (the header, as on a tool page), built as an
+// entry of their own that only 404.html loads. Every module it reaches is
+// a copy of its own (its id marked with NOT_FOUND_ID), so nothing is
+// shared with the tool's entry: no common chunk, and the tool's own files
+// come out exactly as they would without it.
+const NOT_FOUND_ENTRY = fileURLToPath(
+  new URL("./notfound.ts", import.meta.url),
+);
+const NOT_FOUND = "notfound";
+const NOT_FOUND_ID = "?notfound";
 
 const sha256 = (text: string) =>
   createHash("sha256").update(text).digest("base64");
@@ -52,8 +63,38 @@ const MARKERS = ["head", "header", "footer"] as const;
 
 function shell(o: ExperimentOptions): Plugin {
   const source = `https://github.com/candygoogy/experiments/tree/main/${o.name}`;
+  let building = false;
   return {
     name: "experiment-shell",
+    configResolved(config) {
+      building = config.command === "build";
+    },
+    buildStart() {
+      if (building) {
+        this.emitFile({
+          type: "chunk",
+          id: NOT_FOUND_ENTRY + NOT_FOUND_ID,
+          name: NOT_FOUND,
+        });
+      }
+    },
+    // What the 404's entry imports, it gets as its own copy too: ahead of
+    // Vite's own resolving, which would hand it the tool's.
+    resolveId: {
+      order: "pre",
+      async handler(id, importer, options) {
+        if (!importer?.endsWith(NOT_FOUND_ID)) return;
+        const resolved = await this.resolve(
+          id,
+          importer.slice(0, -NOT_FOUND_ID.length),
+          { ...options, skipSelf: true },
+        );
+        if (!resolved || resolved.external || resolved.id.includes("?")) {
+          return resolved;
+        }
+        return { ...resolved, id: resolved.id + NOT_FOUND_ID };
+      },
+    },
     // Without the font files the page would quietly fall back to system
     // fonts: stop instead.
     transform(_code, id) {
@@ -87,6 +128,30 @@ function shell(o: ExperimentOptions): Plugin {
         type: "asset",
         fileName: "third-party-licenses.txt",
         source: thirdPartyNotices(ids),
+      });
+      // dist/404.html: the tool's stylesheets (its page's entry), then the
+      // 404's own, and the 404's script.
+      const entries = Object.values(bundle).flatMap((file) =>
+        file.type === "chunk" && file.isEntry ? [file] : [],
+      );
+      const notFound = entries.find((file) => file.name === NOT_FOUND);
+      const sheets = [
+        ...entries.filter((file) => file !== notFound),
+        ...(notFound ? [notFound] : []),
+      ].flatMap((file) => [...(file.viteMetadata?.importedCss ?? [])]);
+      this.emitFile({
+        type: "asset",
+        fileName: "404.html",
+        source: notFoundHtml(
+          { ...o, source },
+          {
+            css: sheets,
+            script: notFound?.fileName,
+            fonts: Object.values(bundle)
+              .map((file) => file.fileName)
+              .filter((name) => name.endsWith(".woff2")),
+          },
+        ),
       });
       this.emitFile({
         type: "asset",

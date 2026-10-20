@@ -151,4 +151,37 @@ describe("defineExperiment build", () => {
     expect(html).toContain('class="top');
     expect(html).toContain('<p class="privacy">Runs in your browser. <a ');
   });
+
+  test("404.html is the shell, unindexed, with the way back to the tool", () => {
+    const page = readFileSync(join(out, "404.html"), "utf8");
+    expect(page).toContain('<header class="top wrap">');
+    expect(page).toContain('<meta name="robots" content="noindex" />');
+    expect(page).toContain("<title>Page not found – candygoogy</title>");
+    expect(page).not.toContain('rel="canonical"');
+    expect(page).toContain(
+      '<h1 id="nf-title"><span class="rv-mask" data-d="260"><span>Page not found</span></span></h1>',
+    );
+    expect(page).toContain('<a href="/">Back to Fixture</a>');
+    expect(page).toContain('<span class="nf-label">candygoogy.dev</span>');
+    // Two scripts: the head's, whose hash the CSP has, and the 404's (the
+    // header and the motion), a file of its own ('self'), importing nothing.
+    expect(page.match(/<script/g)).toHaveLength(2);
+    const inline = [...page.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+    expect(inline).toHaveLength(1);
+    const hash = createHash("sha256")
+      .update(inline[0]?.[1] ?? "")
+      .digest("base64");
+    expect(headers).toContain(`'sha256-${hash}'`);
+    const script =
+      /<script type="module" crossorigin src="\/(assets\/notfound-[\w-]+\.js)"><\/script>/.exec(
+        page,
+      )?.[1] ?? "";
+    const code = readFileSync(join(out, script), "utf8");
+    expect(code).toContain("data-menu-open");
+    expect(code).toContain("Tried it. Still a 404.");
+    expect(code).not.toMatch(/\bimport\b/);
+    // Its own stylesheet ships with it.
+    const sheet = /href="\/(assets\/notfound-[\w-]+\.css)"/.exec(page)?.[1];
+    expect(sheet && readFileSync(join(out, sheet), "utf8")).toContain(".nf-");
+  });
 });

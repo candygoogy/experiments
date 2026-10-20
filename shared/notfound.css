@@ -1,0 +1,755 @@
+/* The 404 (markup in shell.ts, notFoundHtml; motion in notfound.ts),
+   ported from candygoogy.dev's 404.astro and the parts of its motion.css
+   the 404 uses: a large "404" that types in like the intro's wordmark,
+   then the page's own words and the way back to the tool. Beside them, a
+   three-hop status trace (you, the site, this page), drawn once in
+   hairlines: the first two work, the page isn't found. With JS the last
+   hop is also a button that tries the oldest IT fix. Classes carry nf-
+   where the site's are bare, so a tool's own styles never reach them.
+   Built with notfound.ts as its own stylesheet, linked from 404.html only,
+   after the tool's (tokens, base, shell). */
+
+/* The site's 404 spacing, not a tool page's: the section takes the space
+   above and below a page's headline, where a tool's main has its own. */
+.nf-page main {
+  padding-block: 0;
+}
+
+/* The group delays and stagger indexes in use here, from data- attributes
+   (the site's motion.css maps them the same way; no style="" attributes,
+   which the CSP would block). */
+.nf [data-d="260"] {
+  --d: 260ms;
+}
+
+.nf [data-d="380"] {
+  --d: 380ms;
+}
+
+.nf [data-d="500"] {
+  --d: 500ms;
+}
+
+.nf [data-i="0"] {
+  --i: 0;
+}
+
+.nf [data-i="1"] {
+  --i: 1;
+}
+
+.nf [data-i="2"] {
+  --i: 2;
+}
+
+/* The reveals (the site's motion.css): masks clip with a little room for
+   descenders and overshoot. Start states apply only once notfound.ts has
+   marked what's already on screen as arrived (html.motion-ready), and
+   only with motion; .is-in hands back to the resting styles. */
+.rv-mask {
+  display: inline-block;
+  clip-path: inset(-0.08em -0.1em -0.12em -0.1em);
+}
+
+.rv-mask > span {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.motion-ready .nf .rv:not(.is-in) {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  @media (max-width: 40rem) {
+    html.motion-ready .nf .rv:not(.is-in) {
+      transform: translateY(32px);
+    }
+  }
+
+  html.motion-ready .nf .rv-mask:not(.is-in) > span {
+    transform: translateY(110%);
+  }
+}
+
+/* The 404 and its words on the left, the trace on the right (6:5, so
+   three hops have room); stacked on narrow screens. */
+.nf {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: var(--gap-hero);
+  align-items: stretch;
+  padding-block: var(--space-hero-top) var(--space-hero-bottom);
+}
+
+/* The decorative "404": the display face at its heaviest. Each digit
+   rises out of its own clip, like the intro's wordmark. Trimmed to the
+   cap height and the baseline (where supported), so the panel beside it
+   starts level with the digits' tops. The 4's flat top stands 0.019em
+   above the face's cap-height metric, the trim's edge (at --fw-d-heavy):
+   the top margin brings it level with the panel's. */
+.nf-code {
+  margin: 0.019em 0 var(--sp-6);
+  text-box: trim-both cap alphabetic;
+  font: var(--fw-d-heavy) clamp(6rem, 2.5rem + 15vw, 14rem) / 0.82
+    var(--ff-display);
+  letter-spacing: var(--ls-band);
+  color: var(--ink);
+}
+
+/* The figures reach about 0.06em above each digit's box at this line
+   height. They sit on the baseline, well inside the box's bottom, so
+   the clip ends there: any lower and the tops would show before the
+   rise. */
+.nf-l {
+  display: inline-block;
+  clip-path: inset(-0.1em -0.06em 0 -0.06em);
+}
+
+.nf-l > span {
+  display: inline-block;
+}
+
+/* The intro wordmark's motion: 620ms on the site's curve, 30ms apart,
+   fading up over the first 60%. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .nf-l > span {
+    animation: nf-rise 620ms var(--ease-out) calc(60ms + var(--i) * 30ms) both;
+  }
+}
+
+/* Played once: never again after the motion setting has changed during
+   the visit (html.motion-settled, notfound.ts). */
+html.motion-settled .nf-l > span {
+  animation: none;
+}
+
+@keyframes nf-rise {
+  from {
+    transform: translateY(110%);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.nf h1 {
+  font-size: var(--fs-d-hero);
+  line-height: var(--lh-display);
+  letter-spacing: var(--ls-hero);
+}
+
+.nf-lede,
+.nf-back {
+  max-width: var(--measure-lede);
+  margin-top: var(--sp-5);
+  font-size: var(--fs-lede);
+  color: var(--soft);
+}
+
+/* Its box ends on the baseline, so the panel's bottom meets it. */
+.nf-back {
+  text-box: trim-end cap alphabetic;
+}
+
+/* A link standing on its own line, as the site's .tap: a 44px tall touch
+   target, laid over the line without changing it. */
+.nf-back a {
+  position: relative;
+}
+
+.nf-back a::after {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 44px;
+  translate: 0 -50%;
+}
+
+/* The trace is one instrument panel: a hairline frame with registration
+   ticks at its outer corners; a header (what it is, the request's time
+   in UTC), the trace itself, and a footer (status, path), each part
+   ruled off by a hairline. At desktop it spans the left column's height,
+   from the top of the 404 to the back link. */
+.nf-trace {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: var(--rule) solid var(--chip-line);
+}
+
+.nf-panel-head,
+.nf-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-6);
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.nf-panel-head {
+  justify-content: space-between;
+  border-bottom: var(--rule) solid var(--chip-line);
+  color: var(--soft);
+}
+
+/* The trace's scale, set once here and stepped down for narrower
+   panels: the icon box and icon, and the type. */
+.nf-panel-body {
+  --g: 64px;
+  --ic: 44px;
+  --arrow: 8px;
+  --label: var(--fs-lede);
+  --state: var(--fs-body);
+  container-type: inline-size;
+  display: grid;
+  flex: 1;
+  align-content: center;
+  gap: var(--sp-5);
+  /* The hops sit in the middle of the panel, the reply's line under
+     them: the space above matches the line, its gap and the space
+     below. The total stays what it was, so the panel keeps its size. */
+  --reply: calc(1.6 * var(--fs-body));
+  --air: calc((var(--sp-7) - var(--reply)) / 2);
+  padding: calc(var(--air) + var(--sp-5) + var(--reply)) var(--sp-4) var(--air);
+}
+
+/* A narrower panel (the 1024 column): one step down, so the three hops
+   still fit "candygoogy.dev". */
+@container (max-width: 460px) {
+  .nf-hops {
+    --g: 52px;
+    --ic: 32px;
+    --arrow: 7px;
+    --label: var(--fs-body);
+    --state: var(--fs-sm);
+  }
+}
+
+/* The narrowest two-column panels (windows of about 860 to 1080px):
+   "candygoogy.dev" needs a third of 362px at 17px, 298px at 14px and
+   277px at 13px (measured), so the labels step down twice more, each with
+   room to spare, and stay on one line with clear space between them. The
+   states step down with them, so the labels still lead. Before the
+   phones' rule below, which sets its own sizes for stacked hops. */
+@container (max-width: 380px) {
+  .nf-hops {
+    --label: var(--fs-sm);
+    --state: var(--fs-xs);
+  }
+}
+
+@container (max-width: 310px) {
+  .nf-hops {
+    --label: var(--fs-xs);
+  }
+}
+
+.nf-meta {
+  border-top: var(--rule) solid var(--chip-line);
+}
+
+.nf-tick {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 0 solid var(--soft);
+}
+
+.nf-tl {
+  top: -1px;
+  left: -1px;
+  border-width: 1px 0 0 1px;
+}
+
+.nf-tr {
+  top: -1px;
+  right: -1px;
+  border-width: 1px 1px 0 0;
+}
+
+.nf-bl {
+  bottom: -1px;
+  left: -1px;
+  border-width: 0 0 1px 1px;
+}
+
+.nf-br {
+  right: -1px;
+  bottom: -1px;
+  border-width: 0 1px 1px 0;
+}
+
+.nf-hops {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nf-hop {
+  position: relative;
+}
+
+.nf-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+}
+
+button.nf-node {
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 120ms var(--ease-ui);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  button.nf-node:active {
+    transform: scale(0.97);
+  }
+}
+
+/* The egg's quiet affordance: the page icon gets a hairline frame on
+   hover, enough for the curious to try it. Touch screens get the same
+   frame once, fading, when the trace is done (the script). */
+@media (hover: hover) {
+  button.nf-node:hover .nf-glyph {
+    box-shadow: inset 0 0 0 var(--rule) var(--chip-line);
+  }
+}
+
+.nf-glyph.cue {
+  animation: nf-egg-cue 1.2s var(--ease-out) forwards;
+}
+
+@keyframes nf-egg-cue {
+  from {
+    box-shadow: inset 0 0 0 var(--rule) var(--chip-line);
+  }
+  to {
+    box-shadow: inset 0 0 0 var(--rule) transparent;
+  }
+}
+
+button.nf-node:focus-visible {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: 4px;
+}
+
+.nf-glyph {
+  display: grid;
+  place-items: center;
+  width: var(--g);
+  height: var(--g);
+  border-radius: 12px;
+  color: var(--ink);
+  transition: box-shadow var(--dur-ui) var(--ease-out);
+}
+
+/* The stroke stays 1.5px at any icon size. */
+.nf-glyph svg {
+  width: var(--ic);
+  height: var(--ic);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nf-glyph svg * {
+  vector-effect: non-scaling-stroke;
+}
+
+/* The link to the next hop: from beside this icon to beside the next
+   one, at the icons' centre line. A border, like the arrowhead, so it
+   snaps to whole device pixels and keeps one weight as it draws. */
+.nf-hop:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--g) / 2);
+  left: calc(50% + var(--g) / 2 + 6px);
+  width: calc(100% - var(--g) - 12px);
+  height: 0;
+  border: 0 solid var(--soft);
+  border-top-width: var(--rule);
+  transform-origin: left center;
+}
+
+/* The arrowhead at the receiving end: a chevron, scaled with the icons,
+   its tip on the line's end. */
+.nf-hop:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--g) / 2 - var(--arrow) / 2);
+  left: calc(150% - var(--g) / 2 - 6px - var(--arrow) * 1.2);
+  width: var(--arrow);
+  height: var(--arrow);
+  border: solid var(--soft);
+  border-width: var(--rule) var(--rule) 0 0;
+  transform: rotate(45deg);
+}
+
+.nf-num {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--soft);
+}
+
+.nf-label {
+  margin-top: var(--sp-1);
+  font: var(--fw-d-bold) var(--label) / 1.25 var(--ff-display);
+  letter-spacing: var(--ls-d-sm);
+  color: var(--ink);
+}
+
+.nf-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+  font-size: var(--state);
+  color: var(--soft);
+}
+
+/* Square-ish dots: green working, grey while checking, a hollow red
+   ring when not found. The green is a layer over the grey (::before),
+   so it can fill in from the centre; ::after is the one ring a hop
+   sends out as it resolves (notfound-trace.ts). */
+.nf-dot {
+  position: relative;
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: var(--st-offline);
+}
+
+.nf-dot::before,
+.nf-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nf-dot::before {
+  background: var(--st-online);
+}
+
+.nf-dot::after {
+  box-shadow: 0 0 0 1px var(--st-online);
+}
+
+.nf-status[data-state="ok"] .nf-dot::before {
+  opacity: 1;
+}
+
+.nf-status[data-state="missing"] .nf-dot {
+  background: none;
+  box-shadow: inset 0 0 0 1.5px var(--st-missing);
+}
+
+/* The words share one cell, clipped above and below, so a changing
+   word can leave upward and the next rise in from under it. */
+.nf-states {
+  display: inline-grid;
+  /* Room on the right for the passing words (below). */
+  clip-path: inset(0 -4em 0 -0.5em);
+  /* Every word starts right by the dot, whatever its length. */
+  text-align: start;
+}
+
+.nf-states > span {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+/* The cell is as wide as the hop's settled word (Working, or Not found),
+   so the settled status, dot and word, sits centred under its icon, and
+   the dot never moves as the words change. The passing words (Checking…,
+   Restarting…) take no width: while they show, they run on past the
+   cell's end. */
+.nf-states > span:not([data-settled]) {
+  width: 0;
+}
+
+/* An answer reads in ink; the in-between states stay soft. */
+.nf-status[data-state="ok"] [data-is="ok"],
+.nf-status[data-state="missing"] [data-is="missing"] {
+  color: var(--ink);
+}
+
+/* While a hop is being checked, the dots of "Checking..." appear in
+   turn, 0.18s apart, and start again: only while it's checking (it
+   ends as the hop answers). Still under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .nf-status[data-state="checking"] .nf-dots > span {
+    animation: nf-dot-1 720ms infinite;
+  }
+
+  .nf-status[data-state="checking"] .nf-dots > span:nth-child(2) {
+    animation-name: nf-dot-2;
+  }
+
+  .nf-status[data-state="checking"] .nf-dots > span:nth-child(3) {
+    animation-name: nf-dot-3;
+  }
+}
+
+@keyframes nf-dot-1 {
+  0%,
+  24.9% {
+    opacity: 0;
+  }
+  25%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes nf-dot-2 {
+  0%,
+  49.9% {
+    opacity: 0;
+  }
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes nf-dot-3 {
+  0%,
+  74.9% {
+    opacity: 0;
+  }
+  75%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.nf-states > [data-leaving],
+.nf-status[data-state="checking"] [data-is="checking"],
+.nf-status[data-state="ok"] [data-is="ok"],
+.nf-status[data-state="missing"] [data-is="missing"],
+.nf-status[data-state="restarting"] [data-is="restarting"] {
+  visibility: visible;
+}
+
+/* The path under "This page": its line is kept even when empty (no
+   JS), so nothing moves when it fills in. */
+.nf-path {
+  display: block;
+  max-width: 100%;
+  min-height: 1.4em;
+  margin-top: var(--sp-1);
+  overflow: hidden;
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  color: var(--soft);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The sequence (JS, motion allowed): hops wait unseen and links
+   undrawn from the first paint until the script (loaded after it)
+   reaches them, and all show on their own at 4s if it never does. The
+   panel is on screen at load, so this keys on .js (set before the first
+   paint), not .motion-ready, which would show the end state first. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .nf-trace:not([data-done]) .nf-hop:not([data-shown]) {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: nf-trace-shown 1ms linear 4000ms forwards;
+  }
+
+  html.js .nf-trace:not([data-done]) .nf-hop:not([data-drawn])::after {
+    transform: scaleX(0);
+    animation: nf-trace-drawn 1ms linear 4000ms forwards;
+  }
+
+  html.js .nf-trace:not([data-done]) .nf-hop:not([data-drawn])::before {
+    opacity: 0;
+    animation: nf-trace-shown 1ms linear 4000ms forwards;
+  }
+}
+
+@keyframes nf-trace-shown {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes nf-trace-drawn {
+  to {
+    transform: none;
+  }
+}
+
+/* The footer's pairs: real values only (the status; with JS the path),
+   labels soft, values ink, a dotted leader (base.css) between them.
+   The pairs share the line. */
+.nf-meta > div {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.nf-meta > div[hidden] {
+  display: none;
+}
+
+.nf-meta dt {
+  flex: 1 0 auto;
+  color: var(--soft);
+}
+
+.nf-meta dd {
+  min-width: 0;
+  max-width: 28ch;
+  margin: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The reply's line, its space kept so nothing moves when it appears. */
+.nf-egg-line {
+  min-height: 1.6em;
+  margin: 0;
+  font-size: var(--fs-body);
+  color: var(--soft);
+  text-align: center;
+}
+
+/* The narrower desktop column (around 1024): a little less air in the
+   panel, so it never outgrows the text beside it. */
+@media (max-width: 75rem) {
+  .nf-panel-body {
+    padding-block: var(--sp-5) var(--sp-4);
+  }
+}
+
+@media (max-width: 53.75rem) {
+  .nf {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .nf-panel-body {
+    padding-top: var(--sp-6);
+  }
+}
+
+/* Phones: the hops stack, icon on the left, the link running down. */
+@media (max-width: 32.5rem) {
+  .nf-hops {
+    grid-template-columns: 1fr;
+    gap: var(--sp-5);
+  }
+
+  .nf-node {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    column-gap: var(--sp-3);
+    align-items: center;
+    justify-items: start;
+    text-align: left;
+  }
+
+  .nf-glyph {
+    grid-row: 1 / span 4;
+    align-self: start;
+  }
+
+  .nf-num {
+    margin-top: 0;
+  }
+
+  .nf-hops {
+    --g: 44px;
+    --ic: 28px;
+    --arrow: 6px;
+    --label: var(--fs-body);
+    --state: var(--fs-sm);
+  }
+
+  .nf-hop:not(:last-child)::after {
+    top: calc(var(--g) + 6px);
+    left: calc(var(--g) / 2);
+    width: 0;
+    height: calc(100% - var(--g) - 12px + var(--sp-5));
+    border-width: 0 0 0 var(--rule);
+    transform-origin: center top;
+  }
+
+  .nf-hop:not(:last-child)::before {
+    top: calc(100% + var(--sp-5) - 6px - var(--arrow) * 1.2);
+    left: calc(var(--g) / 2 - var(--arrow) / 2 + 0.5px);
+    transform: rotate(135deg);
+  }
+
+  html.js .nf-trace:not([data-done]) .nf-hop:not([data-drawn])::after {
+    transform: scaleY(0);
+  }
+}
+
+/* Phones: each value under its label, no leader. */
+@media (max-width: 32.5rem) {
+  .nf-meta > div {
+    flex-direction: column;
+    flex-grow: 0;
+    align-items: start;
+  }
+}
+
+@media (max-width: 22.5rem) {
+  .nf-meta {
+    flex-direction: column;
+  }
+}
+
+/* Paper lists the hops one under another, so the links and arrowheads
+   drawn between them across the panel have nowhere to go. */
+@media print {
+  .nf-hop::before,
+  .nf-hop::after {
+    display: none;
+  }
+}
+
+/* Forced colors (Windows Contrast themes): a hop's dot is its state
+   (green working, grey checking, a red ring not found), so it keeps
+   its colors. */
+@media (forced-colors: active) {
+  .nf-dot {
+    forced-color-adjust: none;
+  }
+}
