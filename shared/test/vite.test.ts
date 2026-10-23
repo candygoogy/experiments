@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { build } from "vite";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { buildStamp, type Build } from "../build";
 import { shellHtml } from "../shell";
 import { cspFor, type ExperimentOptions } from "../vite";
 
@@ -39,20 +40,80 @@ describe("cspFor", () => {
   });
 });
 
+describe("buildStamp", () => {
+  const ENV = "A".repeat(40);
+  const GIT = "b".repeat(40);
+  const at = new Date("2026-12-31T23:30:00Z");
+  const fails = (message: string) => () => {
+    throw new Error(message);
+  };
+
+  test("the date is the build's, in UTC", () => {
+    const b = buildStamp(at, { env: ENV, git: fails("x"), status: fails("x") });
+    expect(b).toMatchObject({
+      year: 2026,
+      iso: "2026-12-31",
+      label: "Dec 31, 2026",
+    });
+  });
+
+  test("Workers Builds' commit first, never marked dirty", () => {
+    const b = buildStamp(at, {
+      env: ` ${ENV}\n`,
+      git: fails("unused"),
+      status: () => " M x",
+    });
+    expect(b).toMatchObject({ commit: ENV.toLowerCase(), dirty: false });
+  });
+
+  test("then git's, marked dirty with uncommitted changes", () => {
+    const git = () => `${GIT}\n`;
+    expect(buildStamp(at, { env: "", git, status: () => "" })).toMatchObject({
+      commit: GIT,
+      dirty: false,
+    });
+    expect(
+      buildStamp(at, {
+        env: "main",
+        git,
+        status: () => " M shared/shell.ts\n",
+      }),
+    ).toMatchObject({ commit: GIT, dirty: true });
+  });
+
+  test("with no commit, just the date; the build goes on", () => {
+    const b = buildStamp(at, {
+      env: undefined,
+      git: fails("not a git repository"),
+      status: fails("x"),
+    });
+    expect(b.commit).toBeUndefined();
+    expect(b.note).toContain("no commit");
+  });
+});
+
 describe("shellHtml", () => {
   const source = "https://github.com/candygoogy/experiments/tree/main/x";
+  const build: Build = {
+    year: 2026,
+    iso: "2026-10-23",
+    label: "Oct 23, 2026",
+    commit: "0123456789abcdef0123456789abcdef01234567",
+    dirty: false,
+    note: "",
+  };
 
   test("the title is the name, then the site, as on candygoogy.dev", () => {
-    expect(shellHtml({ ...min, source }).head).toContain(
+    expect(shellHtml({ ...min, source, build }).head).toContain(
       "<title>X – candygoogy</title>",
     );
-    expect(shellHtml({ ...min, title: "Tom & Jerry", source }).head).toContain(
-      "<title>Tom &amp; Jerry – candygoogy</title>",
-    );
+    expect(
+      shellHtml({ ...min, title: "Tom & Jerry", source, build }).head,
+    ).toContain("<title>Tom &amp; Jerry – candygoogy</title>");
   });
 
   test("the header starts with the site's skip link, to the tool", () => {
-    const { header } = shellHtml({ ...min, source });
+    const { header } = shellHtml({ ...min, source, build });
     expect(
       header.startsWith('<a class="skip" href="#tool">Skip to content</a>'),
     ).toBe(true);
@@ -65,24 +126,26 @@ describe("shellHtml", () => {
   const proof = '<a href="https://candygoogy.dev/colophon#privacy">';
 
   test("footer has the default privacy line, its claim linked", () => {
-    expect(shellHtml({ ...min, source }).footer).toContain(
-      `<p class="privacy">Runs in your browser. ${proof}Nothing you drop here is uploaded.</a></p>`,
+    expect(shellHtml({ ...min, source, build }).footer).toContain(
+      `<span class="privacy">Runs in your browser. ${proof}Nothing you drop here is uploaded.</a></span>`,
     );
   });
 
   test("footer has the experiment's own privacy line when given, its claim linked", () => {
     const line = "Runs in your browser. Nothing you type here leaves it.";
-    const footer = shellHtml({ ...min, source, privacy: line }).footer;
+    const footer = shellHtml({ ...min, source, build, privacy: line }).footer;
     expect(footer).toContain(
-      `<p class="privacy">Runs in your browser. ${proof}Nothing you type here leaves it.</a></p>`,
+      `<span class="privacy">Runs in your browser. ${proof}Nothing you type here leaves it.</a></span>`,
     );
     expect(footer).not.toContain("Nothing you drop here");
   });
 
   test("a privacy line of one sentence is linked whole, escaped", () => {
     const line = "Nothing <here> & nothing sent.";
-    expect(shellHtml({ ...min, source, privacy: line }).footer).toContain(
-      `<p class="privacy">${proof}Nothing &lt;here&gt; &amp; nothing sent.</a></p>`,
+    expect(
+      shellHtml({ ...min, source, build, privacy: line }).footer,
+    ).toContain(
+      `<span class="privacy">${proof}Nothing &lt;here&gt; &amp; nothing sent.</a></span>`,
     );
   });
 });
@@ -149,7 +212,40 @@ describe("defineExperiment build", () => {
     expect(html).not.toContain("<!-- shell:");
     expect(html).toContain("<title>Fixture – candygoogy</title>");
     expect(html).toContain('class="top');
-    expect(html).toContain('<p class="privacy">Runs in your browser. <a ');
+    expect(html).toContain('<span class="privacy">Runs in your browser. <a ');
+  });
+
+  // As on the site: the notes (©, the privacy line, the build stamp), then
+  // the links (Source, MIT), in the markup's order, so Tab follows it; the
+  // stamp's commit links to this repository. The 404 has the same footer.
+  test("the footer's slots, in order, the stamp linked to the repository", () => {
+    const page = readFileSync(join(out, "404.html"), "utf8");
+    for (const doc of [html, page]) {
+      const footer = /<footer[\s\S]*?<\/footer>/.exec(doc)?.[0] ?? "";
+      const slots = [
+        `© ${new Date().getUTCFullYear()} candygoogy`,
+        '<span class="privacy">Runs in your browser.',
+        '<span class="stamp">Built <time datetime="',
+        '">Source</a>',
+        "<span>MIT</span>",
+      ];
+      const at = slots.map((s) => footer.indexOf(s));
+      expect(
+        at.every((i) => i !== -1),
+        at.join(),
+      ).toBe(true);
+      expect(at).toEqual([...at].sort((a, b) => a - b));
+      // The notes are one paragraph, the links after it.
+      expect(footer.indexOf("</p>")).toBeLessThan(at[3] ?? 0);
+      // Built from this checkout, so there is a commit to link.
+      const stamp = /<span class="stamp">.*?<\/span>/.exec(footer)?.[0] ?? "";
+      expect(stamp).toMatch(
+        /^<span class="stamp">Built <time datetime="\d{4}-\d{2}-\d{2}">[A-Z][a-z]{2} \d{1,2}, \d{4}<\/time> from <a href="https:\/\/github\.com\/candygoogy\/experiments\/commit\/[0-9a-f]{40}" aria-label="commit [0-9a-f]{7}(, with uncommitted changes)?">[0-9a-f]{7}(-dirty)?<\/a><\/span>$/,
+      );
+      expect(footer).toContain(
+        'href="https://github.com/candygoogy/experiments/tree/main/fixture">Source</a>',
+      );
+    }
   });
 
   test("404.html is the shell, unindexed, with the way back to the tool", () => {

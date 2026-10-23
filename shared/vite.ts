@@ -8,8 +8,10 @@ import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { Plugin, UserConfig } from "vite";
+import { buildStamp, type Build } from "./build.ts";
 import { thirdPartyNotices } from "./licenses.ts";
 import {
+  REPO,
   escape,
   notFoundHtml,
   shellHtml,
@@ -62,12 +64,17 @@ export function cspFor(o: ExperimentOptions, script: string): string {
 const MARKERS = ["head", "header", "footer"] as const;
 
 function shell(o: ExperimentOptions): Plugin {
-  const source = `https://github.com/candygoogy/experiments/tree/main/${o.name}`;
+  const source = `${REPO}/tree/main/${o.name}`;
   let building = false;
+  // The footer's stamp: found once, when the config is, and said in the
+  // build's log.
+  let build: Build;
   return {
     name: "experiment-shell",
     configResolved(config) {
       building = config.command === "build";
+      build = buildStamp();
+      config.logger.info(build.note);
     },
     buildStart() {
       if (building) {
@@ -107,7 +114,7 @@ function shell(o: ExperimentOptions): Plugin {
     transformIndexHtml: {
       order: "pre",
       handler(html) {
-        const parts = shellHtml({ ...o, source });
+        const parts = shellHtml({ ...o, source, build });
         for (const marker of MARKERS) {
           const tag = `<!-- shell:${marker} -->`;
           if (!html.includes(tag)) {
@@ -143,7 +150,7 @@ function shell(o: ExperimentOptions): Plugin {
         type: "asset",
         fileName: "404.html",
         source: notFoundHtml(
-          { ...o, source },
+          { ...o, source, build },
           {
             css: sheets,
             script: notFound?.fileName,

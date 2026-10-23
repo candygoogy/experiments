@@ -431,12 +431,14 @@ export async function checkBasics(
     await context.close();
   }
 
-  // (l) Phones: the footer's privacy line on top, then "Source" and "MIT"
-  // together on one line under it, in the markup's order, so Tab goes the
-  // way the page reads. Source's target stays clear of the privacy text,
-  // and of the claim's target above it. A target is the link's text box,
-  // or 44px centred on it where the text is shorter, so a claim wrapped
-  // onto three lines is measured from its real top and bottom.
+  // (l) Phones, as on the site: the footer's notes on top (the ©, then the
+  // privacy line; the build stamp left out), then "Source" and "MIT"
+  // together on one line under them, all on the left edge, in the
+  // markup's order, so Tab goes the way the page reads. Source's target
+  // stays clear of the privacy text, and of the claim's target above it. A
+  // target is the link's text box, or 44px centred on it where the text is
+  // shorter, so a claim wrapped onto three lines is measured from its real
+  // top and bottom.
   for (const width of [320, 390]) {
     const context = await browser.newContext({
       viewport: { width, height: 844 },
@@ -461,8 +463,10 @@ export async function checkBasics(
       await foot
         .locator(".inner > *")
         .evaluateAll((all) => all.map((el) => el.localName)),
-      `${at}: privacy, Source, MIT in the markup`,
+      `${at}: the notes, Source, MIT in the markup`,
     ).toEqual(["p", "a", "span"]);
+    await expect(foot.locator(".stamp"), `${at}: no stamp`).toBeHidden();
+    const copyright = await box(".notes > span:first-child");
     const privacy = await box(".privacy");
     const claim = await box(".privacy a");
     const link = await box(".inner > a");
@@ -478,6 +482,11 @@ export async function checkBasics(
       privacy.y + privacy.height,
       `${at}: the privacy line above both`,
     ).toBeLessThanOrEqual(Math.min(link.y, license.y));
+    expect(privacy.y, `${at}: the © first`).toBeGreaterThanOrEqual(copyright.y);
+    expect(
+      Math.abs(copyright.x - link.x),
+      `${at}: the © and Source on the left edge`,
+    ).toBeLessThanOrEqual(1);
     expect(
       target(link).top,
       `${at}: Source's target clear of the privacy text`,

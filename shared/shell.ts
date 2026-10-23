@@ -1,12 +1,14 @@
 // The page shell every experiment shares: what goes in the head (title,
 // theme metas, the pre-paint theme script), the header (a skip link, the
 // wordmark back to candygoogy.dev, Experiments, the theme switch; on
-// phones, Menu and its menu, as on the site) and the footer (the privacy
-// line, its claim linked to how to check it, the source, the license).
+// phones, Menu and its menu, as on the site) and the footer (as on the
+// site: the notes, ©, the privacy line with its claim linked to how to
+// check it and the build stamp, then the source and the license).
 // Built into index.html by defineExperiment() in vite.ts; styled by
 // shell.css, run by header.ts.
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import type { Build } from "./build.ts";
 
 export interface ExperimentOptions {
   /** Folder and subdomain, e.g. "battery". */
@@ -27,9 +29,14 @@ export interface ExperimentOptions {
 export interface ShellOptions extends ExperimentOptions {
   /** The experiment's folder on GitHub. */
   source: string;
+  /** When and from which commit it was built, for the footer's stamp. */
+  build: Build;
 }
 
 export const SITE = "https://candygoogy.dev";
+/** The experiments' repository: each tool's source is its folder there,
+ * and the footer's stamp links the commit it was built from. */
+export const REPO = "https://github.com/candygoogy/experiments";
 /** What follows an experiment's name in its <title>, as on the site. */
 export const TITLE_END = " – candygoogy";
 /** Where the footer's privacy claim links: how to check it, on the site's
@@ -123,6 +130,20 @@ const privacyLine = (line: string): string => {
   return lead && claim ? `${escape(lead)} ${link(claim)}` : link(line);
 };
 
+/** The footer's build stamp, as on the site: "Built Oct 23, 2026 from
+ * 1a2b3c4", the commit linked to the repository; "-dirty" when built with
+ * uncommitted changes; just the date when the build had no commit. */
+const stamp = (b: Build): string => {
+  const date = `Built <time datetime="${b.iso}">${b.label}</time>`;
+  if (!b.commit) return date;
+  const short = b.commit.slice(0, 7);
+  const label = `commit ${short}${b.dirty ? ", with uncommitted changes" : ""}`;
+  return (
+    `${date} from <a href="${REPO}/commit/${b.commit}" aria-label="${label}">` +
+    `${short}${b.dirty ? "-dirty" : ""}</a>`
+  );
+};
+
 const OPTIONS = [
   { value: "auto", label: "Auto" },
   { value: "light", label: "Light" },
@@ -213,7 +234,9 @@ export function shellHtml(o: ShellOptions): {
     `</header>`;
   const footer =
     `<footer class="foot wrap"><div class="inner">` +
-    `<p class="privacy">${privacyLine(o.privacy ?? PRIVACY)}</p>` +
+    `<p class="notes"><span>© ${o.build.year} candygoogy</span>` +
+    `<span class="privacy">${privacyLine(o.privacy ?? PRIVACY)}</span>` +
+    `<span class="stamp">${stamp(o.build)}</span></p>` +
     `<a href="${escape(o.source)}">Source</a>` +
     `<span>MIT</span>` +
     `</div></footer>`;

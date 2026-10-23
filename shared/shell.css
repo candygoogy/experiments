@@ -646,6 +646,8 @@ noscript p {
   margin-top: var(--sp-5);
 }
 
+/* As on the site: the notes on the left, the links on the right, one gap
+   throughout, on one baseline. */
 .foot .inner {
   display: flex;
   flex-wrap: wrap;
@@ -657,9 +659,42 @@ noscript p {
   font-size: var(--fs-sm);
 }
 
-.foot .privacy {
+/* The notes (©, the privacy line, the build stamp) take the row's free
+   space and wrap within it: where they don't fit on one line the stamp
+   drops to its own, and the links stay on the right, on the first line's
+   baseline. (A zero basis: the row breaks on the notes' widest span, not
+   on all three side by side.) Wrapped notes stand 24px apart, so the
+   touch targets of the claim's link and the stamp's never overlap. */
+.foot .notes {
+  display: flex;
   flex: 1 1 0;
-  min-width: min(100%, 20rem);
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-5) var(--sp-6);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Each note stays whole, except the privacy line where its row is
+   narrower than it: it's longer than a phone is wide. */
+.foot .notes > span {
+  white-space: nowrap;
+}
+
+.foot .notes > .privacy {
+  white-space: normal;
+}
+
+/* Narrower, the notes take the first row and the links the next, 24px
+   apart, so the touch targets stay apart. */
+@media (max-width: 53.75rem) {
+  .foot .inner {
+    row-gap: var(--sp-5);
+  }
+
+  .foot .notes {
+    flex-basis: 100%;
+  }
 }
 
 /* Each link has a touch target at least 44px each way, laid over the
@@ -678,18 +713,22 @@ noscript p {
   translate: -50% -50%;
 }
 
-/* Phones: the privacy line on its own full row, then the link and the
-   license together under it. That's the markup's order, so Tab goes the
-   way the page reads. The 24px row gap keeps the link's 44px target clear
-   of the privacy text and of its claim's target. The band keeps
-   24px above and below, not 32px, as the site's footer does on a phone. */
+/* Phones, as on the site: the © and the privacy line side by side (the
+   line wraps under the © where they don't fit, 24px down), then Source
+   and MIT under them on one row, all on the page's left edge. That's the
+   markup's order, so Tab goes the way the page reads. The build stamp is
+   left out, so the footer stays short. The band keeps 24px above and
+   below, not 32px, as the site's footer does on a phone. */
 @media (max-width: 32.5rem) {
   .foot .inner {
-    row-gap: var(--sp-5);
     padding-block: var(--sp-5);
   }
 
-  .foot .privacy {
-    flex: 0 0 100%;
+  .foot .notes {
+    column-gap: var(--sp-5);
+  }
+
+  .foot .stamp {
+    display: none;
   }
 }
