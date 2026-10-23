@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { build } from "vite";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { buildStamp, type Build } from "../build";
-import { shellHtml } from "../shell";
+import { notFoundHtml, shellHtml } from "../shell";
 import { cspFor, type ExperimentOptions } from "../vite";
 
 const min: ExperimentOptions = {
@@ -110,6 +110,58 @@ describe("shellHtml", () => {
     expect(
       shellHtml({ ...min, title: "Tom & Jerry", source, build }).head,
     ).toContain("<title>Tom &amp; Jerry – candygoogy</title>");
+  });
+
+  // The link preview, as candygoogy.dev's pages send it, in its order,
+  // right after the canonical. The 404 keeps the tool's card but, as on
+  // the site's 404, sends no address.
+  test("the link-preview tags, in the site's order; the 404 has no og:url", () => {
+    const o = {
+      ...min,
+      name: "mail",
+      title: "Mail <check>",
+      description: "Checks a domain. Then says what's missing.",
+      source,
+      build,
+    };
+    const preview = [
+      '<link rel="canonical" href="https://mail.candygoogy.dev/" />',
+      '<meta property="og:type" content="website" />',
+      '<meta property="og:site_name" content="candygoogy" />',
+      '<meta property="og:title" content="Mail &lt;check&gt; – candygoogy" />',
+      `<meta property="og:description" content="Checks a domain. Then says what's missing." />`,
+      '<meta property="og:url" content="https://mail.candygoogy.dev/" />',
+      '<meta property="og:image" content="https://mail.candygoogy.dev/og.png" />',
+      '<meta property="og:image:width" content="1200" />',
+      '<meta property="og:image:height" content="630" />',
+      '<meta property="og:image:alt" content="Mail &lt;check&gt;: Checks a domain." />',
+      '<meta name="twitter:card" content="summary_large_image" />',
+    ];
+    const lines = shellHtml(o)
+      .head.split("\n")
+      .map((l) => l.trim());
+    const at = lines.indexOf(preview[0] ?? "");
+    expect(lines.slice(at, at + preview.length)).toEqual(preview);
+    // A description of one sentence is the card's line as it is.
+    expect(shellHtml({ ...o, description: "One line." }).head).toContain(
+      '<meta property="og:image:alt" content="Mail &lt;check&gt;: One line." />',
+    );
+    // A card with its own line is described by that line.
+    expect(shellHtml({ ...o, cardLine: "Short." }).head).toContain(
+      '<meta property="og:image:alt" content="Mail &lt;check&gt;: Short." />',
+    );
+
+    const page = notFoundHtml(o, { css: [], fonts: [] });
+    expect(page).not.toContain('property="og:url"');
+    expect(page).not.toContain('rel="canonical"');
+    const rest = preview.filter((l) => !/canonical|og:url/.test(l));
+    rest[2] =
+      '<meta property="og:title" content="Page not found – candygoogy" />';
+    rest[3] =
+      '<meta property="og:description" content="There’s nothing at this address." />';
+    const notFound = page.split("\n").map((l) => l.trim());
+    const from = notFound.indexOf(rest[0] ?? "");
+    expect(notFound.slice(from, from + rest.length)).toEqual(rest);
   });
 
   test("the header starts with the site's skip link, to the tool", () => {

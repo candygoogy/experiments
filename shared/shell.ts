@@ -24,6 +24,13 @@ export interface ExperimentOptions {
   connectSrc?: string[];
   /** The footer's privacy line, if the default doesn't fit the tool. */
   privacy?: string;
+  /** False only for a page that's never served (the template, the build
+   * checks' fixture): it ships no link-preview card. Every tool ships its
+   * og.png. */
+  card?: false;
+  /** The line drawn on the link-preview card, when it isn't the
+   * description's first sentence (the card shows the site's line). */
+  cardLine?: string;
 }
 
 export interface ShellOptions extends ExperimentOptions {
@@ -31,6 +38,9 @@ export interface ShellOptions extends ExperimentOptions {
   source: string;
   /** When and from which commit it was built, for the footer's stamp. */
   build: Build;
+  /** The card's description, when the page isn't the tool's own: the 404
+   * shows the tool's card, so it keeps the tool's words for it. */
+  cardAlt?: string;
 }
 
 export const SITE = "https://candygoogy.dev";
@@ -175,15 +185,37 @@ const themeSwitch = () => {
   );
 };
 
+/** The link-preview card's description: the tool's name, then the line
+ * drawn on its card, the description's first sentence unless a cardLine
+ * is given. */
+export const cardAlt = (o: ExperimentOptions): string => {
+  if (o.cardLine) return `${o.title}: ${o.cardLine}`;
+  const [lede = ""] = o.description.split(". ");
+  return `${o.title}: ${lede === o.description ? lede : `${lede}.`}`;
+};
+
 export function shellHtml(o: ShellOptions): {
   head: string;
   header: string;
   footer: string;
 } {
+  const home = `https://${o.name}.candygoogy.dev/`;
   const head = [
     `<title>${escape(o.title + TITLE_END)}</title>`,
     `<meta name="description" content="${escape(o.description)}" />`,
-    `<link rel="canonical" href="https://${o.name}.candygoogy.dev/" />`,
+    `<link rel="canonical" href="${home}" />`,
+    // The link preview, as candygoogy.dev's pages send it: the tool's card
+    // (og.png, shipped by the build) at its full 1200 by 630.
+    `<meta property="og:type" content="website" />`,
+    `<meta property="og:site_name" content="candygoogy" />`,
+    `<meta property="og:title" content="${escape(o.title + TITLE_END)}" />`,
+    `<meta property="og:description" content="${escape(o.description)}" />`,
+    `<meta property="og:url" content="${home}" />`,
+    `<meta property="og:image" content="${home}og.png" />`,
+    `<meta property="og:image:width" content="1200" />`,
+    `<meta property="og:image:height" content="630" />`,
+    `<meta property="og:image:alt" content="${escape(o.cardAlt ?? cardAlt(o))}" />`,
+    `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="color-scheme" content="light dark" />`,
     `<meta name="theme-color" content="#f4f4f5" media="(prefers-color-scheme: light)" />`,
     `<meta name="theme-color" content="#121214" media="(prefers-color-scheme: dark)" />`,
@@ -289,9 +321,13 @@ export function notFoundHtml(
     ...o,
     title: NOT_FOUND_TITLE,
     description: "There’s nothing at this address.",
+    cardAlt: cardAlt(o),
   });
-  // The tool's canonical address is its home, not this page.
-  const head = parts.head.replace(/<link rel="canonical"[^>]*>\s*/, "");
+  // The tool's canonical address is its home, not this page, so neither
+  // the canonical nor the preview's address is sent, as on the site's 404.
+  const head = parts.head
+    .replace(/<link rel="canonical"[^>]*>\s*/, "")
+    .replace(/<meta property="og:url"[^>]*>\s*/, "");
   const fonts = assets.fonts.map(
     (f) =>
       `<link rel="preload" href="/${escape(f)}" as="font" type="font/woff2" crossorigin />`,

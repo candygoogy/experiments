@@ -5,7 +5,8 @@
 // blocks any upload. The hash is taken from the same text that's inlined,
 // so editing the script can never leave a stale hash behind.
 import { createHash } from "node:crypto";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Plugin, UserConfig } from "vite";
 import { buildStamp, type Build } from "./build.ts";
@@ -66,6 +67,8 @@ const MARKERS = ["head", "header", "footer"] as const;
 function shell(o: ExperimentOptions): Plugin {
   const source = `${REPO}/tree/main/${o.name}`;
   let building = false;
+  // The tool's folder, where its link-preview card (og.png) lives.
+  let root = "";
   // The footer's stamp: found once, when the config is, and said in the
   // build's log.
   let build: Build;
@@ -73,6 +76,7 @@ function shell(o: ExperimentOptions): Plugin {
     name: "experiment-shell",
     configResolved(config) {
       building = config.command === "build";
+      root = config.root;
       build = buildStamp();
       config.logger.info(build.note);
     },
@@ -83,6 +87,23 @@ function shell(o: ExperimentOptions): Plugin {
           id: NOT_FOUND_ENTRY + NOT_FOUND_ID,
           name: NOT_FOUND,
         });
+        // The tool's link-preview card, served as /og.png. Without it a
+        // shared link would show no picture: stop instead.
+        if (o.card !== false) {
+          const card = join(root, "og.png");
+          if (!existsSync(card)) {
+            this.error(
+              `card: ${o.name}/og.png is missing. It's the tool's ` +
+                `link-preview card (1200 by 630), rendered by ` +
+                `candygoogy.dev's scripts/og.mjs --sites <dir>.`,
+            );
+          }
+          this.emitFile({
+            type: "asset",
+            fileName: "og.png",
+            source: readFileSync(card),
+          });
+        }
       }
     },
     // What the 404's entry imports, it gets as its own copy too: ahead of

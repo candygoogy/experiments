@@ -3,7 +3,8 @@
 // copies template/ to <name>/, fills in its placeholders (the package, the
 // Worker, the title, the ports: Vite on <port>, Wrangler on <port> + 10;
 // the tab then reads "<Title> – candygoogy", from shared/shell.ts),
-// adds it to the workspaces and installs. The reverse:
+// adds it to the workspaces and installs. Its build then stops until
+// <name>/og.png, its link-preview card, is in. The reverse:
 //   node scripts/new.mjs --remove <name>
 // deletes <name>/ and takes it out of the workspaces again.
 
@@ -86,6 +87,11 @@ const PLACES = {
     ['name: "template"', `name: "${name}"`],
     ['title: "Template"', `title: "${title}"`],
     ["port: 4410,", `port: ${port},`],
+    // A tool is served, so it ships a card: the build stops without one.
+    [
+      "\n  // Never served, so no link-preview card (a new tool's copy needs one).\n  card: false,",
+      "",
+    ],
   ],
   "index.html": [["<h1>Template</h1>", `<h1>${title}</h1>`]],
   "test/basics.spec.ts": [
@@ -122,5 +128,7 @@ await writePkg(pkg);
 install();
 console.log(
   `new: ${name}/ is ready. npm run dev -w @exp/${name} (port ${port}), ` +
-    `npm run preview -w @exp/${name} (port ${port + 10}).`,
+    `npm run preview -w @exp/${name} (port ${port + 10}).\n` +
+    `new: before it builds, it needs its link-preview card as ${name}/og.png ` +
+    `(1200 by 630), rendered by candygoogy.dev's scripts/og.mjs --sites <dir>.`,
 );
