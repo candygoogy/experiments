@@ -103,6 +103,17 @@ describe("shellHtml", () => {
     note: "",
   };
 
+  // The stamp link's name holds the text it shows (axe's
+  // label-content-name-mismatch), dirty or not.
+  test("the stamp's link name holds its text, -dirty too", () => {
+    const footer = (dirty: boolean) =>
+      shellHtml({ ...min, source, build: { ...build, dirty } }).footer;
+    expect(footer(false)).toContain('aria-label="commit 0123456">0123456</a>');
+    expect(footer(true)).toContain(
+      'aria-label="commit 0123456-dirty, with uncommitted changes">0123456-dirty</a>',
+    );
+  });
+
   test("the title is the name, then the site, as on candygoogy.dev", () => {
     expect(shellHtml({ ...min, source, build }).head).toContain(
       "<title>X – candygoogy</title>",
@@ -292,7 +303,7 @@ describe("defineExperiment build", () => {
       // Built from this checkout, so there is a commit to link.
       const stamp = /<span class="stamp">.*?<\/span>/.exec(footer)?.[0] ?? "";
       expect(stamp).toMatch(
-        /^<span class="stamp">Built <time datetime="\d{4}-\d{2}-\d{2}">[A-Z][a-z]{2} \d{1,2}, \d{4}<\/time> from <a href="https:\/\/github\.com\/candygoogy\/experiments\/commit\/[0-9a-f]{40}" aria-label="commit [0-9a-f]{7}(, with uncommitted changes)?">[0-9a-f]{7}(-dirty)?<\/a><\/span>$/,
+        /^<span class="stamp">Built <time datetime="\d{4}-\d{2}-\d{2}">[A-Z][a-z]{2} \d{1,2}, \d{4}<\/time> from <a href="https:\/\/github\.com\/candygoogy\/experiments\/commit\/[0-9a-f]{40}" aria-label="commit ([0-9a-f]{7}|[0-9a-f]{7}-dirty, with uncommitted changes)">[0-9a-f]{7}(-dirty)?<\/a><\/span>$/,
       );
       expect(footer).toContain(
         'href="https://github.com/candygoogy/experiments/tree/main/fixture">Source</a>',

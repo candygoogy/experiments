@@ -146,11 +146,12 @@ const privacyLine = (line: string): string => {
 const stamp = (b: Build): string => {
   const date = `Built <time datetime="${b.iso}">${b.label}</time>`;
   if (!b.commit) return date;
-  const short = b.commit.slice(0, 7);
+  // The link's name holds its text, "1a2b3c4-dirty" too, as on the site.
+  const short = `${b.commit.slice(0, 7)}${b.dirty ? "-dirty" : ""}`;
   const label = `commit ${short}${b.dirty ? ", with uncommitted changes" : ""}`;
   return (
     `${date} from <a href="${REPO}/commit/${b.commit}" aria-label="${label}">` +
-    `${short}${b.dirty ? "-dirty" : ""}</a>`
+    `${short}</a>`
   );
 };
 
