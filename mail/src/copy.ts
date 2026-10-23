@@ -19,8 +19,7 @@ export const COPY = {
   // records point to (mail servers, SPF includes and redirects).
   network:
     "DNS names from the domain and its records are sent to Cloudflare’s public DNS (1.1.1.1) to look them up. Nothing else leaves your browser.",
-  privacy:
-    "Runs in your browser. Only DNS names from the domain and its records are sent, to Cloudflare’s public DNS.",
+  privacy: "Runs in your browser. Only DNS lookups leave it.",
   // A made-up domain under .example, the name kept for examples (RFC
   // 2606), so it can never be someone's real one.
   example: "Example: shop.example, a made-up domain",
