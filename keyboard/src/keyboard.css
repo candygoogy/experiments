@@ -269,6 +269,14 @@
   margin-bottom: var(--sp-2);
 }
 
+/* Each holds one line while it's still empty: they're written only once
+   the browser's layout map arrives (up to 300 ms), which can come after
+   the first paint, and Findings below them mustn't move down then. */
+.readout .progress,
+.readout .rollover {
+  min-height: 1lh;
+}
+
 .findings {
   margin: 0;
   padding: 0;

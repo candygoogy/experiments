@@ -43,6 +43,43 @@ test("meets the shared basics", async ({ page }) => {
   await checkBasics(page, BASE);
 });
 
+// The readout's lines are written once the layout map arrives, which on a
+// busy machine can be after the first paint. With a map that never comes
+// (the page gives up after 300 ms), nothing below them may move.
+test("a late layout map moves nothing on a phone", async ({ browser }) => {
+  for (const width of [320, 390]) {
+    const context = await browser.newContext({
+      viewport: { width, height: 800 },
+    });
+    await context.addInitScript(() => {
+      const w = window as unknown as { cls: number };
+      w.cls = 0;
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries() as unknown as {
+          value: number;
+        }[]) {
+          w.cls += entry.value;
+        }
+      }).observe({ type: "layout-shift", buffered: true });
+      const keyboard = (navigator as unknown as { keyboard?: object }).keyboard;
+      if (keyboard) {
+        Object.defineProperty(keyboard, "getLayoutMap", {
+          value: () => new Promise(() => {}),
+        });
+      }
+    });
+    const p = await context.newPage();
+    await p.goto(BASE);
+    await expect(p.locator(".progress")).not.toBeEmpty();
+    await p.waitForTimeout(200);
+    const cls = await p.evaluate(
+      () => (window as unknown as { cls: number }).cls,
+    );
+    expect(cls, `CLS ${width}`).toBe(0);
+    await context.close();
+  }
+});
+
 test("a key is down while held, then seen", async ({ page }) => {
   await startTesting(page);
   await page.keyboard.down("KeyQ");
