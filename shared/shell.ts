@@ -76,19 +76,19 @@ export const FEATURED = [
     blurb: "Windows check-up, printed as a readable receipt",
   },
   {
+    href: `${SITE}/featherplay`,
+    name: "featherplay",
+    blurb: "Native Windows player for YouTube Music, unofficial",
+  },
+  {
+    href: `${SITE}/tellall`,
+    name: "tellall",
+    blurb: "What an image or a text gives away, and a clean copy",
+  },
+  {
     href: `${SITE}/idiff`,
     name: "Install diff",
     blurb: "What an installer did to your PC, in plain words",
-  },
-  {
-    href: `${SITE}/#eolietech`,
-    name: "Eolietech",
-    blurb: "Free file tools that run in your browser",
-  },
-  {
-    href: `${SITE}/#notary`,
-    name: "Notary",
-    blurb: "Claude Code mods that check Claude’s work",
   },
 ] as const;
 
